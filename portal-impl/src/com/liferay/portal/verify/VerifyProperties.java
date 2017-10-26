@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portlet.documentlibrary.store.StoreFactory;
@@ -98,9 +99,9 @@ public class VerifyProperties extends VerifyProcess {
 
 		if (portalProperties.containsKey(oldKey)) {
 			_log.error(
-				"Portal property \"" + oldKey +
-					"\" was migrated to the system property \"" + newKey +
-						"\"");
+				StringBundler.concat(
+					"Portal property \"", oldKey,
+					"\" was migrated to the system property \"", newKey, "\""));
 		}
 	}
 
@@ -111,9 +112,9 @@ public class VerifyProperties extends VerifyProcess {
 
 		if (value != null) {
 			_log.error(
-				"System property \"" + oldKey +
-					"\" was migrated to the portal property \"" + newKey +
-						"\"");
+				StringBundler.concat(
+					"System property \"", oldKey,
+					"\" was migrated to the portal property \"", newKey, "\""));
 		}
 	}
 
@@ -124,8 +125,9 @@ public class VerifyProperties extends VerifyProcess {
 
 		if (portalProperties.containsKey(oldKey)) {
 			_log.error(
-				"Portal property \"" + oldKey + "\" was modularized to " +
-					moduleName + " as \"" + newKey + "\"");
+				StringBundler.concat(
+					"Portal property \"", oldKey, "\" was modularized to ",
+					moduleName, " as \"", newKey, "\""));
 		}
 	}
 
@@ -136,8 +138,9 @@ public class VerifyProperties extends VerifyProcess {
 
 		if (systemProperties.containsKey(oldKey)) {
 			_log.error(
-				"System property \"" + oldKey + "\" was modularized to " +
-					moduleName + " as \"" + newKey + "\"");
+				StringBundler.concat(
+					"System property \"", oldKey, "\" was modularized to ",
+					moduleName, " as \"", newKey, "\""));
 		}
 	}
 
@@ -197,8 +200,9 @@ public class VerifyProperties extends VerifyProcess {
 
 		if (portalProperties.containsKey(oldKey)) {
 			_log.error(
-				"Portal property \"" + oldKey + "\" was renamed to \"" +
-					newKey + "\"");
+				StringBundler.concat(
+					"Portal property \"", oldKey, "\" was renamed to \"",
+					newKey, "\""));
 		}
 	}
 
@@ -209,8 +213,9 @@ public class VerifyProperties extends VerifyProcess {
 
 		if (value != null) {
 			_log.error(
-				"System property \"" + oldKey + "\" was renamed to \"" +
-					newKey + "\"");
+				StringBundler.concat(
+					"System property \"", oldKey, "\" was renamed to \"",
+					newKey, "\""));
 		}
 	}
 
@@ -451,6 +456,22 @@ public class VerifyProperties extends VerifyProcess {
 			"auth.verifier.DigestAuthenticationAuthVerifier.urls.includes",
 			"auth.verifier.DigestAuthenticationAuthVerifier.urls.includes",
 			"com.liferay.portal.security.auth.verifier"
+		},
+
+		new String[] {
+			"auth.verifier.ImageRequestAuthVerifier.hosts.allowed",
+			"auth.verifier.ImageRequestAuthVerifier.hosts.allowed",
+			"com.liferay.document.library.document.conversion"
+		},
+		new String[] {
+			"auth.verifier.ImageRequestAuthVerifier.urls.excludes",
+			"auth.verifier.ImageRequestAuthVerifier.urls.excludes",
+			"com.liferay.document.library.document.conversion"
+		},
+		new String[] {
+			"auth.verifier.ImageRequestAuthVerifier.urls.includes",
+			"auth.verifier.ImageRequestAuthVerifier.urls.includes",
+			"com.liferay.document.library.document.conversion"
 		},
 
 		new String[] {
@@ -1821,11 +1842,13 @@ public class VerifyProperties extends VerifyProcess {
 		"layout.edit.page[control_panel]", "layout.edit.page[link_to_layout]",
 		"layout.first.pageable[control_panel]",
 		"layout.first.pageable[link_to_layout]", "layout.form.add",
-		"layout.form.update", "layout.parentable[control_panel]",
-		"layout.parentable[link_to_layout]", "layout.reset.portlet.ids",
-		"layout.set.form.update", "layout.sitemapable[link_to_layout]",
-		"layout.types", "layout.url[control_panel]",
-		"layout.url[link_to_layout]", "layout.url.friendliable[control_panel]",
+		"layout.form.update",
+		"layout.parallel.render.thread.pool.allow.core.thread.timeout",
+		"layout.parentable[control_panel]", "layout.parentable[link_to_layout]",
+		"layout.reset.portlet.ids", "layout.set.form.update",
+		"layout.sitemapable[link_to_layout]", "layout.types",
+		"layout.url[control_panel]", "layout.url[link_to_layout]",
+		"layout.url.friendliable[control_panel]",
 		"layout.url.friendliable[link_to_layout]",
 		"layout.view.page[control_panel]", "layout.view.page[link_to_layout]",
 		"library.download.url.resin.jar", "library.download.url.script-10.jar",

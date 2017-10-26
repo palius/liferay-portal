@@ -251,6 +251,8 @@
 	<command name="changeSitePageVariationPG">
 		<var name="key_sitePagesVariationName" value="${sitePagesVariationName}" />
 
+		<execute function="Refresh" />
+
 		<execute function="Click" locator1="Staging#SITE_PAGES_VARIATION_DROPDOWN" />
 
 		<var name="key_sitePagesVariationName" value="${sitePagesVariationMenulistName}" />
@@ -676,6 +678,8 @@
 	</command>
 
 	<command name="mergeSitePagesVariation">
+		<execute function="Refresh" />
+
 		<execute macro="Staging#navigateToSitePageVariation" />
 
 		<var name="key_rowEntry" value="${sitePagesVariationName}" />
@@ -774,6 +778,15 @@
 	</command>
 
 	<command name="publishToLive">
+		<if>
+			<isset var="publicationName" />
+			<then>
+				<execute macro="PortletEntry#inputName">
+					<var name="name" value="${publicationName}" />
+				</execute>
+			</then>
+		</if>
+
 		<execute function="AssertClickNoError#assertPartialTextClickAt" locator1="Button#SUBMIT" value1="Publish" />
 
 		<execute function="Pause" locator1="5000" />
