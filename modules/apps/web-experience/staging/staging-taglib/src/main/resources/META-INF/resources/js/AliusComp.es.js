@@ -1,14 +1,14 @@
 import Component from 'metal-component';
 import Soy from 'metal-soy/src/Soy';
-import templates from './MetalTest.soy';
+import templates from './AliusComp.soy';
 
-class MetalTest extends Component {
+class AliusComp extends Component {
     created() {
         console.info('created');
     }
 }
 
 // Register component
-Soy.register(MetalTest, templates);
+Soy.register(AliusComp, templates);
 
-export default MetalTest;
+export default AliusComp;
