@@ -1,6 +1,6 @@
-import Component from 'metal-component/src/Component';
+import Component from 'metal-component';
 import Soy from 'metal-soy/src/Soy';
-import templates from './metalTest.soy';
+import templates from './MetalTest.soy';
 
 class MetalTest extends Component {
     created() {
