@@ -8,4 +8,10 @@ Provide-Capability:\
 		osgi.extender="jsp.taglib";\
 		uri="http://liferay.com/tld/staging";\
 		version:Version="${Bundle-Version}"
+  soy;\
+    type="staging-taglib";\
+    version:Version="${Bundle-Version}"
+Require-Capability:\
+  osgi.extender;\
+    filter:="(&(osgi.extender=jsp.taglib)(uri=http://liferay.com/tld/soy))"
 Web-ContextPath: /staging-taglib
