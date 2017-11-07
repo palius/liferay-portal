@@ -1,7 +1,13 @@
 Bundle-Name: Liferay Staging Metal Web
 Bundle-SymbolicName: com.liferay.staging.metal.web
 Bundle-Version: 1.0.0
-Liferay-JS-Config: /META-INF/resources/js/config.js
 Liferay-Releng-Module-Group-Description:
 Liferay-Releng-Module-Group-Title: Data Management
+Provide-Capability:\
+	soy;\
+		type="staging-metal-web";\
+		version:Version="${Bundle-Version}"
+Require-Capability:\
+	osgi.extender;\
+		filter:="(&(osgi.extender=jsp.taglib)(uri=http://liferay.com/tld/soy))"
 Web-ContextPath: /staging-metal-web

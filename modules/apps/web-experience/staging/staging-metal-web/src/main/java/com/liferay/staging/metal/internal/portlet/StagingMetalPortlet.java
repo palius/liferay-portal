@@ -16,8 +16,8 @@ package com.liferay.staging.metal.internal.portlet;
 
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.staging.constants.StagingProcessesPortletKeys;
-import com.liferay.trash.TrashHelper;
-import com.liferay.trash.util.TrashWebKeys;
+//import com.liferay.trash.TrashHelper;
+//import com.liferay.trash.util.TrashWebKeys;
 
 import java.io.IOException;
 
