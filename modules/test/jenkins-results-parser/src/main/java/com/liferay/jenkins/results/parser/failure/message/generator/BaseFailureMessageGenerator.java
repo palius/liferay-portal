@@ -33,7 +33,7 @@ public abstract class BaseFailureMessageGenerator
 
 	@Override
 	public abstract String getMessage(
-		String buildURL, String consoleText, Hashtable<?, ?> properties);
+		String buildURL, String consoleOutput, Hashtable<?, ?> properties);
 
 	@Override
 	public abstract Element getMessageElement(Build build);
@@ -68,44 +68,44 @@ public abstract class BaseFailureMessageGenerator
 		return Dom4JUtil.getNewAnchorElement(url, sb.toString());
 	}
 
-	protected String getConsoleTextSnippet(
-		String consoleText, boolean truncateTop, int end) {
+	protected String getConsoleOutputSnippet(
+		String consoleOutput, boolean truncateTop, int end) {
 
 		if (end == -1) {
-			end = consoleText.length();
+			end = consoleOutput.length();
 		}
 
-		int start = getSnippetStart(consoleText, end);
+		int start = getSnippetStart(consoleOutput, end);
 
-		return getConsoleTextSnippet(consoleText, truncateTop, start, end);
+		return getConsoleOutputSnippet(consoleOutput, truncateTop, start, end);
 	}
 
-	protected String getConsoleTextSnippet(
-		String consoleText, boolean truncateTop, int start, int end) {
+	protected String getConsoleOutputSnippet(
+		String consoleOutput, boolean truncateTop, int start, int end) {
 
 		return "<pre><code>" +
-			_getConsoleTextSnippet(consoleText, truncateTop, start, end) +
+			_getConsoleOutputSnippet(consoleOutput, truncateTop, start, end) +
 				"</code></pre>";
 	}
 
-	protected Element getConsoleTextSnippetElement(
-		String consoleText, boolean truncateTop, int end) {
+	protected Element getConsoleOutputSnippetElement(
+		String consoleOutput, boolean truncateTop, int end) {
 
 		if (end == -1) {
-			end = consoleText.length();
+			end = consoleOutput.length();
 		}
 
-		int start = getSnippetStart(consoleText, end);
+		int start = getSnippetStart(consoleOutput, end);
 
-		return getConsoleTextSnippetElement(
-			consoleText, truncateTop, start, end);
+		return getConsoleOutputSnippetElement(
+			consoleOutput, truncateTop, start, end);
 	}
 
-	protected Element getConsoleTextSnippetElement(
-		String consoleText, boolean truncateTop, int start, int end) {
+	protected Element getConsoleOutputSnippetElement(
+		String consoleOutput, boolean truncateTop, int start, int end) {
 
 		return Dom4JUtil.toCodeSnippetElement(
-			_getConsoleTextSnippet(consoleText, truncateTop, start, end));
+			_getConsoleOutputSnippet(consoleOutput, truncateTop, start, end));
 	}
 
 	protected Element getGitCommitPluginsAnchorElement(
@@ -136,10 +136,10 @@ public abstract class BaseFailureMessageGenerator
 		return gitCommitPluginsAnchorElement;
 	}
 
-	protected int getSnippetStart(String consoleText, int end) {
+	protected int getSnippetStart(String consoleOutput, int end) {
 		int start = 0;
 
-		Matcher matcher = _pattern.matcher(consoleText);
+		Matcher matcher = _pattern.matcher(consoleOutput);
 
 		while (matcher.find()) {
 			int x = matcher.start() + 1;
@@ -154,28 +154,28 @@ public abstract class BaseFailureMessageGenerator
 		return start;
 	}
 
-	private String _getConsoleTextSnippet(
-		String consoleText, boolean truncateTop, int start, int end) {
+	private String _getConsoleOutputSnippet(
+		String consoleOutput, boolean truncateTop, int start, int end) {
 
 		if ((end - start) > 2500) {
 			if (truncateTop) {
 				start = end - 2500;
 
-				start = consoleText.indexOf("\n", start);
+				start = consoleOutput.indexOf("\n", start);
 			}
 			else {
 				end = start + 2500;
 
-				end = consoleText.lastIndexOf("\n", end);
+				end = consoleOutput.lastIndexOf("\n", end);
 			}
 		}
 
-		consoleText = consoleText.substring(start, end);
+		consoleOutput = consoleOutput.substring(start, end);
 
-		consoleText = consoleText.replaceFirst("^\\s*\\n", "");
-		consoleText = consoleText.replaceFirst("\\n\\s*$", "");
+		consoleOutput = consoleOutput.replaceFirst("^\\s*\\n", "");
+		consoleOutput = consoleOutput.replaceFirst("\\n\\s*$", "");
 
-		return consoleText;
+		return consoleOutput;
 	}
 
 	private static final Pattern _pattern = Pattern.compile(

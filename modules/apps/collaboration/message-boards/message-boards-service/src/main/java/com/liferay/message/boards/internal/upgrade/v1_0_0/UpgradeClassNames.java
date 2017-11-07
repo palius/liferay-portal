@@ -18,7 +18,6 @@ import com.liferay.portal.upgrade.v7_0_0.UpgradeKernelPackage;
 
 /**
  * @author Sergio González
- * @author Adolfo Pérez
  */
 public class UpgradeClassNames extends UpgradeKernelPackage {
 
@@ -33,10 +32,6 @@ public class UpgradeClassNames extends UpgradeKernelPackage {
 	}
 
 	private static final String[][] _CLASS_NAMES = {
-		{
-			"com.liferay.message.boards.kernel.model.MBBan",
-			"com.liferay.message.boards.model.MBBan"
-		},
 		{
 			"com.liferay.message.boards.kernel.model.MBStatsUser",
 			"com.liferay.message.boards.model.MBStatsUser"

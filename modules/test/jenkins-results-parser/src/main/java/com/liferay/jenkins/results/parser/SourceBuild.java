@@ -40,11 +40,6 @@ public class SourceBuild extends BaseBuild {
 	}
 
 	@Override
-	public void addTimelineData(BaseBuild.TimelineData timelineData) {
-		timelineData.addTimelineData(this);
-	}
-
-	@Override
 	public void findDownstreamBuilds() {
 	}
 

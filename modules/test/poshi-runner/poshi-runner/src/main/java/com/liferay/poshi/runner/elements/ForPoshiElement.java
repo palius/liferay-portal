@@ -107,15 +107,13 @@ public class ForPoshiElement extends BasePoshiElement {
 		List<String> readableBlocks = new ArrayList<>();
 
 		for (String line : readableSyntax.split("\n")) {
-			String trimmedLine = line.trim();
-
-			if (trimmedLine.startsWith("for (")) {
+			if (line.startsWith("for (")) {
 				readableBlocks.add(line);
 
 				continue;
 			}
 
-			if (!trimmedLine.startsWith("else {")) {
+			if (!line.startsWith("else {")) {
 				String readableBlock = sb.toString();
 
 				readableBlock = readableBlock.trim();

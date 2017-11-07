@@ -14,8 +14,7 @@
 
 package com.liferay.analytics.java.client;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
 
 import javax.ws.rs.core.Response;
 
@@ -34,20 +33,29 @@ public class AnalyticsClientTest {
 	@Test
 	public void testAnalyticsEventCreation() {
 		AnalyticsEventsMessage.Builder analyticsEventsMessageBuilder =
-			AnalyticsEventsMessage.builder("WXYZ", 1234);
+			AnalyticsEventsMessage.builder();
 
-		Map<String, String> context = new HashMap<>();
+		analyticsEventsMessageBuilder.analyticsKey("WXYZ");
+		analyticsEventsMessageBuilder.applicationId("AT");
+		analyticsEventsMessageBuilder.channel("web");
+		analyticsEventsMessageBuilder.messageFormat("AT");
 
-		context.put("instanceId", "1234");
-		context.put("languageId", "en_US");
-		context.put("url", "http://www.liferay.com");
+		AnalyticsEventsMessage.Context.Builder contextBuilder =
+			AnalyticsEventsMessage.Context.builder();
 
-		analyticsEventsMessageBuilder.context(context);
+		contextBuilder.instanceId(1234);
+		contextBuilder.languageId("en_US");
+		contextBuilder.url("http://www.liferay.com");
+		contextBuilder.userId(1234);
+
+		analyticsEventsMessageBuilder.context(contextBuilder.build());
 
 		AnalyticsEventsMessage.Event.Builder eventBuilder =
-			AnalyticsEventsMessage.Event.builder("AT", "view");
+			AnalyticsEventsMessage.Event.builder();
 
+		eventBuilder.event("view");
 		eventBuilder.property("elementId", "banner1");
+		eventBuilder.timestamp(new Date());
 
 		analyticsEventsMessageBuilder.event(eventBuilder.build());
 

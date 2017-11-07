@@ -35,9 +35,7 @@ public class CalendarPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, calendar, actionId)) {
-			throw new PrincipalException.MustHavePermission(
-				permissionChecker, Calendar.class.getName(),
-				calendar.getCalendarId(), actionId);
+			throw new PrincipalException();
 		}
 	}
 
@@ -47,9 +45,7 @@ public class CalendarPermission {
 		throws PortalException {
 
 		if (!contains(permissionChecker, calendarId, actionId)) {
-			throw new PrincipalException.MustHavePermission(
-				permissionChecker, Calendar.class.getName(), calendarId,
-				actionId);
+			throw new PrincipalException();
 		}
 	}
 

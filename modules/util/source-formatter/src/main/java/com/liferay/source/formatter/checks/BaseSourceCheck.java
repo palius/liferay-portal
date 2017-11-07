@@ -222,7 +222,17 @@ public abstract class BaseSourceCheck implements SourceCheck {
 	}
 
 	protected File getFile(String fileName, int level) {
-		return SourceFormatterUtil.getFile(_baseDirName, fileName, level);
+		for (int i = 0; i < level; i++) {
+			File file = new File(_baseDirName + fileName);
+
+			if (file.exists()) {
+				return file;
+			}
+
+			fileName = "../" + fileName;
+		}
+
+		return null;
 	}
 
 	protected List<String> getFileNames(

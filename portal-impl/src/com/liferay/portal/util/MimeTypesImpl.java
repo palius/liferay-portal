@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MimeTypes;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -73,16 +72,8 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 		URL url = org.apache.tika.mime.MimeTypes.class.getResource(
 			"tika-mimetypes.xml");
 
-		Class<?> clazz = getClass();
-
-		ClassLoader classLoader = clazz.getClassLoader();
-
-		URL customMimeTypesUrl = classLoader.getResource(
-			"tika/custom-mimetypes.xml");
-
 		try {
-			read(url.openStream(), _extensionsMap);
-			read(customMimeTypesUrl.openStream(), _customExtensionsMap);
+			read(url.openStream());
 		}
 		catch (Exception e) {
 			_log.error("Unable to populate extensions map", e);
@@ -123,20 +114,13 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 		try (TikaInputStream tikaInputStream = TikaInputStream.get(
 				new CloseShieldInputStream(inputStream))) {
 
-			String extension = FileUtil.getExtension(fileName);
+			Metadata metadata = new Metadata();
 
-			contentType = getCustomContentType(extension);
+			metadata.set(Metadata.RESOURCE_NAME_KEY, fileName);
 
-			if (ContentTypes.APPLICATION_OCTET_STREAM.equals(contentType)) {
-				Metadata metadata = new Metadata();
+			MediaType mediaType = _detector.detect(tikaInputStream, metadata);
 
-				metadata.set(Metadata.RESOURCE_NAME_KEY, fileName);
-
-				MediaType mediaType = _detector.detect(
-					tikaInputStream, metadata);
-
-				contentType = mediaType.toString();
-			}
+			contentType = mediaType.toString();
 
 			if (contentType.contains("tika")) {
 				if (_log.isDebugEnabled()) {
@@ -169,22 +153,14 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 			return ContentTypes.APPLICATION_OCTET_STREAM;
 		}
 
-		String contentType = null;
-
 		try {
-			String extension = FileUtil.getExtension(fileName);
+			Metadata metadata = new Metadata();
 
-			contentType = getCustomContentType(extension);
+			metadata.set(Metadata.RESOURCE_NAME_KEY, fileName);
 
-			if (ContentTypes.APPLICATION_OCTET_STREAM.equals(contentType)) {
-				Metadata metadata = new Metadata();
+			MediaType mediaType = _detector.detect(null, metadata);
 
-				metadata.set(Metadata.RESOURCE_NAME_KEY, fileName);
-
-				MediaType mediaType = _detector.detect(null, metadata);
-
-				contentType = mediaType.toString();
-			}
+			String contentType = mediaType.toString();
 
 			if (!contentType.contains("tika")) {
 				return contentType;
@@ -225,36 +201,7 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 		return _webImageMimeTypes.contains(mimeType);
 	}
 
-	protected String getCustomContentType(String extension) {
-		if (Validator.isNull(extension)) {
-			return ContentTypes.APPLICATION_OCTET_STREAM;
-		}
-
-		for (Map.Entry<String, Set<String>> entry :
-				_customExtensionsMap.entrySet()) {
-
-			Set<String> set = entry.getValue();
-
-			if (set.contains(".".concat(extension))) {
-				return entry.getKey();
-			}
-		}
-
-		return ContentTypes.APPLICATION_OCTET_STREAM;
-	}
-
-	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #read(InputStream, Map)}
-	 */
-	@Deprecated
 	protected void read(InputStream stream) throws Exception {
-		read(stream, _extensionsMap);
-	}
-
-	protected void read(
-			InputStream stream, Map<String, Set<String>> extensionsMap)
-		throws Exception {
-
 		DocumentBuilderFactory documentBuilderFactory =
 			DocumentBuilderFactory.newInstance();
 
@@ -281,22 +228,12 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 			Element childElement = (Element)node;
 
 			if (MIME_TYPE_TAG.equals(childElement.getTagName())) {
-				readMimeType(childElement, extensionsMap);
+				readMimeType(childElement);
 			}
 		}
 	}
 
-	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #readMimeType(Element, Map)}
-	 */
-	@Deprecated
 	protected void readMimeType(Element element) {
-		readMimeType(element, _extensionsMap);
-	}
-
-	protected void readMimeType(
-		Element element, Map<String, Set<String>> extensionsMap) {
-
 		Set<String> mimeTypes = new HashSet<>();
 
 		Set<String> extensions = new HashSet<>();
@@ -346,14 +283,12 @@ public class MimeTypesImpl implements MimeTypes, MimeTypesReaderMetKeys {
 		}
 
 		for (String mimeType : mimeTypes) {
-			extensionsMap.put(mimeType, extensions);
+			_extensionsMap.put(mimeType, extensions);
 		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(MimeTypesImpl.class);
 
-	private final Map<String, Set<String>> _customExtensionsMap =
-		new HashMap<>();
 	private final Detector _detector;
 	private final Map<String, Set<String>> _extensionsMap = new HashMap<>();
 	private final Set<String> _webImageMimeTypes;

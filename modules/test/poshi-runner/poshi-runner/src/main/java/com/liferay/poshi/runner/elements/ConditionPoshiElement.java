@@ -53,8 +53,8 @@ public class ConditionPoshiElement extends ExecutePoshiElement {
 	}
 
 	@Override
-	protected String createFunctionReadableBlock(String content) {
-		String readableBlock = super.createFunctionReadableBlock(content);
+	protected String createReadableBlock(String content) {
+		String readableBlock = super.createReadableBlock(content);
 
 		readableBlock = readableBlock.trim();
 

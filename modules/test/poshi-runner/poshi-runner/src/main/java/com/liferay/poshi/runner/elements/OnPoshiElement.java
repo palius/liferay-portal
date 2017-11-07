@@ -88,21 +88,19 @@ public class OnPoshiElement extends BasePoshiElement {
 		List<String> readableBlocks = new ArrayList<>();
 
 		for (String line : readableSyntax.split("\n")) {
-			String trimmedLine = line.trim();
-
 			String readableBlock = sb.toString();
 
 			readableBlock = readableBlock.trim();
 
-			if (trimmedLine.startsWith(getReadableName() + " (") &&
-				trimmedLine.endsWith("{") && (readableBlock.length() == 0)) {
+			if (line.startsWith(getReadableName() + " (") &&
+				line.endsWith("{") && (readableBlock.length() == 0)) {
 
 				readableBlocks.add(line);
 
 				continue;
 			}
 
-			if (trimmedLine.endsWith("{") && readableBlocks.isEmpty()) {
+			if (line.endsWith("{") && readableBlocks.isEmpty()) {
 				continue;
 			}
 

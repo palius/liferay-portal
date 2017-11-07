@@ -27,7 +27,7 @@ public class FailureMessageUtil {
 	public static String getFailureMessage(Project project, String buildURL)
 		throws Exception {
 
-		String consoleText = JenkinsResultsParserUtil.toString(
+		String consoleOutput = JenkinsResultsParserUtil.toString(
 			JenkinsResultsParserUtil.getLocalURL(
 				buildURL + "/logText/progressiveText"));
 
@@ -35,7 +35,7 @@ public class FailureMessageUtil {
 				_failureMessageGenerators) {
 
 			String message = failureMessageGenerator.getMessage(
-				buildURL, consoleText, project.getProperties());
+				buildURL, consoleOutput, project.getProperties());
 
 			if (message != null) {
 				return message;
@@ -43,7 +43,7 @@ public class FailureMessageUtil {
 		}
 
 		return _genericFailureMessageGenerator.getMessage(
-			buildURL, consoleText, project.getProperties());
+			buildURL, consoleOutput, project.getProperties());
 	}
 
 	private static final FailureMessageGenerator[] _failureMessageGenerators = {

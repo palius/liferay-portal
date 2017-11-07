@@ -29,9 +29,9 @@ public class StartupFailureMessageGenerator
 
 	@Override
 	public String getMessage(
-		String buildURL, String consoleText, Hashtable<?, ?> properties) {
+		String buildURL, String consoleOutput, Hashtable<?, ?> properties) {
 
-		if (!consoleText.contains(_TOKEN_UNRESOLVED_REQUIREMENT)) {
+		if (!consoleOutput.contains(_TOKEN_UNRESOLVED_REQUIREMENT)) {
 			return null;
 		}
 
@@ -40,17 +40,18 @@ public class StartupFailureMessageGenerator
 		sb.append(
 			"<p>Startup error: <strong>Unresolved Requirement(s)</strong></p>");
 
-		int start = consoleText.indexOf(_TOKEN_UNRESOLVED_REQUIREMENT);
+		int start = consoleOutput.indexOf(_TOKEN_UNRESOLVED_REQUIREMENT);
 
-		start = consoleText.lastIndexOf(_TOKEN_COULD_NOT_RESOLVE_MODULE, start);
+		start = consoleOutput.lastIndexOf(
+			_TOKEN_COULD_NOT_RESOLVE_MODULE, start);
 
-		start = consoleText.lastIndexOf("\n", start);
+		start = consoleOutput.lastIndexOf("\n", start);
 
-		int end = consoleText.indexOf(_TOKEN_DELETING);
+		int end = consoleOutput.indexOf(_TOKEN_DELETING);
 
-		end = consoleText.lastIndexOf("\n", end);
+		end = consoleOutput.lastIndexOf("\n", end);
 
-		sb.append(getConsoleTextSnippet(consoleText, true, start, end));
+		sb.append(getConsoleOutputSnippet(consoleOutput, true, start, end));
 
 		return sb.toString();
 	}
@@ -79,7 +80,7 @@ public class StartupFailureMessageGenerator
 				"p", null, "Startup error: ",
 				Dom4JUtil.getNewElement(
 					"strong", null, "Unresolved Requirement(s)")),
-			getConsoleTextSnippetElement(consoleText, true, start, end));
+			getConsoleOutputSnippetElement(consoleText, true, start, end));
 	}
 
 	private static final String _TOKEN_COULD_NOT_RESOLVE_MODULE =

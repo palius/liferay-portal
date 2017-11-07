@@ -209,9 +209,8 @@ public abstract class BasePACLPolicy implements PACLPolicy {
 
 			if (_log.isInfoEnabled()) {
 				_log.info(
-					StringBundler.concat(
-						"Registering permission ", permissionClassName,
-						" with PACL policy ", checkerClassName));
+					"Registering permission " + permissionClassName +
+						" with PACL policy " + checkerClassName);
 			}
 
 			_checkers.put(permissionClassName, checker);

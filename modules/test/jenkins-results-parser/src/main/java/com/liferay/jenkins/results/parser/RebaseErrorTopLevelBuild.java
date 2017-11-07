@@ -134,7 +134,7 @@ public class RebaseErrorTopLevelBuild extends TopLevelBuild {
 
 		String commentBody = jsonObject.getString("body");
 
-		Element rootElement = getRootElement(commentBody);
+		Element rootElement = getElement(commentBody);
 
 		return getCommentTokens(rootElement);
 	}
@@ -163,11 +163,29 @@ public class RebaseErrorTopLevelBuild extends TopLevelBuild {
 		return tokens;
 	}
 
-	protected List<String> getExpectedCommentTokens() throws IOException {
-		String resource = JenkinsResultsParserUtil.getResourceFileContent(
-			"dependencies/RebaseErrorTopLevelBuildTemplate.html");
+	protected Element getElement(String content) {
+		try {
+			Document document = Dom4JUtil.parse(
+				JenkinsResultsParserUtil.combine("<div>", content, "</div>"));
 
-		return getCommentTokens(getRootElement(resource));
+			return document.getRootElement();
+		}
+		catch (DocumentException de) {
+			throw new RuntimeException("Unable to parse XML", de);
+		}
+	}
+
+	protected List<String> getExpectedCommentTokens() throws IOException {
+		Element rootElement = null;
+
+		Class<?> clazz = getClass();
+
+		String resource = JenkinsResultsParserUtil.readInputStream(
+			clazz.getResourceAsStream("RebaseErrorTopLevelBuildTemplate.html"));
+
+		rootElement = getElement(resource);
+
+		return getCommentTokens(rootElement);
 	}
 
 	protected JSONObject getJSONObjectFromURL(String url) throws IOException {
@@ -203,18 +221,6 @@ public class RebaseErrorTopLevelBuild extends TopLevelBuild {
 		bufferedReader.close();
 
 		return new JSONObject(sb.toString());
-	}
-
-	protected Element getRootElement(String content) {
-		try {
-			Document document = Dom4JUtil.parse(
-				JenkinsResultsParserUtil.combine("<div>", content, "</div>"));
-
-			return document.getRootElement();
-		}
-		catch (DocumentException de) {
-			throw new RuntimeException("Unable to parse XML", de);
-		}
 	}
 
 	protected boolean matchCommentTokens(

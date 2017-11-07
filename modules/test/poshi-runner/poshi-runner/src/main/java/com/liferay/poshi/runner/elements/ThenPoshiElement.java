@@ -81,17 +81,13 @@ public class ThenPoshiElement extends BasePoshiElement {
 		List<String> readableBlocks = new ArrayList<>();
 
 		for (String line : readableSyntax.split("\n")) {
-			String trimmedLine = line.trim();
-
 			String readableBlock = sb.toString();
 
-			if (trimmedLine.endsWith("{") && readableBlocks.isEmpty()) {
+			if (line.endsWith("{") && readableBlocks.isEmpty()) {
 				continue;
 			}
 
-			if (!trimmedLine.startsWith("else {")) {
-				readableBlock = readableBlock.trim();
-
+			if (!line.startsWith("else {")) {
 				if (isValidReadableBlock(readableBlock)) {
 					readableBlocks.add(readableBlock);
 

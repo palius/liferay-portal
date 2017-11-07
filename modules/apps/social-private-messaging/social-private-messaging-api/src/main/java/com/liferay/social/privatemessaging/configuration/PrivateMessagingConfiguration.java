@@ -33,30 +33,23 @@ public interface PrivateMessagingConfiguration {
 
 	@Meta.AD(
 		deflt = "com/liferay/social/privatemessaging/dependencies/notification_message_body.tmpl",
-		name = "email-body", required = false
+		required = false
 	)
 	public String emailBody();
 
-	@Meta.AD(
-		deflt = "20", name = "autocomplete-recipient-max", required = false
-	)
+	@Meta.AD(deflt = "20", required = false)
 	public int autocompleteRecipientMax();
 
-	@Meta.AD(
-		deflt = "", name = "autocomplete-recipient-site-excludes",
-		required = false
-	)
+	@Meta.AD(deflt = "", required = false)
 	public String[] autocompleteRecipientSiteExcludes();
 
 	@Meta.AD(
 		deflt = "com/liferay/social/privatemessaging/dependencies/notification_message_subject.tmpl",
-		name = "email-subject", required = false
+		required = false
 	)
 	public String emailSubject();
 
-	@Meta.AD(
-		deflt = "all", name = "autocomplete-recipient-type", required = false
-	)
+	@Meta.AD(deflt = "all", required = false)
 	public String autocompleteRecipientType();
 
 }

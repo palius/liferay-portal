@@ -16,7 +16,6 @@ package com.liferay.deployment.helper.servlet;
 
 import com.liferay.portal.kernel.deploy.DeployManagerUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -112,15 +111,13 @@ public class DeploymentHelperContextListener implements ServletContextListener {
 				copy(servletContext, inputStream, new FileOutputStream(file));
 
 				servletContext.log(
-					StringBundler.concat(
-						"Successfully copied ", deploymentFileName, " to ",
-						file.getAbsolutePath()));
+					"Successfully copied " + deploymentFileName + " to " +
+						file.getAbsolutePath());
 			}
 			catch (Exception e) {
 				servletContext.log(
-					StringBundler.concat(
-						"Unable to process ", deploymentFileName, ":\n",
-						e.getMessage()),
+					"Unable to process " + deploymentFileName + ":\n" +
+						e.getMessage(),
 					e);
 			}
 		}

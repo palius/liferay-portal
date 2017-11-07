@@ -46,11 +46,13 @@
 					<var name="userLoginFullName" value="Test Test" />
 				</execute>
 
-				<execute macro="User#tearDownSpecificUser">
-					<var name="userScreenName" value="usersn" />
+				<execute macro="User#deactivateCP">
+					<var name="userFirstName" value="userfn" />
 				</execute>
 
-				<execute macro="Role#removeStagingAdminRole" />
+				<execute macro="User#deleteCP" />
+
+				<execute macro="Role#tearDownCP" />
 
 				<execute macro="Site#tearDownCP" />
 			</else>

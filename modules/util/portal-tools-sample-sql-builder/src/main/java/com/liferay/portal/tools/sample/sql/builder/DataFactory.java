@@ -862,9 +862,7 @@ public class DataFactory {
 				assetTagModel.setUserName(_SAMPLE_USER_NAME);
 				assetTagModel.setCreateDate(new Date());
 				assetTagModel.setModifiedDate(new Date());
-				assetTagModel.setName(
-					StringBundler.concat(
-						"TestTag_", String.valueOf(i), "_", String.valueOf(j)));
+				assetTagModel.setName("TestTag_" + i + "_" + j);
 				assetTagModel.setLastPublishDate(new Date());
 
 				assetTagModels.add(assetTagModel);

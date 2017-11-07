@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
@@ -52,10 +51,9 @@ public final class AMAsyncProcessorImpl<M, T>
 
 		if (_log.isInfoEnabled()) {
 			_log.info(
-				StringBundler.concat(
-					"Cleaned queue for model ID ", modelId,
-					" and adaptive media processor command ",
-					String.valueOf(amProcessorCommand)));
+				"Cleaned queue for model ID " + modelId +
+					" and adaptive media processor command " +
+						amProcessorCommand);
 		}
 	}
 

@@ -28,28 +28,28 @@ public class CompileFailureMessageGenerator
 
 	@Override
 	public String getMessage(
-		String buildURL, String consoleText, Hashtable<?, ?> properties) {
+		String buildURL, String consoleOutput, Hashtable<?, ?> properties) {
 
 		return null;
 	}
 
 	@Override
 	public Element getMessageElement(Build build) {
-		String consoleText = build.getConsoleText();
+		String consoleOutput = build.getConsoleText();
 
-		int end = consoleText.indexOf("Compile failed;");
+		int end = consoleOutput.indexOf("Compile failed;");
 
 		if (end == -1) {
-			end = consoleText.indexOf("compileJava FAILED");
+			end = consoleOutput.indexOf("compileJava FAILED");
 		}
 
 		if (end == -1) {
 			return null;
 		}
 
-		end = consoleText.lastIndexOf("\n", end);
+		end = consoleOutput.lastIndexOf("\n", end);
 
-		return getConsoleTextSnippetElement(consoleText, true, end);
+		return getConsoleOutputSnippetElement(consoleOutput, true, end);
 	}
 
 }

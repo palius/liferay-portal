@@ -50,7 +50,6 @@ import com.liferay.portal.kernel.util.ReferenceEntry;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.kernel.util.ReflectionUtil;
 import com.liferay.portal.kernel.util.ServerDetector;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.lang.DoPrivilegedBean;
 import com.liferay.portal.security.lang.DoPrivilegedFactory;
@@ -397,9 +396,8 @@ public class PortalSecurityManagerImpl
 
 		if (_log.isDebugEnabled()) {
 			_log.debug(
-				StringBundler.concat(
-					"Loading ", clazz.getName(), " and ",
-					String.valueOf(declaredClassesLength), " inner classes"));
+				"Loading " + clazz.getName() + " and " + declaredClassesLength +
+					" inner classes");
 		}
 	}
 

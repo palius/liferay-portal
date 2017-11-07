@@ -32,84 +32,76 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 )
 public interface ShoppingGroupServiceConfiguration {
 
-	@Meta.AD(
-		deflt = "visa|mastercard|discover|amex", name = "cc-types",
-		required = false
-	)
+	@Meta.AD(deflt = "visa|mastercard|discover|amex", required = false)
 	public String[] ccTypes();
 
-	@Meta.AD(deflt = "USD", name = "currency-id", required = false)
+	@Meta.AD(deflt = "USD", required = false)
 	public String currencyId();
 
 	@Meta.AD(
 		deflt = "${server-property://com.liferay.portal/admin.email.from.address}",
-		name = "email-from-address", required = false
+		required = false
 	)
 	public String emailFromAddress();
 
 	@Meta.AD(
 		deflt = "${server-property://com.liferay.portal/admin.email.from.name}",
-		name = "email-from-name", required = false
+		required = false
 	)
 	public String emailFromName();
 
 	@Meta.AD(
 		deflt = "${resource:com/liferay/shopping/dependencies/email_order_confirmation_body.tmpl}",
-		name = "email-order-confirmation-body", required = false
+		required = false
 	)
 	public LocalizedValuesMap emailOrderConfirmationBody();
 
-	@Meta.AD(
-		deflt = "true", name = "email-order-confirmation-enabled",
-		required = false
-	)
+	@Meta.AD(deflt = "true", required = false)
 	public boolean emailOrderConfirmationEnabled();
 
 	@Meta.AD(
 		deflt = "${resource:com/liferay/shopping/dependencies/email_order_confirmation_subject.tmpl}",
-		name = "email-order-confirmation-subject", required = false
+		required = false
 	)
 	public LocalizedValuesMap emailOrderConfirmationSubject();
 
 	@Meta.AD(
 		deflt = "${resource:com/liferay/shopping/dependencies/email_order_shipping_body.tmpl}",
-		name = "email-order-shipping-body", required = false
+		required = false
 	)
 	public LocalizedValuesMap emailOrderShippingBody();
 
-	@Meta.AD(
-		deflt = "true", name = "email-order-shipping-enabled", required = false
-	)
+	@Meta.AD(deflt = "true", required = false)
 	public boolean emailOrderShippingEnabled();
 
 	@Meta.AD(
 		deflt = "${resource:com/liferay/shopping/dependencies/email_order_shipping_subject.tmpl}",
-		name = "email-order-shipping-subject", required = false
+		required = false
 	)
 	public LocalizedValuesMap emailOrderShippingSubject();
 
-	@Meta.AD(name = "insurance", required = false)
+	@Meta.AD(required = false)
 	public String[] insurance();
 
-	@Meta.AD(deflt = "flat", name = "insurance-formula", required = false)
+	@Meta.AD(deflt = "flat", required = false)
 	public String insuranceFormula();
 
-	@Meta.AD(deflt = "0", name = "min-order", required = false)
+	@Meta.AD(deflt = "0", required = false)
 	public double minOrder();
 
-	@Meta.AD(deflt = " ", name = "paypal-email-address", required = false)
+	@Meta.AD(deflt = " ", required = false)
 	public String paypalEmailAddress();
 
-	@Meta.AD(name = "shipping", required = false)
+	@Meta.AD(required = false)
 	public String[] shipping();
 
-	@Meta.AD(deflt = "flat", name = "shipping-formula", required = false)
+	@Meta.AD(deflt = "flat", required = false)
 	public String shippingFormula();
 
-	@Meta.AD(deflt = "0", name = "tax-rate", required = false)
+	@Meta.AD(deflt = "0", required = false)
 	public double taxRate();
 
-	@Meta.AD(deflt = "CA", name = "tax-state", required = false)
+	@Meta.AD(deflt = "CA", required = false)
 	public String taxState();
 
 }

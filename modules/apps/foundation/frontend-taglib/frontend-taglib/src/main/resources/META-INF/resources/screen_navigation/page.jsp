@@ -17,9 +17,6 @@
 <%@ include file="/screen_navigation/init.jsp" %>
 
 <%
-String containerCssClass = (String)request.getAttribute("liferay-frontend:screen-navigation:containerCssClass");
-String fullContainerCssClass = (String)request.getAttribute("liferay-frontend:screen-navigation:fullContainerCssClass");
-String navCssClass = (String)request.getAttribute("liferay-frontend:screen-navigation:navCssClass");
 PortletURL portletURL = (PortletURL)request.getAttribute("liferay-frontend:screen-navigation:portletURL");
 ScreenNavigationCategory selectedScreenNavigationCategory = (ScreenNavigationCategory)request.getAttribute("liferay-frontend:screen-navigation:selectedScreenNavigationCategory");
 ScreenNavigationEntry selectedScreenNavigationEntry = (ScreenNavigationEntry)request.getAttribute("liferay-frontend:screen-navigation:selectedScreenNavigationEntry");
@@ -27,7 +24,7 @@ List<ScreenNavigationCategory> screenNavigationCategories = (List<ScreenNavigati
 List<ScreenNavigationEntry> screenNavigationEntries = (List<ScreenNavigationEntry>)request.getAttribute("liferay-frontend:screen-navigation:screenNavigationEntries");
 %>
 
-<c:if test="<%= screenNavigationCategories.size() > 1 %>">
+<c:if test="<%= (screenNavigationCategories.size() > 1) %>">
 	<aui:nav-bar markupView="lexicon">
 		<aui:nav cssClass="navbar-nav">
 
@@ -52,7 +49,7 @@ List<ScreenNavigationEntry> screenNavigationEntries = (List<ScreenNavigationEntr
 <div class="container">
 	<div class="row">
 		<c:if test="<%= screenNavigationEntries.size() > 1 %>">
-			<div class="<%= navCssClass %>">
+			<div class="col-md-3">
 				<ul class="main-content-nav nav nav-nested">
 
 					<%
@@ -75,7 +72,7 @@ List<ScreenNavigationEntry> screenNavigationEntries = (List<ScreenNavigationEntr
 			</div>
 		</c:if>
 
-		<div class="<%= (screenNavigationEntries.size() > 1) ? containerCssClass : fullContainerCssClass %>">
+		<div class="<%= (screenNavigationEntries.size() > 1) ? "col-md-9" : "col-md-12" %>">
 
 			<%
 			selectedScreenNavigationEntry.render(request, response);

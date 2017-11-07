@@ -52,13 +52,7 @@ public class VarPoshiElement extends BasePoshiElement {
 		if (valueAttributeName == null) {
 			for (Node node : Dom4JUtil.toNodeList(content())) {
 				if (node instanceof CDATA) {
-					StringBuilder sb = new StringBuilder();
-
-					sb.append("escapeText(\"");
-					sb.append(node.getText());
-					sb.append("\")");
-
-					return sb.toString();
+					return node.getText();
 				}
 			}
 		}
@@ -72,15 +66,7 @@ public class VarPoshiElement extends BasePoshiElement {
 
 		addAttribute("name", name);
 
-		String quotedValue = getValueFromAssignment(readableSyntax);
-
-		String value = getQuotedContent(quotedValue);
-
-		if (quotedValue.startsWith("escapeText(")) {
-			addCDATA(value);
-
-			return;
-		}
+		String value = getQuotedContent(readableSyntax);
 
 		if (value.contains("Util.") || value.startsWith("selenium.")) {
 			if (value.startsWith("selenium.")) {
@@ -91,6 +77,12 @@ public class VarPoshiElement extends BasePoshiElement {
 			}
 
 			addAttribute("method", value);
+
+			return;
+		}
+
+		if (value.contains("\n")) {
+			addCDATA(value);
 
 			return;
 		}
@@ -117,7 +109,7 @@ public class VarPoshiElement extends BasePoshiElement {
 
 		sb.append(name);
 
-		sb.append(" = ");
+		sb.append(" = \"");
 
 		String value = getVarValue();
 
@@ -132,11 +124,9 @@ public class VarPoshiElement extends BasePoshiElement {
 			}
 		}
 
-		if (!value.startsWith("escapeText(")) {
-			value = quoteContent(value);
-		}
-
 		sb.append(value);
+
+		sb.append("\"");
 
 		if (!parentElementName.equals("execute")) {
 			sb.append(";");

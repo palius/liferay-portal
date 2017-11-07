@@ -19,12 +19,8 @@ import com.liferay.knowledge.base.exception.KBArticleImportException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.zip.ZipReader;
-
-import java.io.File;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -107,8 +103,7 @@ public class KBArchiveFactory {
 	private static final class FileImpl implements KBArchive.File {
 
 		public FileImpl(String name, ZipReader zipReader) {
-			_name = StringUtil.replace(
-				name, File.separatorChar, CharPool.SLASH);
+			_name = name;
 			_zipReader = zipReader;
 		}
 
@@ -133,8 +128,7 @@ public class KBArchiveFactory {
 			String name, KBArchive.Folder parentFolder,
 			KBArchive.File introFile, Collection<KBArchive.File> files) {
 
-			_name = StringUtil.replace(
-				name, File.separatorChar, CharPool.SLASH);
+			_name = name;
 			_parentFolder = parentFolder;
 			_introFile = introFile;
 			_files = files;

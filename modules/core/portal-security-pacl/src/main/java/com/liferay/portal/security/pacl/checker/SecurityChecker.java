@@ -16,7 +16,6 @@ package com.liferay.portal.security.pacl.checker;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.security.pacl.Reflection;
 
 import java.security.Permission;
@@ -55,9 +54,8 @@ public class SecurityChecker extends BaseChecker {
 
 			logSecurityException(
 				_log,
-				StringBundler.concat(
-					"Attempted to ", permission.getName(), " on ",
-					permission.getActions()));
+				"Attempted to " + permission.getName() + " on " +
+					permission.getActions());
 
 			return false;
 		}

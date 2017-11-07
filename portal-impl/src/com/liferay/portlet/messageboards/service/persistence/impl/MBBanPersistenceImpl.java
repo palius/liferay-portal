@@ -72,11 +72,8 @@ import java.util.Set;
  * @author Brian Wing Shun Chan
  * @see MBBanPersistence
  * @see com.liferay.message.boards.kernel.service.persistence.MBBanUtil
- * @deprecated As of 7.0.0, replaced by {@link
-            com.liferay.message.boards.model.impl.MBBanImpl}
  * @generated
  */
-@Deprecated
 @ProviderType
 public class MBBanPersistenceImpl extends BasePersistenceImpl<MBBan>
 	implements MBBanPersistence {

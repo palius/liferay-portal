@@ -14,7 +14,6 @@
 
 package com.liferay.portal.util;
 
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.MimeTypes;
 
 import java.io.InputStream;
@@ -31,10 +30,6 @@ public class MimeTypesImplTest {
 
 	@Before
 	public void setUp() {
-		FileUtil fileUtil = new FileUtil();
-
-		fileUtil.setFile(new FileImpl());
-
 		MimeTypesImpl mimeTypesImpl = new MimeTypesImpl();
 
 		mimeTypesImpl.afterPropertiesSet();
@@ -89,17 +84,6 @@ public class MimeTypesImplTest {
 
 		String contentTypeStream = getContentType("test.jpg", true);
 		String contentTypeName = getContentType("test.jpg", false);
-
-		Assert.assertEquals(validContentType, contentTypeStream);
-		Assert.assertEquals(validContentType, contentTypeName);
-	}
-
-	@Test
-	public void testLar() throws Exception {
-		String validContentType = "application/zip";
-
-		String contentTypeStream = getContentType("test.lar", true);
-		String contentTypeName = getContentType("test.lar", false);
 
 		Assert.assertEquals(validContentType, contentTypeStream);
 		Assert.assertEquals(validContentType, contentTypeName);

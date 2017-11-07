@@ -52,14 +52,6 @@ public class Dom4JUtil {
 				continue;
 			}
 
-			if (item instanceof Element[]) {
-				for (Element itemElement : (Element[])item) {
-					element.add(itemElement);
-				}
-
-				continue;
-			}
-
 			if (item instanceof String) {
 				element.addText((String)item);
 
@@ -107,9 +99,11 @@ public class Dom4JUtil {
 
 		Element anchorElement = null;
 
-		anchorElement = getNewElement("a", parentElement, items);
+		anchorElement = getNewElement("a", parentElement);
 
 		anchorElement.addAttribute("href", href);
+
+		addToElement(anchorElement, items);
 
 		return anchorElement;
 	}

@@ -30,12 +30,7 @@ import org.json.JSONObject;
 public class JenkinsMaster implements Comparable<JenkinsMaster> {
 
 	public JenkinsMaster(String masterName) {
-		if (masterName.contains(".")) {
-			_masterName = masterName.substring(0, masterName.indexOf("."));
-		}
-		else {
-			_masterName = masterName;
-		}
+		_masterName = masterName;
 
 		try {
 			Properties properties =
@@ -105,11 +100,11 @@ public class JenkinsMaster implements Comparable<JenkinsMaster> {
 		return availableSlavesCount;
 	}
 
-	public String getName() {
+	public String getMasterName() {
 		return _masterName;
 	}
 
-	public String getURL() {
+	public String getMasterURL() {
 		return _masterURL;
 	}
 
