@@ -222,3 +222,14 @@
 		</ul>
 	</div>
 </aui:fieldset>
+
+<%
+	Map<String, Object> context = new HashMap<>();
+	context.put("id", exportImportConfigurationId+"Cnst");
+%>
+
+<soy:template-renderer
+	context="<%= context %>"
+	module="staging-metal-web/js/StagingRest.es"
+	templateNamespace="StagingRest.render"
+/>

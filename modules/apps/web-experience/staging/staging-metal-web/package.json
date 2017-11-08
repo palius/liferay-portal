@@ -1,6 +1,7 @@
 {
     "dependencies": {
         "metal": "^2.13.2",
+        "metal-ajax": "^3.1.0",
         "metal-component": "^2.13.2",
         "metal-soy": "^2.13.2",
         "metal-state": "^2.13.2"
