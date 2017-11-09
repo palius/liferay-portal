@@ -223,13 +223,14 @@
 	</div>
 </aui:fieldset>
 
-<%
-	Map<String, Object> context = new HashMap<>();
-	context.put("id", exportImportConfigurationId+"Cnst");
-%>
-
-<soy:template-renderer
-	context="<%= context %>"
-	module="staging-metal-web/js/StagingRest.es"
-	templateNamespace="StagingRest.render"
-/>
+<aui:script require="staging-metal-web/js/StagingRest">
+	stagingMetalWebJsStagingRest
+		.StagingRestGet("https://jsonplaceholder.typicode.com/posts/1")
+		.then(
+			xhrResponse => {
+				const response = JSON.parse(xhrResponse.response);
+				console.info(response);
+				if (document.querySelector(".badge .badge-info")) document.querySelector(".badge .badge-info").innerText = response.id;
+			}
+		);
+</aui:script>
