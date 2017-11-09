@@ -561,16 +561,20 @@ public class TopLevelBuild extends BaseBuild {
 			"h1", null, "Jenkins report for ",
 			Dom4JUtil.getNewAnchorElement(buildURL, buildURL));
 
-		JSONObject jobJSONObject = getBuildJSONObject();
-
 		Element subheadingElement = null;
 
-		try {
-			subheadingElement = Dom4JUtil.getNewElement(
-				"h2", null, jobJSONObject.getString("description"));
-		}
-		catch (JSONException jsone) {
-			jsone.printStackTrace();
+		JSONObject jobJSONObject = getBuildJSONObject();
+
+		String description = jobJSONObject.optString("description");
+
+		if (!description.isEmpty()) {
+			try {
+				subheadingElement = Dom4JUtil.getNewElement(
+					"h2", null, description);
+			}
+			catch (JSONException jsone) {
+				jsone.printStackTrace();
+			}
 		}
 
 		return Dom4JUtil.getNewElement(
@@ -994,7 +998,7 @@ public class TopLevelBuild extends BaseBuild {
 
 		if (!result.equals("SUCCESS")) {
 			if (isCompareToUpstream()) {
-				loadUpstreamJobFailuresJSONObject();
+				UpstreamFailureUtil.loadUpstreamJobFailuresJSONObject(this);
 			}
 
 			Dom4JUtil.addToElement(
@@ -1016,7 +1020,9 @@ public class TopLevelBuild extends BaseBuild {
 					downstreamBuild.getGitHubMessageElement();
 
 				if (failureElement != null) {
-					if (isBuildFailingInUpstreamJob(downstreamBuild)) {
+					if (UpstreamFailureUtil.isBuildFailingInUpstreamJob(
+							downstreamBuild)) {
+
 						upstreamJobFailureElements.add(failureElement);
 
 						continue;
@@ -1063,7 +1069,8 @@ public class TopLevelBuild extends BaseBuild {
 						Dom4JUtil.getNewElement(
 							"strong", null, "Failures in common with ",
 							acceptanceUpstreamJobLinkElement, " at ",
-							getUpstreamJobFailuresSHA(), ":")));
+							UpstreamFailureUtil.getUpstreamJobFailuresSHA(),
+							":")));
 
 				int remainingFailureCount =
 					maxFailureCount - failureElements.size();
