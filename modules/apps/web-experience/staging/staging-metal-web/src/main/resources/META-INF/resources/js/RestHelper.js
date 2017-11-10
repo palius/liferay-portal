@@ -1,4 +1,4 @@
-import Ajax from 'metal-ajax';
+import Ajax from "metal-ajax";
 
 class RestHelper {
     /**

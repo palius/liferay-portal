@@ -1,0 +1,46 @@
+{namespace PortletList}
+
+/**
+ * This renders the main element.
+ */
+{template .render}
+    {@param showPortletDataInput: string}
+    {@param disableInputs: string}
+    {@param name: string}
+    {@param portletTitle: string}
+	{@param exportModelCount: string}
+	{@param modelDeletionCount: string}
+
+
+    <li class="tree-item">
+        <label>
+            <input
+                type="checkbox"
+                {if $showPortletDataInput == 'true'}
+                    checked="true"
+                {/if}
+                {if $disableInputs == 'true'}
+                    disabled="true"
+                {/if}
+                name="{$name}"
+                data-onclick="onClick"
+            />
+            {$portletTitle}
+            {call PortletList.badge}
+                {param exportModelCount: $exportModelCount /}
+                {param modelDeletionCount: $modelDeletionCount /}
+            {/call}
+        </label>
+    </li>
+{/template}
+
+/**
+ * This renders the badge,
+ */
+{template .badge}
+	{@param exportModelCount: string}
+	{@param modelDeletionCount: string}
+
+    <span class="badge badge-info">{$exportModelCount}</span>
+    <span class="badge badge-warning deletions">{$modelDeletionCount}</span>
+{/template}

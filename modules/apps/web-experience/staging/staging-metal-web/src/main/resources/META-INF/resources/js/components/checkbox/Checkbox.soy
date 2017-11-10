@@ -1,0 +1,20 @@
+{namespace Checkbox}
+
+/**
+ * This renders a checkbox.
+ */
+{template .render}
+    {@param showPortletDataInput: string}
+    {@param disableInputs: string}
+    {@param name: string}
+    {@param portletTitle: string}
+    <label>
+        <input
+            type="checkbox"
+            checked="{$showPortletDataInput}"
+            disabled="{$disableInputs}"
+            name="{$name}"
+        />
+        {$portletTitle}
+    </label>
+{/template}

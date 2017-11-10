@@ -77,7 +77,21 @@
 		}
 
 		boolean showPortletDataInput = MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.PORTLET_DATA + StringPool.UNDERLINE + portlet.getPortletId(), portletDataHandler.isPublishToLiveByDefault()) || MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.PORTLET_DATA_ALL);
+
+		Map<String, Object> context = new HashMap<>();
+		context.put("showPortletDataInput", Boolean.toString(showPortletDataInput));
+		context.put("disableInputs", Boolean.toString(disableInputs));
+		context.put("name", PortletDataHandlerKeys.PORTLET_DATA + StringPool.UNDERLINE + portlet.getPortletId());
+		context.put("portletTitle", portletTitle);
+		context.put("exportModelCount", exportModelCount > 0 ? exportModelCount : StringPool.BLANK);
+		context.put("modelDeletionCount", modelDeletionCount > 0 ? (modelDeletionCount + StringPool.SPACE + LanguageUtil.get(request, "deletions")) : StringPool.BLANK);
 	%>
+
+	<soy:template-renderer
+		context="<%= context %>"
+		module="staging-metal-web/js/PortletList/PortletList"
+		templateNamespace="PortletList.render"
+	/>
 
 		<li class="tree-item">
 			<liferay-util:buffer var="badgeHTML">
