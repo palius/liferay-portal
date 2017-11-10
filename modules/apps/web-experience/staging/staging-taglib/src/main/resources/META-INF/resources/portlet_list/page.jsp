@@ -223,14 +223,16 @@
 	</div>
 </aui:fieldset>
 
-<aui:script require="staging-metal-web/js/StagingRest">
-	stagingMetalWebJsStagingRest
-		.StagingRestGet("https://jsonplaceholder.typicode.com/posts/1")
-		.then(
-			xhrResponse => {
-				const response = JSON.parse(xhrResponse.response);
-				console.info(response);
-				if (document.querySelector(".badge .badge-info")) document.querySelector(".badge .badge-info").innerText = response.id;
-			}
-		);
+<aui:script require="staging-metal-web/js/RestHelper">
+	function calllBack(xhrResponse) {
+		const response = JSON.parse(xhrResponse.response);
+		console.info(response);
+		if (document.querySelector(".badge .badge-info")) document.querySelector(".badge .badge-info").innerText = response.id;
+	}
+	
+	stagingMetalWebJsRestHelper
+		.getRequest("https://jsonplaceholder.typicode.com/posts/1", {opt_callback: calllBack});
+
+	stagingMetalWebJsRestHelper
+		.request("https://jsonplaceholder.typicode.com/posts/1", "get", {opt_callback: calllBack});
 </aui:script>
