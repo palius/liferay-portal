@@ -89,8 +89,8 @@
 
 	<soy:template-renderer
 		context="<%= context %>"
-		module="staging-metal-web/js/PortletList/PortletList"
-		templateNamespace="PortletList.render"
+		module="staging-metal-web/js/StagedPortletDisplay/StagedPortletDisplay"
+		templateNamespace="StagedPortletDisplay.render"
 	/>
 
 		<li class="tree-item">
