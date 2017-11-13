@@ -27,13 +27,12 @@ import java.util.stream.Stream;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * Adds Vulcan the ability to represent single models in HAL format.
+ * Represents single models in <a
+ * href="http://stateless.co/hal_specification.html">HAL </a> format.
  *
  * @author Alejandro Hernández
  * @author Carlos Sierra Andrés
  * @author Jorge Ferrer
- * @see    <a href="http://stateless.co/hal_specification.html">HAL</a>
- * @review
  */
 @Component(
 	immediate = true,
@@ -164,19 +163,31 @@ public class HALSingleModelMessageMapper<T>
 
 			List<String> middleList = middleStream.collect(Collectors.toList());
 
-			String prelast = middleList.remove(middleList.size() - 1);
+			if (!middleList.isEmpty()) {
+				String prelast = middleList.remove(middleList.size() - 1);
 
-			String[] middle = middleList.toArray(new String[middleList.size()]);
+				String[] middle = middleList.toArray(
+					new String[middleList.size()]);
 
-			jsonObjectBuilder.field(
-				"_embedded"
-			).nestedSuffixedField(
-				"_embedded", head, middle
-			).nestedField(
-				prelast, "_links", optional.get(), "href"
-			).stringValue(
-				url
-			);
+				jsonObjectBuilder.field(
+					"_embedded"
+				).nestedSuffixedField(
+					"_embedded", head, middle
+				).nestedField(
+					prelast, "_links", optional.get(), "href"
+				).stringValue(
+					url
+				);
+			}
+			else {
+				jsonObjectBuilder.field(
+					"_embedded"
+				).nestedField(
+					head, "_links", optional.get(), "href"
+				).stringValue(
+					url
+				);
+			}
 		}
 	}
 

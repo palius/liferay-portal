@@ -20,29 +20,25 @@ import com.liferay.portal.kernel.model.ClassedModel;
 import com.liferay.vulcan.resource.identifier.Identifier;
 
 /**
- * Instances of this identifier represents an identifier for aggregate rating
- * entities.
+ * Represents an identifier for entities in an aggregate rating.
  *
  * <p>
- * This identifier should only be used to identify {@link
- * com.liferay.vulcan.sample.liferay.portal.rating.AggregateRating} single
- * items.
+ * This identifier should only be used to identify single items in {@link
+ * com.liferay.vulcan.sample.liferay.portal.rating.AggregateRating}.
  * </p>
  *
  * @author Alejandro Hernández
- * @review
  */
 @ProviderType
 public interface AggregateRatingIdentifier extends Identifier {
 
 	/**
-	 * Returns a new {@code AggregateRatingIdentifier} from a combination of
-	 * className/classPK.
+	 * Creates and returns a new aggregate rating identifier from a class name
+	 * and class PK.
 	 *
-	 * @param  className the className of the identifier.
-	 * @param  classPK the classPK of the identifier.
-	 * @return the {@code AggregateRatingIdentifier}.
-	 * @review
+	 * @param  className the class name
+	 * @param  classPK the class PK
+	 * @return the new aggregate rating identifier
 	 */
 	public static AggregateRatingIdentifier create(
 		String className, long classPK) {
@@ -63,12 +59,11 @@ public interface AggregateRatingIdentifier extends Identifier {
 	}
 
 	/**
-	 * Returns a new {@code AggregateRatingIdentifier} created from a model
-	 * which must be a {@link ClassedModel};
+	 * Creates and returns a new aggregate rating identifier from a {@code
+	 * ClassedModel}.
 	 *
-	 * @param  t a {@link ClassedModel} model.
-	 * @return the {@code AggregateRatingIdentifier}.
-	 * @review
+	 * @param  t the {@code ClassedModel}
+	 * @return the new aggregate rating identifier
 	 */
 	public static <T extends ClassedModel> AggregateRatingIdentifier create(
 		T t) {
@@ -77,18 +72,16 @@ public interface AggregateRatingIdentifier extends Identifier {
 	}
 
 	/**
-	 * Returns the class name.
+	 * Returns the aggregate rating identifier's class name.
 	 *
-	 * @return the class name.
-	 * @review
+	 * @return the aggregate rating identifier's class name
 	 */
 	public String getClassName();
 
 	/**
-	 * Returns the class PK.
+	 * Returns the aggregate rating identifier's class PK.
 	 *
-	 * @return the class PK.
-	 * @review
+	 * @return the aggregate rating identifier's class PK
 	 */
 	public long getClassPK();
 
