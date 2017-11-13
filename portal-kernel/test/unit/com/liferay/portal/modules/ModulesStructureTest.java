@@ -16,8 +16,9 @@ package com.liferay.portal.modules;
 
 import aQute.bnd.version.Version;
 
+import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
-import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -97,7 +98,9 @@ public class ModulesStructureTest {
 
 					String dirName = String.valueOf(dirPath.getFileName());
 
-					if (dirName.charAt(0) == '.') {
+					if ((dirName.charAt(0) == '.') ||
+						dirName.equals("node_modules")) {
+
 						return FileVisitResult.SKIP_SUBTREE;
 					}
 
@@ -123,14 +126,22 @@ public class ModulesStructureTest {
 
 						Assert.assertFalse(
 							"Forbidden " + gradlePropertiesPath,
-							Files.exists(gradlePropertiesPath));
+							Files.deleteIfExists(gradlePropertiesPath));
 
-						Path settinsGradlePath = dirPath.resolve(
+						Path settingsGradlePath = dirPath.resolve(
 							"settings.gradle");
 
 						Assert.assertFalse(
-							"Forbidden " + settinsGradlePath,
-							Files.deleteIfExists(settinsGradlePath));
+							"Forbidden " + settingsGradlePath,
+							Files.deleteIfExists(settingsGradlePath));
+
+						Assert.assertFalse(
+							"Forbidden " + buildGradlePath,
+							Files.exists(buildGradlePath) &&
+							ModulesStructureTestUtil.contains(
+								buildGradlePath,
+								"apply plugin: " +
+									"\"com.liferay.defaults.plugin\""));
 					}
 
 					if (Files.exists(dirPath.resolve("bnd.bnd"))) {
@@ -139,11 +150,11 @@ public class ModulesStructureTest {
 							Files.exists(buildGradlePath));
 						Assert.assertFalse(
 							"Forbidden " + buildXMLPath,
-							Files.exists(buildXMLPath));
+							Files.deleteIfExists(buildXMLPath));
 
 						Assert.assertFalse(
 							"Forbidden " + ivyXmlPath,
-							Files.exists(ivyXmlPath));
+							Files.deleteIfExists(ivyXmlPath));
 
 						return FileVisitResult.SKIP_SUBTREE;
 					}
@@ -650,6 +661,7 @@ public class ModulesStructureTest {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	private boolean _isInGitRepoReadOnly(Path dirPath) throws IOException {
 		Path gitRepoPath = _getGitRepoPath(dirPath);
 
@@ -657,9 +669,7 @@ public class ModulesStructureTest {
 			return false;
 		}
 
-		String gitRepo = ModulesStructureTestUtil.read(gitRepoPath);
-
-		if (gitRepo.contains("mode = pull")) {
+		if (ModulesStructureTestUtil.contains(gitRepoPath, "mode = pull")) {
 			return true;
 		}
 
@@ -677,10 +687,6 @@ public class ModulesStructureTest {
 	}
 
 	private void _testAntPluginIgnoreFiles(Path dirPath) throws IOException {
-		if (_isInPrivateModulesDir(dirPath)) {
-			return;
-		}
-
 		if (_getGitRepoPath(dirPath) == null) {
 			Path parentDirPath = dirPath.getParent();
 
@@ -770,14 +776,11 @@ public class ModulesStructureTest {
 		Path gradlePropertiesPath = dirPath.resolve("gradle.properties");
 		Path settingsGradlePath = dirPath.resolve("settings.gradle");
 
-		if (!_isInGitRepoReadOnly(dirPath)) {
-			String buildGradle = ModulesStructureTestUtil.read(buildGradlePath);
+		String buildGradle = ModulesStructureTestUtil.read(buildGradlePath);
 
-			Assert.assertEquals(
-				"Incorrect " + buildGradlePath,
-				_getGitRepoBuildGradle(dirPath, buildGradleTemplate),
-				buildGradle);
-		}
+		Assert.assertEquals(
+			"Incorrect " + buildGradlePath,
+			_getGitRepoBuildGradle(dirPath, buildGradleTemplate), buildGradle);
 
 		String gradleProperties = ModulesStructureTestUtil.read(
 			gradlePropertiesPath);
@@ -954,10 +957,6 @@ public class ModulesStructureTest {
 			return;
 		}
 
-		if (_isInGitRepoReadOnly(dirPath) || _isInPrivateModulesDir(dirPath)) {
-			return;
-		}
-
 		Path gitIgnorePath = dirPath.resolve(".gitignore");
 
 		String gitIgnore = ModulesStructureTestUtil.read(gitIgnorePath);
@@ -1029,35 +1028,31 @@ public class ModulesStructureTest {
 
 		Map<String, Boolean> allowedConfigurationsMap = new TreeMap<>();
 
-		if (!_isInGitRepoReadOnly(dirPath)) {
-			boolean hasSrcMainDir = Files.exists(dirPath.resolve("src/main"));
-			boolean hasSrcTestDir = Files.exists(dirPath.resolve("src/test"));
-			boolean hasSrcTestIntegrationDir = Files.exists(
-				dirPath.resolve("src/testIntegration"));
+		boolean hasSrcMainDir = Files.exists(dirPath.resolve("src/main"));
+		boolean hasSrcTestDir = Files.exists(dirPath.resolve("src/test"));
+		boolean hasSrcTestIntegrationDir = Files.exists(
+			dirPath.resolve("src/testIntegration"));
 
-			boolean mainConfigurationsAllowed = false;
+		boolean mainConfigurationsAllowed = false;
 
-			if (hasSrcMainDir ||
-				(!hasSrcMainDir && !hasSrcTestDir &&
-				 !hasSrcTestIntegrationDir) ||
-				content.contains("copyLibs {\n\tenabled = true")) {
+		if (hasSrcMainDir ||
+			(!hasSrcMainDir && !hasSrcTestDir && !hasSrcTestIntegrationDir) ||
+			content.contains("copyLibs {\n\tenabled = true")) {
 
-				mainConfigurationsAllowed = true;
-			}
-
-			allowedConfigurationsMap.put("compile", mainConfigurationsAllowed);
-			allowedConfigurationsMap.put(
-				"compileOnly", mainConfigurationsAllowed);
-			allowedConfigurationsMap.put("provided", mainConfigurationsAllowed);
-
-			allowedConfigurationsMap.put("testCompile", hasSrcTestDir);
-			allowedConfigurationsMap.put("testRuntime", hasSrcTestDir);
-
-			allowedConfigurationsMap.put(
-				"testIntegrationCompile", hasSrcTestIntegrationDir);
-			allowedConfigurationsMap.put(
-				"testIntegrationRuntime", hasSrcTestIntegrationDir);
+			mainConfigurationsAllowed = true;
 		}
+
+		allowedConfigurationsMap.put("compile", mainConfigurationsAllowed);
+		allowedConfigurationsMap.put("compileOnly", mainConfigurationsAllowed);
+		allowedConfigurationsMap.put("provided", mainConfigurationsAllowed);
+
+		allowedConfigurationsMap.put("testCompile", hasSrcTestDir);
+		allowedConfigurationsMap.put("testRuntime", hasSrcTestDir);
+
+		allowedConfigurationsMap.put(
+			"testIntegrationCompile", hasSrcTestIntegrationDir);
+		allowedConfigurationsMap.put(
+			"testIntegrationRuntime", hasSrcTestIntegrationDir);
 
 		for (GradleDependency gradleDependency : gradleDependencies) {
 			Boolean allowed = allowedConfigurationsMap.get(
@@ -1184,7 +1179,10 @@ public class ModulesStructureTest {
 	private static final Pattern _gitRepoGradleProjectGroupPattern =
 		Pattern.compile("com\\.liferay(?:\\.[a-z]+)+");
 	private static final Set<String> _gitRepoGradlePropertiesKeys =
-		Collections.singleton("com.liferay.source.formatter.version");
+		SetUtil.fromList(
+			Arrays.asList(
+				"com.liferay.portal.tools.service.builder.version",
+				"com.liferay.source.formatter.version"));
 	private static final List<String> _gradleConfigurations = Arrays.asList(
 		"compileOnly", "provided", "compile", "runtime", "testCompile",
 		"testRuntime", "testIntegrationCompile", "testIntegrationRuntime");

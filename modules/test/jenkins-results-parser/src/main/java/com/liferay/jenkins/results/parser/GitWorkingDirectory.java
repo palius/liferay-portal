@@ -217,6 +217,21 @@ public class GitWorkingDirectory {
 		}
 	}
 
+	public void cherryPick(Commit commit) {
+		String cherryPickCommand = JenkinsResultsParserUtil.combine(
+			"git cherry-pick " + commit.getSHA());
+
+		ExecutionResult executionResult = executeBashCommands(
+			cherryPickCommand);
+
+		if (executionResult.getExitValue() != 0) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to cherry pick commit ", commit.getSHA(), "\n",
+					executionResult.getStandardError()));
+		}
+	}
+
 	public void clean() {
 		clean(null);
 	}
@@ -358,10 +373,14 @@ public class GitWorkingDirectory {
 		}
 	}
 
-	public void fetch(Branch localBranch, Branch remoteBranch) {
+	public void fetch(Branch localBranch, boolean noTags, Branch remoteBranch) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("git fetch --progress -v -f ");
+
+		if (noTags) {
+			sb.append(" --no-tags ");
+		}
 
 		Remote remote = remoteBranch.getRemote();
 
@@ -395,6 +414,10 @@ public class GitWorkingDirectory {
 			"Fetch completed in " +
 				JenkinsResultsParserUtil.toDurationString(
 					System.currentTimeMillis() - start));
+	}
+
+	public void fetch(Branch localBranch, Branch remoteBranch) {
+		fetch(localBranch, true, remoteBranch);
 	}
 
 	public void fetch(Remote remote) {
@@ -703,6 +726,38 @@ public class GitWorkingDirectory {
 		return _workingDirectory;
 	}
 
+	public String log(int num) {
+		return log(num, null);
+	}
+
+	public String log(int num, File file) {
+		for (int i = 0; i < 5; i++) {
+			try {
+				String gitLog = _log(num, file, "%H %s");
+
+				gitLog = gitLog.replaceAll(
+					"Finished executing Bash commands.", "");
+
+				String[] gitLogItems = gitLog.split("\n");
+
+				for (String gitLogItem : gitLogItems) {
+					if (!gitLogItem.matches("([0-9a-f]{40}) (.*)")) {
+						throw new RuntimeException("Unable to run: git log");
+					}
+				}
+
+				return gitLog;
+			}
+			catch (RuntimeException re) {
+				re.printStackTrace();
+
+				JenkinsResultsParserUtil.sleep(1000);
+			}
+		}
+
+		throw new RuntimeException("Unable to run: git log");
+	}
+
 	public boolean pushToRemote(boolean force, Branch remoteBranch) {
 		Branch currentBranch = getCurrentBranch();
 
@@ -857,6 +912,30 @@ public class GitWorkingDirectory {
 		if (result.getExitValue() != 0) {
 			throw new RuntimeException("Unable to stage file " + fileName);
 		}
+	}
+
+	public String status() {
+		for (int i = 0; i < 5; i++) {
+			try {
+				String gitStatus = _status();
+
+				gitStatus = gitStatus.replaceAll(
+					"Finished executing Bash commands.", "");
+
+				if (!gitStatus.startsWith("On branch")) {
+					throw new RuntimeException("Unable to run: git status");
+				}
+
+				return gitStatus;
+			}
+			catch (RuntimeException re) {
+				re.printStackTrace();
+
+				JenkinsResultsParserUtil.sleep(1000);
+			}
+		}
+
+		throw new RuntimeException("Unable to run: git status");
 	}
 
 	public static class Branch {
@@ -1330,24 +1409,67 @@ public class GitWorkingDirectory {
 
 	};
 
+	private static List<String> _getBuildPropertyAsList(String key) {
+		try {
+			return JenkinsResultsParserUtil.getBuildPropertyAsList(key);
+		}
+		catch (IOException ioe) {
+			throw new RuntimeException(
+				"Unable to get build property " + key, ioe);
+		}
+	}
+
+	private String _log(int num, File file, String format) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("git log -n ");
+		sb.append(num);
+		sb.append(" --pretty=format:'");
+		sb.append(format);
+		sb.append("'");
+
+		if (file != null) {
+			sb.append(" ");
+
+			try {
+				sb.append(file.getCanonicalPath());
+			}
+			catch (IOException ioe) {
+				throw new RuntimeException(ioe);
+			}
+		}
+
+		ExecutionResult result = executeBashCommands(sb.toString());
+
+		if (result.getExitValue() != 0) {
+			throw new RuntimeException("Unable to run: git log");
+		}
+
+		return result.getStandardOut();
+	}
+
+	private String _status() {
+		String command = "git status";
+
+		ExecutionResult result = executeBashCommands(command);
+
+		if (result.getExitValue() != 0) {
+			throw new RuntimeException("Unable to run: git status");
+		}
+
+		return result.getStandardOut();
+	}
+
 	private static final Pattern _gitDirectoryPathPattern = Pattern.compile(
 		"gitdir\\: (.*\\.git)");
 	private static final Pattern _gitLsRemotePattern = Pattern.compile(
 		"(?<sha>[^\\s]{40}+)[\\s]+refs/heads/(?<name>[^\\s]+)");
 	private static final List<String> _privateOnlyRepositoryNames =
-		Arrays.asList(
-			new String[] {
-				"liferay-jenkins-ee", "liferay-jenkins-tools-private",
-				"liferay-plugins-ee", "liferay-portal-ee",
-				"liferay-qa-portal-legacy-ee", "liferay-qa-websites-ee",
-				"liferay-release-tool-ee"
-			});
+		_getBuildPropertyAsList(
+			"git.working.directory.private.only.repository.names");
 	private static final List<String> _publicOnlyRepositoryNames =
-		Arrays.asList(
-			new String[] {
-				"liferay-binaries-cache-2017", "liferay-blade-samples",
-				"liferay-plugins", "liferay-portal", "portals-pluto"
-			});
+		_getBuildPropertyAsList(
+			"git.working.directory.public.only.repository.names");
 
 	private File _gitDirectory;
 	private final String _repositoryName;

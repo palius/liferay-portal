@@ -1521,12 +1521,39 @@ war.path=${app.server.weblogic.portal.dir}/</echo>
 							value="-Dcom.sun.management.jmxremote.port=${jmx.remote.port.overwrite}"
 						/>
 
-						<replaceregexp
-							file="${test.app.server.dir}/conf/server.xml"
-							flags="g"
-							match="=&quot;8(\d\d\d)&quot;"
-							replace="=&quot;${test.app.server.leading.port.number}\1&quot;"
-						/>
+						<if>
+							<or>
+								<equals arg1="${app.server.type}" arg2="jboss" />
+								<equals arg1="${app.server.type}" arg2="wildfly" />
+							</or>
+							<then>
+								<replaceregexp
+									file="${test.app.server.dir}/standalone/configuration/standalone.xml"
+									match="offset:0"
+									replace="offset:${app.server.bundle.index}000"
+								/>
+							</then>
+							<elseif>
+								<equals arg1="${app.server.type}" arg2="tomcat" />
+								<then>
+									<replaceregexp
+										file="${test.app.server.dir}/conf/server.xml"
+										flags="g"
+										match="=&quot;8(\d\d\d)&quot;"
+										replace="=&quot;${test.app.server.leading.port.number}\1&quot;"
+									/>
+								</then>
+							</elseif>
+							<elseif>
+								<equals arg1="${app.server.type}" arg2="weblogic" />
+								<then>
+									<replace file="${test.app.server.dir}/domains/liferay/config/config.xml">
+										<replacetoken><![CDATA[<listen-port>8080</listen-port>]]></replacetoken>
+										<replacevalue><![CDATA[<listen-port>${test.app.server.leading.port.number}080</listen-port>]]></replacevalue>
+									</replace>
+								</then>
+							</elseif>
+						</if>
 
 						<replace
 							file="${test.app.server.classes.portal.dir}/portal-ext.properties"
@@ -7126,6 +7153,7 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 		<antcall target="prepare-selenium-openid-properties" />
 		<antcall target="prepare-selenium-recaptcha-properties" />
 		<antcall target="prepare-selenium-required-properties" />
+		<antcall target="prepare-selenium-sharepoint-properties" />
 		<antcall target="prepare-selenium-testcase-properties" />
 
 		<if>
@@ -8012,6 +8040,107 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 			selenium.logger.enabled=${test.selenium.logger.enabled}
 			test.class.command.name=${test.class}
 		</echo>
+	</target>
+
+	<target name="prepare-selenium-sharepoint-properties">
+		<if>
+			<isset property="sharepoint.oauth.authorization.grant.endpoint" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					sharepoint.oauth.authorization.grant.endpoint=${sharepoint.oauth.authorization.grant.endpoint}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="sharepoint.oauth.authorization.token.endpoint" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					sharepoint.oauth.authorization.token.endpoint=${sharepoint.oauth.authorization.token.endpoint}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="sharepoint.oauth.client.id" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					sharepoint.oauth.client.id=${sharepoint.oauth.client.id}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="sharepoint.oauth.client.secret" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					sharepoint.oauth.client.secret=${sharepoint.oauth.client.secret}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="sharepoint.oauth.configuration.name" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					sharepoint.oauth.configuration.name=${sharepoint.oauth.configuration.name}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="sharepoint.oauth.configuration.resource" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					sharepoint.oauth.configuration.resource=${sharepoint.oauth.configuration.resource}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="sharepoint.oauth.configuration.scope" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					sharepoint.oauth.configuration.scope=${sharepoint.oauth.configuration.scope}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="sharepoint.oauth.site.domain" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					sharepoint.oauth.site.domain=${sharepoint.oauth.site.domain}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="sharepoint.oauth.tenant.id" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					sharepoint.oauth.tenant.id=${sharepoint.oauth.tenant.id}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="sharepoint.oauth.user.name" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					sharepoint.oauth.user.name=${sharepoint.oauth.user.name}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="sharepoint.oauth.user.password" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					sharepoint.oauth.user.password=${sharepoint.oauth.user.password}
+				</echo>
+			</then>
+		</if>
 	</target>
 
 	<target name="prepare-selenium-testcase-properties">
@@ -8920,6 +9049,22 @@ go</echo>
 
 		<loadfile property="copyright.content" srcFile="${project.dir}/copyright.txt" />
 
+		<if>
+			<available file="${project.dir}/git-commit-portal" />
+			<then>
+				<loadfile property="git.commit.portal.base.branch" srcFile="${project.dir}/git-commit-portal" />
+
+				<antelope:stringutil property="git.commit.portal.base.branch" string="${git.commit.portal.base.branch}">
+					<antelope:trim />
+				</antelope:stringutil>
+
+				<property name="git.commit.information" value="Commit: &lt;a href=&quot;https://github.com/liferay/liferay-portal/commit/${git.commit.portal.rev.parse}&quot; target=&quot;_blank&quot;&gt;${git.commit.portal.rev.parse}&lt;/a&gt;&lt;br /&gt;Base Branch Commit: &lt;a href=&quot;https://github.com/liferay/liferay-portal/commit/${git.commit.portal.base.branch}&quot; target=&quot;_blank&quot;&gt;${git.commit.portal.base.branch}&lt;/a&gt;&lt;br /&gt;Updated on: ${git.commit.portal.current.date}" />
+			</then>
+			<else>
+				<property name="git.commit.information" value="Commit: &lt;a href=&quot;https://github.com/liferay/liferay-portal/commit/${git.commit.portal.rev.parse}&quot; target=&quot;_blank&quot;&gt;${git.commit.portal.rev.parse}&lt;/a&gt;&lt;br /&gt;Updated on: ${git.commit.portal.current.date}" />
+			</else>
+		</if>
+
 		<echo file="${app.server.dir}/webapps/ROOT/html/common/themes/bottom-test.jsp"><![CDATA[<%--
 ${copyright.content}
 --%>
@@ -8933,7 +9078,7 @@ if (ppstate.equals("normal")) {
 %>
 
 	<div class="alert alert-info" id="currentHead" style="margin: 2em">
-		Commit <a href="https://github.com/liferay/liferay-portal/commit/${git.commit.portal.rev.parse}" target="_blank">${git.commit.portal.rev.parse} - ${git.commit.portal.current.date}</a>
+		${git.commit.information}
 	</div>
 
 <%
@@ -9554,16 +9699,64 @@ module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.pr
 			</then>
 		</if>
 
+		<get-testcase-property property.name="portal.ssl.enabled" />
+
+		<if>
+			<equals arg1="${portal.ssl.enabled}" arg2="true" />
+			<then>
+				<if>
+					<equals arg1="${app.server.type}" arg2="tomcat" />
+					<then>
+						<if>
+							<os family="unix" />
+							<then>
+								<exec dir="${app.server.parent.dir}" executable="/bin/bash">
+									<arg value="-c" />
+									<arg value="keytool -genkey -alias tomcat -dname CN=localhost -keyalg RSA -keypass liferay -storepass liferay -keystore keystore.jks" />
+								</exec>
+							</then>
+							<elseif>
+								<os family="windows" />
+								<then>
+									<exec dir="${app.server.parent.dir}" executable="cmd">
+										<arg value="/c" />
+										<arg value="keytool -genkey -alias tomcat -dname CN=localhost -keyalg RSA -keypass liferay -storepass liferay -keystore keystore.jks" />
+									</exec>
+								</then>
+							</elseif>
+						</if>
+
+						<replace
+							file="${app.server.dir}/conf/server.xml"
+							token="&lt;Service name=&quot;Catalina&quot;&gt;"
+							value="&lt;Service name=&quot;Catalina&quot;&gt;${line.separator}    &lt;Connector port=&quot;8443&quot; protocol=&quot;org.apache.coyote.http11.Http11Protocol&quot;${line.separator}           maxThreads=&quot;150&quot; SSLEnabled=&quot;true&quot; scheme=&quot;https&quot; secure=&quot;true&quot;${line.separator}           clientAuth=&quot;false&quot; sslProtocol=&quot;TLS&quot; keystoreFile=&quot;${app.server.parent.dir}/keystore.jks&quot; keystorePass=&quot;liferay&quot; /&gt;"
+						/>
+					</then>
+					<else>
+						<fail message="Enabling SSL for ${app.server.type} is not supported." />
+					</else>
+				</if>
+			</then>
+		</if>
+
 		<get-testcase-property property.name="web.xml.timeout" />
 
 		<if>
 			<isset property="web.xml.timeout" />
 			<then>
-				<replace
-					file="${app.server.dir}/webapps/ROOT/WEB-INF/web.xml"
-					token="&lt;session-timeout&gt;30&lt;/session-timeout&gt;"
-					value="&lt;session-timeout&gt;${web.xml.timeout}&lt;/session-timeout&gt;"
-				/>
+				<if>
+					<equals arg1="${app.server.type}" arg2="tomcat" />
+					<then>
+						<replace
+							file="${app.server.dir}/webapps/ROOT/WEB-INF/web.xml"
+							token="&lt;session-timeout&gt;30&lt;/session-timeout&gt;"
+							value="&lt;session-timeout&gt;${web.xml.timeout}&lt;/session-timeout&gt;"
+						/>
+					</then>
+					<else>
+						<fail message="Changing the session timeout for ${app.server.type} is not supported." />
+					</else>
+				</if>
 			</then>
 		</if>
 

@@ -18,6 +18,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
 import com.liferay.css.builder.internal.util.FileUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -145,8 +146,10 @@ public class CSSBuilder implements AutoCloseable {
 			_parseSassFile(fileName);
 
 			System.out.println(
-				"Parsed " + fileName + " in " +
-					(System.currentTimeMillis() - startTime) + "ms");
+				StringBundler.concat(
+					"Parsed ", fileName, " in ",
+					String.valueOf(System.currentTimeMillis() - startTime),
+					"ms"));
 		}
 	}
 
@@ -240,8 +243,9 @@ public class CSSBuilder implements AutoCloseable {
 		}
 		catch (Exception e) {
 			System.out.println(
-				"Unable to generate RTL version for " + fileName +
-					StringPool.COMMA_AND_SPACE + e.getMessage());
+				StringBundler.concat(
+					"Unable to generate RTL version for ", fileName,
+					StringPool.COMMA_AND_SPACE, e.getMessage()));
 		}
 
 		return rtlCss;
@@ -437,20 +441,35 @@ public class CSSBuilder implements AutoCloseable {
 
 		String outputFileName;
 
+		boolean absoluteOutputDir = false;
+		String outputFileDirName = _cssBuilderArgs.getOutputDirName();
+
+		if (FileUtil.isAbsolute(outputFileDirName)) {
+			absoluteOutputDir = true;
+			outputFileDirName = StringPool.BLANK;
+		}
+
 		if (rtl) {
 			String rtlFileName = CSSBuilderUtil.getRtlCustomFileName(fileName);
 
 			outputFileName = CSSBuilderUtil.getOutputFileName(
-				rtlFileName, _cssBuilderArgs.getOutputDirName(),
-				StringPool.BLANK);
+				rtlFileName, outputFileDirName, StringPool.BLANK);
 		}
 		else {
 			outputFileName = CSSBuilderUtil.getOutputFileName(
-				fileName, _cssBuilderArgs.getOutputDirName(), StringPool.BLANK);
+				fileName, outputFileDirName, StringPool.BLANK);
 		}
 
-		File outputFile = new File(
-			_cssBuilderArgs.getDocrootDir(), outputFileName);
+		File outputFile;
+
+		if (absoluteOutputDir) {
+			outputFile = new File(
+				_cssBuilderArgs.getOutputDirName(), outputFileName);
+		}
+		else {
+			outputFile = new File(
+				_cssBuilderArgs.getDocrootDir(), outputFileName);
+		}
 
 		FileUtil.write(outputFile, content);
 

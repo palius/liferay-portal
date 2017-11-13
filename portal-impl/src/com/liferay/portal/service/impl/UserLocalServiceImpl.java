@@ -110,6 +110,7 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Digester;
 import com.liferay.portal.kernel.util.DigesterUtil;
+import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -1922,8 +1923,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		// Message boards
 
-		mbBanLocalService.deleteBansByBanUserId(user.getUserId());
-		mbStatsUserLocalService.deleteStatsUsersByUserId(user.getUserId());
 		mbThreadFlagLocalService.deleteThreadFlagsByUserId(user.getUserId());
 
 		// Membership requests
@@ -3630,9 +3629,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			TicketConstants.TYPE_EMAIL_ADDRESS, emailAddress, null,
 			serviceContext);
 
-		String verifyEmailAddressURL =
-			serviceContext.getPortalURL() + serviceContext.getPathMain() +
-				"/portal/verify_email_address?ticketKey=" + ticket.getKey();
+		String verifyEmailAddressURL = StringBundler.concat(
+			serviceContext.getPortalURL(), serviceContext.getPathMain(),
+			"/portal/verify_email_address?ticketKey=", ticket.getKey());
 
 		long plid = serviceContext.getPlid();
 
@@ -5079,7 +5078,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		Group group = groupLocalService.getUserGroup(
 			user.getCompanyId(), userId);
 
-		group.setFriendlyURL(StringPool.SLASH + screenName);
+		group.setFriendlyURL(
+			FriendlyURLNormalizerUtil.normalize(StringPool.SLASH + screenName));
 
 		groupPersistence.update(group);
 
@@ -5382,7 +5382,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		Group group = groupLocalService.getUserGroup(
 			user.getCompanyId(), userId);
 
-		group.setFriendlyURL(StringPool.SLASH + screenName);
+		group.setFriendlyURL(
+			FriendlyURLNormalizerUtil.normalize(StringPool.SLASH + screenName));
 
 		groupPersistence.update(group);
 
@@ -6830,9 +6831,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		if ((user != null) && (user.getUserId() != userId)) {
 			throw new DuplicateGoogleUserIdException(
-				"New user " + userId + " conflicts with existing user " +
-					userId + " who is already associated with Google user ID " +
-						googleUserId);
+				StringBundler.concat(
+					"New user ", String.valueOf(userId),
+					" conflicts with existing user ", String.valueOf(userId),
+					" who is already associated with Google user ID ",
+					googleUserId));
 		}
 	}
 
@@ -6924,7 +6927,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				user.getUserId(), screenName);
 		}
 
-		String friendlyURL = StringPool.SLASH + screenName;
+		String friendlyURL = FriendlyURLNormalizerUtil.normalize(
+			StringPool.SLASH + screenName);
 
 		Group group = groupPersistence.fetchByC_F(companyId, friendlyURL);
 

@@ -646,6 +646,10 @@ public class SitesImpl implements Sites {
 		Map<String, String[]> parameterMap = getLayoutSetPrototypeParameters(
 			serviceContext);
 
+		parameterMap.put(
+			PortletDataHandlerKeys.PERFORM_DIRECT_BINARY_IMPORT,
+			new String[] {Boolean.FALSE.toString()});
+
 		Map<String, Serializable> exportLayoutSettingsMap =
 			ExportImportConfigurationSettingsMapFactory.
 				buildExportLayoutSettingsMap(
@@ -888,6 +892,10 @@ public class SitesImpl implements Sites {
 
 		Map<String, String[]> parameterMap = getLayoutSetPrototypeParameters(
 			serviceContext);
+
+		parameterMap.put(
+			PortletDataHandlerKeys.PERFORM_DIRECT_BINARY_IMPORT,
+			new String[] {Boolean.FALSE.toString()});
 
 		setLayoutSetPrototypeLinkEnabledParameter(
 			parameterMap, layoutSet, serviceContext);
@@ -1947,14 +1955,16 @@ public class SitesImpl implements Sites {
 
 				if (_log.isDebugEnabled()) {
 					_log.debug(
-						"Copied " + file.getAbsolutePath() + " to " +
-							cacheFile.getAbsolutePath());
+						StringBundler.concat(
+							"Copied ", file.getAbsolutePath(), " to ",
+							cacheFile.getAbsolutePath()));
 				}
 			}
 			catch (Exception e) {
 				_log.error(
-					"Unable to copy file " + file.getAbsolutePath() + " to " +
-						cacheFile.getAbsolutePath(),
+					StringBundler.concat(
+						"Unable to copy file ", file.getAbsolutePath(), " to ",
+						cacheFile.getAbsolutePath()),
 					e);
 			}
 		}

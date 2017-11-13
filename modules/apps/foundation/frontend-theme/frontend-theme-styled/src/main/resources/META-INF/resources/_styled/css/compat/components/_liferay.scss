@@ -48,11 +48,39 @@
 	}
 }
 
+// Modals
+
+.dialog-with-footer .button-holder.dialog-footer {
+	background-color: $modal-content-bg;
+}
+
+// Friendly URL
+
+.lfr-friendly-url-input-group.input-group {
+	.input-group-addon {
+		background-color: #E8E8EC;
+	}
+
+	.language-value {
+		border-radius: 0 0.25rem 0.25rem 0;
+		width: auto;
+	}
+}
+
 // Forms builder
+
+#settings .lfr-ddm-form-page {
+	margin-top: 0;
+}
+
+.autosave-bar .toolbar {
+	align-items: center;
+}
 
 .form-builder-sidebar {
 	.tab-content .tab-pane {
 		padding: 24px;
+		position: static;
 	}
 
 	.input-group-container {
