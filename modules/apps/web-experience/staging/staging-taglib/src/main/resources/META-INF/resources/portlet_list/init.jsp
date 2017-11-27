@@ -15,7 +15,10 @@
 --%>
 
 <%@ include file="/init.jsp" %><%@
-taglib uri="http://liferay.com/tld/soy" prefix="soy" %>
+taglib uri="http://liferay.com/tld/soy" prefix="soy" %><%@
+page import="com.liferay.portal.kernel.json.JSONArray" %><%@
+page import="com.liferay.portal.kernel.json.JSONObject" %><%@
+page import="com.liferay.portal.kernel.json.JSONFactoryUtil" %>
 
 <%
 boolean disableInputs = GetterUtil.getBoolean(request.getAttribute("liferay-staging:portlet-list:disableInputs"));

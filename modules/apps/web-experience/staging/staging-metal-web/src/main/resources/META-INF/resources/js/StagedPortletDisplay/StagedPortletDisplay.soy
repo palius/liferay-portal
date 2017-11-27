@@ -4,30 +4,44 @@
  * This renders the main element.
  */
 {template .render}
-    {@param showPortletDataInput: string}
-    {@param disableInputs: string}
-    {@param name: string}
-    {@param portletTitle: string}
-	{@param exportModelCount: string}
-	{@param modelDeletionCount: string}
-
+	{@param portletData: map<string, ?>}
 
     <li class="tree-item hide">
         <label>
-            <input
-                type="checkbox"
-                {if $showPortletDataInput == 'true'}
-                    checked="true"
-                {/if}
-                {if $disableInputs == 'true'}
-                    disabled="true"
-                {/if}
-                name="{$name}"
-                data-onclick="onClick"
-            />
-            {$portletTitle}
-            <span class="badge badge-info">{$exportModelCount}</span>
-            <span class="badge badge-warning deletions">{$modelDeletionCount}</span>
+            <input type="checkbox" {if $portletData['showPortletDataInput'] == 'true'}checked="true"{/if} {if $portletData['disableInputs'] == 'true'}disabled="true"{/if} name="{$portletData['mainInputName']}" />
+            {$portletData['portletTitle']}
+            <span class="badge badge-info">{$portletData['exportModelCountText']}</span>
+            <span class="badge badge-warning deletions">{$portletData['modelDeletionCountText']}</span>
         </label>
+
+        <div class="{($portletData['disableInputs'] == 'true' and $portletData['showPortletDataInput'] == 'true') ? 'hide' : ''}" id="{$portletData['portletNamespace']}content_{$portletData['portletId']}">
+            <ul class="lfr-tree list-unstyled">
+                <li class="tree-item">
+                    <fieldset class="fieldset portlet-data-section">
+                        <legend class="fieldset-legend">
+                            <span class="legend">{$portletData['portletTitle']}</span>
+                        </legend>
+
+                        <div class="lfr-ddm-field-group field-wrapper">
+                            <ul class="lfr-tree list-unstyled">
+                                {if $portletData['controlsData']}
+                                    {let $controlData = $portletData['controlsData']}{/let}
+                                    
+                                {/if}
+                            </ul>
+                        </div>
+                    </fieldset>
+                </li>
+            </ul>
+        </div>
+
+        <ul class="hide" id="{$portletData['portletNamespace']}showChangeContent_{$portletData['portletId']}">
+            <li>
+                <span class="selected-labels" id="{$portletData['portletNamespace']}selectedContent_{$portletData['portletId']}"></span>
+                <span {if $portletData['disableInputs'] == 'true'}class="hide"{/if}>
+                    <a class="content-link modify-link" data-portletid="{$portletData['portletId']}" data-portlettitle="{$portletData['portletTitle']}" href="javascript:;" id="contentLink_{$portletData['portletId']}" method="get">{$portletData['modifyLinkText']}</a>
+                </span>
+            </li>
+        </ul>
     </li>
 {/template}

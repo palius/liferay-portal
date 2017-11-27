@@ -1,4 +1,7 @@
-<%--
+<%@ page import="java.util.Locale" %>
+<%@ page import="com.liferay.portal.kernel.portlet.LiferayPortletResponse" %>
+<%@ page import="com.liferay.portal.kernel.json.JSON" %>
+<%@ page import="com.liferay.portal.kernel.json.JSONFactory" %><%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -16,21 +19,115 @@
 
 <%@ include file="/portlet_list/init.jsp" %>
 
+<%!
+	public JSONArray getControlsData(
+		PortletDataHandlerControl[] exportControls,
+		Boolean childControl,
+		Boolean showAllPortlets,
+		HttpServletRequest request,
+		ResourceBundle resourceBundle,
+		ManifestSummary manifestSummary,
+		String portletId,
+		Boolean disableInputs,
+		Map<String, String[]> parameterMap,
+		Locale locale,
+		String action,
+		LiferayPortletResponse liferayPortletResponse
+	) {
+		JSONArray controlsData = JSONFactoryUtil.createJSONArray();
+
+		for (int i = 0; i < exportControls.length; ++i) {
+			if (exportControls[i] instanceof PortletDataHandlerBoolean) {
+				Map<String, Object> controlData = new HashMap<>();
+				PortletDataHandlerBoolean control = (PortletDataHandlerBoolean)exportControls[i];
+				String controlLabel = LanguageUtil.get(request, resourceBundle, control.getControlLabel());
+				String className = exportControls[i].getClassName();
+
+				if (Validator.isNotNull(className) && (manifestSummary != null)) {
+					StagedModelType stagedModelType = new StagedModelType(className, exportControls[i].getReferrerClassName());
+					long modelAdditionCount = manifestSummary.getModelAdditionCount(stagedModelType);
+
+					if (modelAdditionCount != 0) {
+						controlLabel += modelAdditionCount > 0 ? " (" + modelAdditionCount + ")" : StringPool.BLANK;
+						controlData.put("modelAdditionCount", modelAdditionCount);
+					} else if (!showAllPortlets) {
+						continue;
+					}
+				}
+
+				if (!childControl) {
+					controlData.put("root-control-id", liferayPortletResponse.getNamespace() + PortletDataHandlerKeys.PORTLET_DATA + StringPool.UNDERLINE + portletId);
+				}
+
+				PortletDataHandlerControl[] children = control.getChildren();
+
+				String controlName = Validator.isNotNull(control.getNamespace()) ? control.getNamespacedControlName() : (control.getControlName() + StringPool.UNDERLINE + portletId);
+				String controlInputName = controlName;
+
+				boolean disabled = exportControls[i].isDisabled() || disableInputs;
+
+				if (disabled) {
+					controlInputName += "Display";
+
+					Boolean hiddenControlValue = MapUtil.getBoolean(parameterMap, controlName, control.getDefaultState()) || MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.PORTLET_DATA_ALL);
+					controlData.put("hiddenControlValue", hiddenControlValue);
+				}
+
+				Boolean isControlChecked = MapUtil.getBoolean(parameterMap, controlName, control.getDefaultState()) || MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.PORTLET_DATA_ALL);
+				String controlHelpMessage = control.getHelpMessage(locale, action);
+
+				if (children != null) {
+					JSONArray childControlsData = getControlsData(children, true, showAllPortlets, request, resourceBundle, manifestSummary, portletId, disableInputs, parameterMap, locale, action, liferayPortletResponse);
+					controlData.put("childControlsData", childControlsData);
+				}
+
+				controlData.put("name", controlLabel);
+				controlData.put("isControlChecked", isControlChecked);
+				controlData.put("controlHelpMessage", controlHelpMessage);
+				controlData.put("controlInputName", controlInputName);
+				controlData.put("type", "checkbox");
+
+				controlsData.put(controlData);
+			} else if (exportControls[i] instanceof PortletDataHandlerChoice) {
+				Map<String, Object> controlData = new HashMap<>();
+				PortletDataHandlerChoice control = (PortletDataHandlerChoice)exportControls[i];
+				String[] choices = control.getChoices();
+
+				for (int j = 0; j < choices.length; j++) {
+					String choice = choices[j];
+					String controlName = LanguageUtil.get(request, resourceBundle, choice);
+
+					controlData.put("name", controlName);
+					controlData.put("isChecked", MapUtil.getBoolean(parameterMap, control.getNamespacedControlName(), control.getDefaultChoiceIndex() == j));
+					controlData.put("disabled", disableInputs);
+					controlData.put("helpMessage", control.getHelpMessage(locale, action));
+					controlData.put("label", choice);
+					controlData.put("name", control.getNamespacedControlName());
+					controlData.put("value", choices[j]);
+					controlData.put("type", "radio");
+				}
+			}
+		}
+		return controlsData;
+	}
+%>
+
 <ul class="portlet-list">
 
 	<%
 	DateRange dateRange = null;
 
 	for (Portlet portlet : portlets) {
-		if (!type.equals(Constants.EXPORT) && (liveGroup != null) && !liveGroup.isStagedPortlet(portlet.getRootPortletId())) {
+		boolean isExport = type.equals(Constants.EXPORT);
+		boolean isPublish = !isExport && (liveGroup != null) && liveGroup.isStagedPortlet(portlet.getRootPortletId());
+
+		if (!isExport && !isPublish) {
 			continue;
 		}
 
 		PortletDataHandler portletDataHandler = portlet.getPortletDataHandlerInstance();
 
-		Class<?> portletDataHandlerClass = portletDataHandler.getClass();
-
-		String portletDataHandlerClassName = portletDataHandlerClass.getName();
+		String portletDataHandlerClassName = portletDataHandler.getClass().getName();
 
 		if (portletDataHandlerClassNames.contains(portletDataHandlerClassName)) {
 			continue;
@@ -47,6 +144,9 @@
 			continue;
 		}
 
+		String portletId = portlet.getPortletId();
+		String rootPortletId = portlet.getRootPortletId();
+
 		if (useRequestValues) {
 			dateRange = ExportImportDateUtil.getDateRange(renderRequest, exportGroupId, privateLayout, 0, portlet.getRootPortletId(), defaultRange);
 		}
@@ -61,12 +161,14 @@
 		ManifestSummary manifestSummary = portletDataContext.getManifestSummary();
 
 		long exportModelCount = portletDataHandler.getExportModelCount(manifestSummary);
+		String exportModelCountText = exportModelCount > 0 ? String.valueOf(exportModelCount) : StringPool.BLANK;
 
 		long modelDeletionCount = manifestSummary.getModelDeletionCount(portletDataHandler.getDeletionSystemEventStagedModelTypes());
+		String modelDeletionCountText = modelDeletionCount > 0 ? String.valueOf(modelDeletionCount) + StringPool.SPACE + LanguageUtil.get(request, "deletions") : StringPool.BLANK;
 
 		boolean displayCounts = (exportModelCount > 0) || (modelDeletionCount > 0);
 
-		if (!type.equals(Constants.EXPORT)) {
+		if (!isExport) {
 			UnicodeProperties liveGroupTypeSettings = liveGroup.getTypeSettingsProperties();
 
 			displayCounts = displayCounts && GetterUtil.getBoolean(liveGroupTypeSettings.getProperty(StagingUtil.getStagedPortletId(portlet.getRootPortletId())), portletDataHandler.isPublishToLiveByDefault());
@@ -78,13 +180,49 @@
 
 		boolean showPortletDataInput = MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.PORTLET_DATA + StringPool.UNDERLINE + portlet.getPortletId(), portletDataHandler.isPublishToLiveByDefault()) || MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.PORTLET_DATA_ALL);
 
+		JSONObject portletData = JSONFactoryUtil.createJSONObject();
+
+		portletData.put("exportModelCountText", exportModelCountText);
+		portletData.put("modelDeletionCountText", modelDeletionCountText);
+		portletData.put("showPortletDataInput", Boolean.toString(showPortletDataInput));
+		portletData.put("disableInputs", Boolean.toString(disableInputs));
+		portletData.put("portletTitle", portletTitle);
+		portletData.put("mainInputName", PortletDataHandlerKeys.PORTLET_DATA + StringPool.UNDERLINE + portlet.getPortletId());
+		portletData.put("portletNamespace", PortalUtil.getPortletNamespace(portlet.getPortletId()));
+		portletData.put("portletId", portlet.getPortletId());
+		portletData.put("rootPortletId", portlet.getRootPortletId());
+		portletData.put("exportControls", exportControls);
+		portletData.put("modifyLinkText", LanguageUtil.get(request, "change"));
+
+		String action = StringPool.BLANK;
+
+		if (exportControls != null) {
+			if (isExport) {
+				action = Constants.EXPORT;
+				portletData.put("action", Constants.EXPORT);
+			} else if (isPublish) {
+				action = Constants.PUBLISH;
+				portletData.put("action", Constants.PUBLISH);
+			}
+		}
+
+		if (Validator.isNotNull(portletId)) {
+			PortletBag portletBag = PortletBagPool.get(portletId);
+			ResourceBundle portletResourceBundle =
+				portletBag.getResourceBundle(locale);
+
+			if (portletResourceBundle != null) {
+				resourceBundle = new AggregateResourceBundle(resourceBundle, portletResourceBundle);
+			}
+		}
+	%>
+
+	<%
+		JSONArray controlsData = getControlsData(exportControls, false, showAllPortlets, request, resourceBundle, manifestSummary, portletId, disableInputs, parameterMap, locale, action, liferayPortletResponse);
+		portletData.put("controlsData", controlsData);
+
 		Map<String, Object> context = new HashMap<>();
-		context.put("showPortletDataInput", Boolean.toString(showPortletDataInput));
-		context.put("disableInputs", Boolean.toString(disableInputs));
-		context.put("name", PortletDataHandlerKeys.PORTLET_DATA + StringPool.UNDERLINE + portlet.getPortletId());
-		context.put("portletTitle", portletTitle);
-		context.put("exportModelCount", exportModelCount > 0 ? exportModelCount : StringPool.BLANK);
-		context.put("modelDeletionCount", modelDeletionCount > 0 ? (modelDeletionCount + StringPool.SPACE + LanguageUtil.get(request, "deletions")) : StringPool.BLANK);
+		context.put("portletData", portletData);
 	%>
 
 	<soy:template-renderer
@@ -109,7 +247,7 @@
 
 							<%
 							if (exportControls != null) {
-								if (type.equals(Constants.EXPORT)) {
+								if (isExport) {
 									request.setAttribute("render_controls.jsp-action", Constants.EXPORT);
 									request.setAttribute("render_controls.jsp-childControl", false);
 									request.setAttribute("render_controls.jsp-controls", exportControls);
@@ -128,7 +266,7 @@
 
 								<%
 								}
-								else if (liveGroup.isStagedPortlet(portlet.getRootPortletId())) {
+								else if (isPublish) {
 									request.setAttribute("render_controls.jsp-action", Constants.PUBLISH);
 									request.setAttribute("render_controls.jsp-childControl", false);
 									request.setAttribute("render_controls.jsp-controls", exportControls);
@@ -184,9 +322,7 @@
 			</div>
 
 			<%
-			String portletId = portlet.getPortletId();
-
-			if (!type.equals(Constants.EXPORT)) {
+			if (!isExport) {
 				portletId = portlet.getRootPortletId();
 			}
 			%>

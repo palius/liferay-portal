@@ -4,24 +4,20 @@ import State from "metal-state";
 import templates from "./StagedPortletDisplay.soy";
 
 class StagedPortletDisplay extends Component {
-    onClick() {
-        this.setState({
-            exportModelCount: "10"
-        });
-    }
+	created() {
+		const portletData = this.getState().portletData;
+		console.log(portletData);
+	}
 
     rendered() {
-        this.element.classList.remove("hide");
+	        this.element.classList.remove("hide");
     }
 }
 
 StagedPortletDisplay.STATE = {
-    exportModelCount: {
-        value: "0"
-    },
-    modelDeletionCount: {
-        value: "0"
-    }
+	portletData: {
+		value: {}
+	}
 }
 
 Soy.register(StagedPortletDisplay, templates);
