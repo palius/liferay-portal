@@ -18,7 +18,7 @@ import com.liferay.apio.architect.error.ApioDeveloperError.UnresolvableURI;
 import com.liferay.apio.architect.identifier.StringIdentifier;
 import com.liferay.apio.architect.identifier.mapper.PathIdentifierMapper;
 import com.liferay.apio.architect.uri.Path;
-import com.liferay.apio.architect.wiring.osgi.manager.CollectionResourceManager;
+import com.liferay.apio.architect.wiring.osgi.manager.representable.NameManager;
 
 import java.util.Optional;
 
@@ -29,8 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  * Maps a {@link Path} to a {@link StringIdentifier}, and vice versa.
  *
  * <p>
- * {@code StringIdentifier} can then be provided as a parameter in the methods
- * of {@link Routes.Builder}.
+ * {@code StringIdentifier} can then be used as the identifier of a resource.
  * </p>
  *
  * @author Alejandro Hernández
@@ -50,8 +49,7 @@ public class PathStringIdentifierMapper
 
 		String className = modelClass.getName();
 
-		Optional<String> optional = _collectionResourceManager.getNameOptional(
-			className);
+		Optional<String> optional = _nameManager.getNameOptional(className);
 
 		String name = optional.orElseThrow(
 			() -> new UnresolvableURI(className));
@@ -60,6 +58,6 @@ public class PathStringIdentifierMapper
 	}
 
 	@Reference
-	private CollectionResourceManager _collectionResourceManager;
+	private NameManager _nameManager;
 
 }

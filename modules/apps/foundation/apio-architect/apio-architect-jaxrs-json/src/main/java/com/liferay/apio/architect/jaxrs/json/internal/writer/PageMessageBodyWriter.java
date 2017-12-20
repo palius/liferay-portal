@@ -27,9 +27,10 @@ import com.liferay.apio.architect.request.RequestInfo;
 import com.liferay.apio.architect.response.control.Embedded;
 import com.liferay.apio.architect.response.control.Fields;
 import com.liferay.apio.architect.url.ServerURL;
-import com.liferay.apio.architect.wiring.osgi.manager.CollectionResourceManager;
 import com.liferay.apio.architect.wiring.osgi.manager.PathIdentifierMapperManager;
 import com.liferay.apio.architect.wiring.osgi.manager.ProviderManager;
+import com.liferay.apio.architect.wiring.osgi.manager.representable.NameManager;
+import com.liferay.apio.architect.wiring.osgi.manager.representable.RepresentableManager;
 import com.liferay.apio.architect.wiring.osgi.util.GenericUtil;
 import com.liferay.apio.architect.writer.PageWriter;
 
@@ -90,7 +91,8 @@ public class PageMessageBodyWriter<T>
 		MediaType mediaType) {
 
 		Try<Class<Object>> classTry =
-			GenericUtil.getFirstGenericTypeArgumentTry(genericType);
+			GenericUtil.getFirstGenericTypeArgumentFromTypeTry(
+				genericType, Try.class);
 
 		return classTry.filter(
 			Page.class::equals
@@ -138,9 +140,9 @@ public class PageMessageBodyWriter<T>
 			).pathFunction(
 				_pathIdentifierMapperManager::map
 			).resourceNameFunction(
-				_collectionResourceManager::getNameOptional
+				_nameManager::getNameOptional
 			).representorFunction(
-				_collectionResourceManager::getRepresentorOptional
+				_representableManager::getRepresentorOptional
 			).requestInfo(
 				requestInfo
 			).build());
@@ -191,14 +193,14 @@ public class PageMessageBodyWriter<T>
 			() -> new MustHaveProvider(ServerURL.class));
 	}
 
-	@Reference
-	private CollectionResourceManager _collectionResourceManager;
-
 	@Context
 	private HttpHeaders _httpHeaders;
 
 	@Context
 	private HttpServletRequest _httpServletRequest;
+
+	@Reference
+	private NameManager _nameManager;
 
 	@Reference(cardinality = AT_LEAST_ONE, policyOption = GREEDY)
 	private List<PageMessageMapper<T>> _pageMessageMappers;
@@ -208,5 +210,8 @@ public class PageMessageBodyWriter<T>
 
 	@Reference
 	private ProviderManager _providerManager;
+
+	@Reference
+	private RepresentableManager _representableManager;
 
 }

@@ -19,7 +19,8 @@ import com.liferay.apio.architect.functional.Try;
 import com.liferay.apio.architect.identifier.mapper.PathIdentifierMapper;
 import com.liferay.apio.architect.sample.liferay.portal.identifier.AggregateRatingIdentifier;
 import com.liferay.apio.architect.uri.Path;
-import com.liferay.apio.architect.wiring.osgi.manager.CollectionResourceManager;
+import com.liferay.apio.architect.wiring.osgi.manager.representable.ModelClassManager;
+import com.liferay.apio.architect.wiring.osgi.manager.representable.NameManager;
 
 import java.util.Optional;
 
@@ -34,9 +35,8 @@ import org.osgi.service.component.annotations.Reference;
  * versa.
  *
  * <p>
- * The {@code AggregateRatingPathIdentifierMapper} can then be provided as a
- * parameter in the methods of {@link
- * com.liferay.apio.architect.routes.Routes.Builder}.
+ * The {@code AggregateRatingPathIdentifierMapper} can then be used as the
+ * identifier of a resource.
  * </p>
  *
  * @author Alejandro Hernández
@@ -71,7 +71,7 @@ public class AggregateRatingPathIdentifierMapper
 		}
 
 		Optional<Class<Object>> optional =
-			_collectionResourceManager.getModelClassOptional(components[0]);
+			_modelClassManager.getModelClassOptional(components[0]);
 
 		Class<Object> modelClass = optional.orElseThrow(
 			() -> new NotFoundException(
@@ -88,14 +88,16 @@ public class AggregateRatingPathIdentifierMapper
 	}
 
 	private String _getName(String className) {
-		Optional<String> optional = _collectionResourceManager.getNameOptional(
-			className);
+		Optional<String> optional = _nameManager.getNameOptional(className);
 
 		return optional.orElseThrow(
 			() -> new ApioDeveloperError.UnresolvableURI(className));
 	}
 
 	@Reference
-	private CollectionResourceManager _collectionResourceManager;
+	private ModelClassManager _modelClassManager;
+
+	@Reference
+	private NameManager _nameManager;
 
 }
