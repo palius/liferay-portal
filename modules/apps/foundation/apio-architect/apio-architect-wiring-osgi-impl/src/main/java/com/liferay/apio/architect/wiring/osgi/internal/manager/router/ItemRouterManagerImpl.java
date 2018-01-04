@@ -18,8 +18,8 @@ import static com.liferay.apio.architect.wiring.osgi.internal.manager.resource.R
 import static com.liferay.apio.architect.wiring.osgi.internal.manager.util.ManagerUtil.getGenericClassFromPropertyOrElse;
 import static com.liferay.apio.architect.wiring.osgi.internal.manager.util.ManagerUtil.getTypeParamOrFail;
 
-import com.liferay.apio.architect.alias.RequestFunction;
-import com.liferay.apio.architect.identifier.Identifier;
+import com.liferay.apio.architect.alias.ProvideFunction;
+import com.liferay.apio.architect.error.ApioDeveloperError.MustHavePathIdentifierMapper;
 import com.liferay.apio.architect.router.ItemRouter;
 import com.liferay.apio.architect.routes.ItemRoutes;
 import com.liferay.apio.architect.routes.ItemRoutes.Builder;
@@ -30,7 +30,6 @@ import com.liferay.apio.architect.wiring.osgi.manager.representable.ModelClassMa
 import com.liferay.apio.architect.wiring.osgi.manager.router.ItemRouterManager;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
@@ -68,18 +67,23 @@ public class ItemRouterManagerImpl
 		ItemRouter itemRouter, ServiceReference<ItemRouter> serviceReference,
 		Class<?> modelClass) {
 
-		RequestFunction<Function<Class<?>, Optional<?>>> provideClassFunction =
+		ProvideFunction provideFunction =
 			httpServletRequest -> clazz -> _providerManager.provideOptional(
 				clazz, httpServletRequest);
 
-		Class<? extends Identifier> identifierClass =
-			getGenericClassFromPropertyOrElse(
-				serviceReference, ITEM_IDENTIFIER_CLASS,
-				() -> getTypeParamOrFail(itemRouter, ItemRouter.class, 1));
+		Class<?> identifierClass = getGenericClassFromPropertyOrElse(
+			serviceReference, ITEM_IDENTIFIER_CLASS,
+			() -> getTypeParamOrFail(itemRouter, ItemRouter.class, 1));
 
 		Builder builder = new Builder<>(
-			modelClass, identifierClass, provideClassFunction,
-			() -> _pathIdentifierMapperManager::map);
+			modelClass, provideFunction,
+			path -> {
+				Optional<?> optional = _pathIdentifierMapperManager.map(
+					identifierClass, path);
+
+				return optional.orElseThrow(
+					() -> new MustHavePathIdentifierMapper(identifierClass));
+			});
 
 		return itemRouter.itemRoutes(builder);
 	}
