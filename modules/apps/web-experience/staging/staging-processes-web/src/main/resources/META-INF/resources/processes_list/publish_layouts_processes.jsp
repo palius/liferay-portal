@@ -294,6 +294,20 @@ OrderByComparator<BackgroundTask> orderByComparator = BackgroundTaskComparatorFa
 						message='<%= LanguageUtil.get(request, ((completionDate != null) && completionDate.before(new Date())) ? "clear" : "cancel") %>'
 						url="<%= deleteBackgroundTaskURL %>"
 					/>
+
+					<portlet:renderURL var="processSummaryURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+						<portlet:param name="mvcRenderCommandName" value="showSummary" />
+					</portlet:renderURL>
+
+					<%
+					String onClickFnName = liferayPortletResponse.getNamespace() + "showProcessSummary(" + String.valueOf(backgroundTask.getBackgroundTaskId()) + ", '" + processSummaryURL + "');";
+					%>
+
+					<liferay-ui:icon
+						onClick='<%= onClickFnName %>'
+						message="summary"
+						url="javascript:;"
+					/>
 				</liferay-ui:icon-menu>
 			</liferay-ui:search-container-column-text>
 		</liferay-ui:search-container-row>
@@ -327,5 +341,18 @@ if (localPublishing) {
 
 			submitForm(form);
 		}
+	}
+
+	function <portlet:namespace />showProcessSummary(backgroundTaskId, processSummaryURL) {
+		Liferay.Util.openWindow(
+			{
+				dialog: {
+					destroyOnHide: true
+				},
+				id: '<portlet:namespace />showSummary_' + backgroundTaskId,
+				title: '<%= LanguageUtil.get(request, "summary")%> #' + backgroundTaskId,
+				uri: processSummaryURL + '&<portlet:namespace />backgroundTaskId=' + backgroundTaskId
+			}
+		);
 	}
 </aui:script>

@@ -33,7 +33,7 @@ public class ProcessesListShowSummaryMVCRenderCommand extends GetGroupMVCRenderC
 
 	@Override
 	protected String getPath() {
-		return "/processes_list/show_summary.jsp";
+		return "/processes_list/completed_processes_summary.jsp";
 	}
 
 }
