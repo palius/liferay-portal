@@ -300,7 +300,7 @@ OrderByComparator<BackgroundTask> orderByComparator = BackgroundTaskComparatorFa
 					</portlet:renderURL>
 
 					<%
-					String onClickFnName = liferayPortletResponse.getNamespace() + "showProcessSummary(" + String.valueOf(backgroundTask.getBackgroundTaskId()) + ", '" + processSummaryURL + "');";
+					String onClickFnName = liferayPortletResponse.getNamespace() + "showProcessSummary(" + String.valueOf(backgroundTask.getBackgroundTaskId()) + ", '" + HtmlUtil.escape(backgroundTaskDisplay.getDisplayName(request)) + "', '" + processSummaryURL + "');";
 					%>
 
 					<liferay-ui:icon
@@ -343,14 +343,14 @@ if (localPublishing) {
 		}
 	}
 
-	function <portlet:namespace />showProcessSummary(backgroundTaskId, processSummaryURL) {
+	function <portlet:namespace />showProcessSummary(backgroundTaskId, backgroundTaskName, processSummaryURL) {
 		Liferay.Util.openWindow(
 			{
 				dialog: {
 					destroyOnHide: true
 				},
 				id: '<portlet:namespace />showSummary_' + backgroundTaskId,
-				title: '<%= LanguageUtil.get(request, "summary")%> #' + backgroundTaskId,
+				title: backgroundTaskName,
 				uri: processSummaryURL + '&<portlet:namespace />backgroundTaskId=' + backgroundTaskId
 			}
 		);

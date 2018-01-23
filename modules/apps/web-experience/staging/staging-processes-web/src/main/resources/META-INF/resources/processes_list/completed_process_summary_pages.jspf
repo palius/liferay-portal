@@ -1,0 +1,100 @@
+<%!
+public ArrayList getChildPageNames(String basePageName, JSONObject layoutArrayChildElement) {
+	ArrayList pageNames = new ArrayList();
+
+	JSONArray childrenLayouts = layoutArrayChildElement.getJSONArray("layouts");
+
+	for (int i = 0; i < childrenLayouts.length(); ++i) {
+		JSONObject childLayout = childrenLayouts.getJSONObject(i);
+		String childPageName = basePageName + StringPool.FORWARD_SLASH + childLayout.getString("name");
+
+		pageNames.add(childPageName);
+
+		if (childLayout.getBoolean("hasChildren")) {
+			ArrayList childPageNames = getChildPageNames(childPageName, childLayout.getJSONObject("children"));
+			pageNames.addAll(childPageNames);
+		}
+	}
+
+	return  pageNames;
+}
+
+public ArrayList getPageNames(JSONArray layoutsArray) {
+	ArrayList pageNames = new ArrayList();
+
+
+	for (int i = 0; i < layoutsArray.length(); ++i) {
+		JSONObject layoutArrayElement = layoutsArray.getJSONObject(i);
+
+		String pageName = layoutArrayElement.getString("name");
+
+		pageNames.add(pageName);
+
+		if (layoutArrayElement.getBoolean("hasChildren")) {
+			ArrayList childPageNames = getChildPageNames(pageName, layoutArrayElement.getJSONObject("children"));
+			pageNames.addAll(childPageNames);
+		}
+	}
+
+	return  pageNames;
+}
+%>
+
+<%
+String layoutsJSONString = LayoutsTreeUtil.getLayoutsJSON(request, groupId, isPrivateLayout, LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, selectedLayoutIds, false, "asd");
+
+JSONObject layoutsJSON = JSONFactoryUtil.createJSONObject(layoutsJSONString);
+
+JSONArray layoutsArray = layoutsJSON.getJSONArray("layouts");
+
+ArrayList<String> pageNames = getPageNames(layoutsArray);
+
+boolean themeSettings = MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.THEME_REFERENCE);
+
+boolean logo = MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.LOGO);
+
+boolean layoutSetSettings = MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.LAYOUT_SET_SETTINGS);
+
+boolean layoutSetPrototypeSettings = MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_SETTINGS);
+
+boolean deleteMissingLayouts = MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.DELETE_MISSING_LAYOUTS);
+%>
+
+<div class="process-summary-subtitle"><liferay-ui:message key="pages" /></div>
+
+<div class="process-summary-option"><span><liferay-ui:message key="page-option" />:</span> <%= publicPagesDescription %></div>
+
+<div class="process-summary-option"><span><liferay-ui:message key="site-pages-variation" />:</span> <%= layoutSetBranch.getName() %></div>
+
+<div class="process-summary-option"><span><liferay-ui:message key="pages-to-publish" />:</span></div>
+
+<%
+for (String pageName : pageNames) {
+%>
+	<div><%= pageName %></div>
+<%
+}
+%>
+
+<%
+if (themeSettings || logo || layoutSetSettings || layoutSetPrototypeSettings || deleteMissingLayouts) {
+%>
+	<div class="process-summary-option"><span><liferay-ui:message key="look-and-feel" />:</span></div>
+
+	<% if (themeSettings) %>
+		<div>- <liferay-ui:message key="theme-settings" /></div>
+
+	<% if (logo) %>
+		<div>- <liferay-ui:message key="logo" /></div>
+
+	<% if (layoutSetSettings) %>
+		<div>- <liferay-ui:message key="site-pages-settings" /></div>
+
+	<% if (layoutSetPrototypeSettings) %>
+		<div>- <liferay-ui:message key="site-template-settings" /></div>
+
+	<% if (deleteMissingLayouts) %>
+		<div>- <liferay-ui:message key="delete-missing-layouts" /></div>
+<%
+}
+%>

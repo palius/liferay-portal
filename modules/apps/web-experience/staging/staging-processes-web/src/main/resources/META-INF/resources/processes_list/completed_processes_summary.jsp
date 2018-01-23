@@ -18,8 +18,24 @@
 
 <%
 	long backgroundTaskId = GetterUtil.getLong(request.getAttribute("backgroundTaskId"), ParamUtil.getLong(request, "backgroundTaskId"));
+
+	BackgroundTask backgroundTask = BackgroundTaskManagerUtil.fetchBackgroundTask(backgroundTaskId);
+
+	long exportImportConfigurationId = Long.parseLong(backgroundTask.getTaskContextMap().get("exportImportConfigurationId").toString());
+
+	Map<String, Serializable> exportImportConfigurationSettingsMap =  ExportImportConfigurationLocalServiceUtil.getExportImportConfiguration(exportImportConfigurationId).getSettingsMap();
+
+	boolean isPrivateLayout = MapUtil.getBoolean(exportImportConfigurationSettingsMap, "privateLayout");
+
+	String publicPagesDescription = (isPrivateLayout) ? LanguageUtil.get(request, "private-pages") : LanguageUtil.get(request, "public-pages");
+
+	Map<String, Serializable> parameterMap = (Map<String, Serializable>) exportImportConfigurationSettingsMap.get("parameterMap");
+
+	LayoutSetBranch layoutSetBranch = LayoutSetBranchLocalServiceUtil.getLayoutSetBranch(MapUtil.getLong(parameterMap, "layoutSetBranchId"));
+
+	long[] selectedLayoutIds = GetterUtil.getLongValues(exportImportConfigurationSettingsMap.get("layoutIds"));
 %>
 
 <div class="container-fluid-1280">
-	<div> <%= backgroundTaskId %> </div>
+	<%@ include file="completed_process_summary_pages.jspf" %>
 </div>
