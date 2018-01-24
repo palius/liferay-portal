@@ -20,14 +20,14 @@ import com.liferay.fragment.model.FragmentEntryInstanceLink;
 import com.liferay.fragment.service.FragmentCollectionServiceUtil;
 import com.liferay.fragment.service.FragmentEntryInstanceLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryServiceUtil;
-import com.liferay.layout.admin.web.internal.constants.LayoutAdminPortletKeys;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
+import com.liferay.layout.admin.web.internal.security.permission.resource.LayoutPageTemplatePermission;
 import com.liferay.layout.admin.web.internal.util.LayoutPageTemplatePortletUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
-import com.liferay.layout.page.template.service.permission.LayoutPageTemplatePermission;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.List;
 
@@ -113,8 +114,9 @@ public class LayoutPageTemplateDisplayContext {
 
 		for (FragmentCollection fragmentCollection : fragmentCollections) {
 			List<FragmentEntry> fragmentEntries =
-				FragmentEntryServiceUtil.fetchFragmentEntries(
-					fragmentCollection.getFragmentCollectionId());
+				FragmentEntryServiceUtil.getFragmentEntries(
+					fragmentCollection.getFragmentCollectionId(),
+					WorkflowConstants.STATUS_APPROVED);
 
 			if (ListUtil.isEmpty(fragmentEntries)) {
 				continue;
@@ -542,8 +544,6 @@ public class LayoutPageTemplateDisplayContext {
 
 		if (LayoutPageTemplatePermission.contains(
 				themeDisplay.getPermissionChecker(),
-				LayoutPageTemplatePermission.RESOURCE_NAME,
-				LayoutAdminPortletKeys.GROUP_PAGES,
 				themeDisplay.getSiteGroupId(), actionId)) {
 
 			return true;

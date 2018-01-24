@@ -15,6 +15,8 @@
 package com.liferay.site.navigation.menu.item.full.page.application.internal.type;
 
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.service.PortletLocalService;
@@ -88,6 +90,15 @@ public class FullPageApplicationSiteNavigationMenuItemType
 	public String getType() {
 		return SiteNavigationMenuItemTypeFullPageApplicationConstants.
 			FULL_PAGE_APPLICATION;
+	}
+
+	@Override
+	public String getURL(
+			HttpServletRequest request,
+			SiteNavigationMenuItem siteNavigationMenuItem)
+		throws PortalException {
+
+		return StringPool.BLANK;
 	}
 
 	@Override

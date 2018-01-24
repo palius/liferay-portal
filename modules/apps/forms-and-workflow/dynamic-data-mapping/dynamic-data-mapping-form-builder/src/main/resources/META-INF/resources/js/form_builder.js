@@ -89,16 +89,16 @@ AUI.add(
 						valueFn: '_valueFieldTypesPanel'
 					},
 
+					formInstanceId: {
+						value: 0
+					},
+
 					layouts: {
 						valueFn: '_valueLayouts'
 					},
 
 					pageManager: {
 						value: {}
-					},
-
-					recordSetId: {
-						value: 0
 					},
 
 					showPagination: {
@@ -344,6 +344,9 @@ AUI.add(
 						var field = instance.createField(fieldType);
 
 						instance._insertField(field);
+
+						field.newField = true;
+
 						instance.showFieldSettingsPanel(field);
 					},
 
@@ -456,7 +459,7 @@ AUI.add(
 
 						var translating = instance.get('defaultLanguageId') !== instance.get('editingLanguageId');
 
-						return instance.get('recordSetId') > 0 || translating;
+						return instance.get('formInstanceId') > 0 || translating;
 					},
 
 					openConfirmCancelFieldChangesDiolog: function(confirmFn) {

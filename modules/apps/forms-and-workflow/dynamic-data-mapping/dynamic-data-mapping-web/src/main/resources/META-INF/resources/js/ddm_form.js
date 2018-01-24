@@ -380,6 +380,36 @@ AUI.add(
 						instance.get('container').remove();
 					},
 
+					addLocaleToLocalizationMap: function(locale) {
+						var instance = this;
+
+						var localizationMap = instance.get('localizationMap');
+
+						if (!localizationMap[locale]) {
+							var predefinedValue = instance.getPredefinedValueByLocale(locale);
+
+							if (predefinedValue) {
+								localizationMap[locale] = predefinedValue;
+							}
+							else {
+								var name = instance.get('name');
+
+								var field = instance.getFieldByNameInFieldDefinition(name);
+
+								if (field && field.type) {
+									var type = field.type;
+
+									if (type === 'radio' || type === 'select') {
+										localizationMap[locale] = instance.getValue();
+									}
+									else {
+										localizationMap[locale] = '';
+									}
+								}
+							}
+						}
+					},
+
 					createField: function(fieldTemplate) {
 						var instance = this;
 
@@ -416,6 +446,25 @@ AUI.add(
 						}
 
 						return defaultLocale;
+					},
+
+					getFieldByNameInFieldDefinition: function(name) {
+						var instance = this;
+
+						var definition = instance.get('definition');
+
+						var fields = [];
+
+						if (definition && definition.fields) {
+							fields = definition.fields;
+						}
+
+						return AArray.find(
+							fields,
+							function(item) {
+								return item.name === name;
+							}
+						);
 					},
 
 					getFieldDefinition: function() {
@@ -470,6 +519,22 @@ AUI.add(
 						var instance = this;
 
 						return instance.get('container').one('.control-label');
+					},
+
+					getPredefinedValueByLocale: function(locale) {
+						var instance = this;
+
+						var name = instance.get('name');
+
+						var field = instance.getFieldByNameInFieldDefinition(name);
+
+						var predefinedValue;
+
+						if (field && field.predefinedValue && field.predefinedValue[locale]) {
+							predefinedValue = field.predefinedValue[locale];
+						}
+
+						return predefinedValue;
 					},
 
 					getRepeatedSiblings: function() {
@@ -797,8 +862,14 @@ AUI.add(
 
 						var locales = [defaultLocale].concat(availableLocales);
 
-						if (localizable && locales.indexOf(event.prevVal) > -1) {
-							instance.updateLocalizationMap(event.prevVal);
+						if (localizable) {
+							if (locales.indexOf(event.prevVal) > -1) {
+								instance.updateLocalizationMap(event.prevVal);
+							}
+
+							if (locales.indexOf(event.newVal) > -1) {
+								instance.addLocaleToLocalizationMap(event.newVal);
+							}
 						}
 
 						instance.set('displayLocale', event.newVal);
@@ -1668,7 +1739,7 @@ AUI.add(
 								toolbars: {
 									footer: [
 										{
-											cssClass: 'btn-lg btn-primary',
+											cssClass: 'btn-primary',
 											disabled: !instance.get('selectedLayout'),
 											label: Liferay.Language.get('select'),
 											on: {
@@ -1676,7 +1747,7 @@ AUI.add(
 											}
 										},
 										{
-											cssClass: 'btn-lg btn-link',
+											cssClass: 'btn-link',
 											label: Liferay.Language.get('cancel'),
 											on: {
 												click: A.bind(instance._handleCancelButtonClick, instance)

@@ -17,6 +17,7 @@ package com.liferay.fragment.entry.processor.nullable;
 import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.fragment.processor.FragmentEntryProcessor;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -28,8 +29,19 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Eudaldo Alonso
  */
-@Component(immediate = true, service = FragmentEntryProcessor.class)
+@Component(
+	immediate = true,
+	property = {"fragment.entry.processor.priority:Integer=0"},
+	service = FragmentEntryProcessor.class
+)
 public class NullableFragmentEntryProcessor implements FragmentEntryProcessor {
+
+	@Override
+	public String processFragmentEntryHTML(String html, JSONObject jsonObject)
+		throws PortalException {
+
+		return html;
+	}
 
 	@Override
 	public void validateFragmentEntryHTML(String html) throws PortalException {

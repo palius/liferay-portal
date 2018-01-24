@@ -23,16 +23,16 @@ long formInstanceId = ddmFormDisplayContext.getFormInstanceId();
 %>
 
 <aui:script>
-function <portlet:namespace />analyticsClientCreated(event) {
-	Liferay.fire('ddmFormView', {formId: <%= formInstanceId %>});
+	function <portlet:namespace />analyticsClientCreated(event) {
+		Liferay.fire('ddmFormView', {formId: <%= formInstanceId %>});
 
-	Liferay.fire("ddmFormPageShow", {
-		formId: <%= formInstanceId %>,
-		page: 1
-	});
-}
+		Liferay.fire("ddmFormPageShow", {
+			formId: <%= formInstanceId %>,
+			page: 1
+		});
+	}
 
-Liferay.on('analyticsClientCreated', <portlet:namespace />analyticsClientCreated);
+	Liferay.on('analyticsClientCreated', <portlet:namespace />analyticsClientCreated);
 </aui:script>
 
 <c:choose>
@@ -153,6 +153,7 @@ Liferay.on('analyticsClientCreated', <portlet:namespace />analyticsClientCreated
 
 							<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="addFormInstanceRecord" var="autoSaveFormInstanceRecordURL">
 								<portlet:param name="autoSave" value="<%= Boolean.TRUE.toString() %>" />
+								<portlet:param name="preview" value="<%= String.valueOf(ddmFormDisplayContext.isPreview()) %>" />
 							</liferay-portlet:resourceURL>
 
 							function <portlet:namespace />autoSave() {

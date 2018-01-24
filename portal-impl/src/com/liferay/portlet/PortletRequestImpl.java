@@ -653,7 +653,9 @@ public abstract class PortletRequestImpl implements LiferayPortletRequest {
 		try {
 			long companyId = PortalUtil.getCompanyId(_request);
 
-			String roleLink = _portlet.getRoleMappers().get(role);
+			Map<String, String> roleMappersMap = _portlet.getRoleMappers();
+
+			String roleLink = roleMappersMap.get(role);
 
 			if (Validator.isNotNull(roleLink)) {
 				return RoleLocalServiceUtil.hasUserRole(
@@ -1010,8 +1012,6 @@ public abstract class PortletRequestImpl implements LiferayPortletRequest {
 			return;
 		}
 
-		boolean resourcePhase = lifecycle.equals(PortletRequest.RESOURCE_PHASE);
-
 		Enumeration<String> enumeration = preferences.getNames();
 
 		if (!enumeration.hasMoreElements()) {
@@ -1035,7 +1035,9 @@ public abstract class PortletRequestImpl implements LiferayPortletRequest {
 				String[] requestValues = dynamicRequest.getParameterValues(
 					name);
 
-				if ((requestValues != null) && resourcePhase) {
+				if ((requestValues != null) &&
+					lifecycle.equals(PortletRequest.RESOURCE_PHASE)) {
+
 					dynamicRequest.setParameterValues(
 						name, ArrayUtil.append(requestValues, values));
 				}

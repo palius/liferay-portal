@@ -44,6 +44,8 @@
 		<for list="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20" param="number">
 			<execute macro="FormsAdminNavigator#gotoAddForm" />
 
+			<execute function="Refresh" />
+
 			<execute macro="Form#editName">
 				<var name="formName" value="Form${number}" />
 			</execute>
@@ -162,7 +164,7 @@
 		</execute>
 
 		<execute macro="Role#definePermissionPG">
-			<var name="permissionDefinitionKey" value="CONTENT_PERMISSIONS_ADD_RECORD_CHECKBOX" />
+			<var name="permissionDefinitionKey" value="CONTENT_PERMISSIONS_ADD_FORM_INSTANCE_RECORD_CHECKBOX" />
 			<var name="roleTitle" value="Power User" />
 		</execute>
 
@@ -258,10 +260,10 @@
 			<var name="roleTitle" value="Forms Site Role Name" />
 		</execute>
 
-		<for list="ADD_RECORD_SET,PERMISSIONS,ADD_TEMPLATE,ADD_STRUCTURE" param="resourceActionIndex">
+		<for list="ADD_DATA_PROVIDER_INSTANCE,ADD_FORM_INSTANCE,ADD_STRUCTURE,PERMISSIONS" param="resourceActionIndex">
 			<execute macro="Permissions#definePermissionViaJSONAPI">
 				<var name="resourceAction" value="${resourceActionIndex}" />
-				<var name="resourceName" value="com.liferay.dynamic.data.lists" />
+				<var name="resourceName" value="com.liferay.dynamic.data.mapping" />
 				<var name="roleTitle" value="Forms Site Role Name" />
 				<var name="roleType" value="site" />
 			</execute>
@@ -276,7 +278,7 @@
 
 		<execute macro="Permissions#definePermissionViaJSONAPI">
 			<var name="resourceAction" value="ACCESS_IN_CONTROL_PANEL" />
-			<var name="resourceName" value="com_liferay_dynamic_data_lists_form_web_portlet_DDLFormAdminPortlet" />
+			<var name="resourceName" value="com_liferay_dynamic_data_mapping_form_web_portlet_DDMFormAdminPortlet" />
 			<var name="roleTitle" value="Forms Site Role Name" />
 			<var name="roleType" value="site" />
 		</execute>
@@ -487,8 +489,8 @@
 			<var name="portlet" value="System Settings" />
 		</execute>
 
-		<execute macro="SystemSettings#gotoCategory">
-			<var name="category" value="Forms and Workflow" />
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Forms and Workflow" />
 		</execute>
 
 		<execute macro="SystemSettings#editConfiguration">
@@ -1198,8 +1200,8 @@
 			<var name="portlet" value="System Settings" />
 		</execute>
 
-		<execute macro="SystemSettings#gotoCategory">
-			<var name="category" value="Forms and Workflow" />
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Forms and Workflow" />
 		</execute>
 
 		<execute macro="SystemSettings#editConfiguration">
@@ -1256,8 +1258,8 @@
 		<execute macro="SystemSettings#exitEditConfiguration" />
 
 		<execute macro="SystemSettings#resetConfiguration">
-			<var name="category" value="Forms and Workflow" />
 			<var name="configurationName" value="Dynamic Data Lists" />
+			<var name="navItem" value="Forms and Workflow" />
 		</execute>
 
 		<execute macro="SystemSettings#editConfiguration">
@@ -1332,12 +1334,12 @@
 		<execute macro="SystemSettings#exitEditConfiguration" />
 
 		<execute macro="SystemSettings#resetConfiguration">
-			<var name="category" value="Forms and Workflow" />
 			<var name="configurationName" value="Dynamic Data Mapping Service" />
+			<var name="navItem" value="Forms and Workflow" />
 		</execute>
 
-		<execute macro="SystemSettings#gotoCategory">
-			<var name="category" value="Other" />
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Other" />
 		</execute>
 
 		<execute macro="SystemSettings#editConfiguration">
@@ -1363,8 +1365,8 @@
 
 		<execute macro="SystemSettings#exitEditConfiguration" />
 
-		<execute macro="SystemSettings#gotoCategory">
-			<var name="category" value="Foundation" />
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Foundation" />
 		</execute>
 
 		<execute macro="SystemSettings#editConfiguration">
@@ -1415,8 +1417,8 @@
 		<execute macro="SystemSettings#exitEditConfiguration" />
 
 		<execute macro="SystemSettings#resetConfiguration">
-			<var name="category" value="Foundation" />
 			<var name="configurationName" value="JavaScript Loader" />
+			<var name="navItem" value="Foundation" />
 		</execute>
 	</command>
 
@@ -1440,8 +1442,8 @@
 			<var name="portlet" value="System Settings" />
 		</execute>
 
-		<execute macro="SystemSettings#gotoCategory">
-			<var name="category" value="Forms and Workflow" />
+		<execute macro="Navigator#gotoNavItem">
+			<var name="navItem" value="Forms and Workflow" />
 		</execute>
 
 		<execute macro="SystemSettings#editConfiguration">
@@ -1477,8 +1479,8 @@
 		</execute>
 
 		<execute macro="SystemSettings#resetConfiguration">
-			<var name="category" value="Forms and Workflow" />
 			<var name="configurationName" value="Forms" />
+			<var name="navItem" value="Forms and Workflow" />
 		</execute>
 
 		<execute macro="ProductMenu#gotoPortlet">
@@ -1625,6 +1627,8 @@
 		<execute macro="FormsAdminNavigator#gotoBack" />
 
 		<execute macro="FormsAdminNavigator#gotoAddForm" />
+
+		<execute function="Refresh" />
 
 		<execute macro="Form#editName">
 			<var name="formName" value="Checkbox" />
@@ -2083,6 +2087,7 @@
 	</command>
 
 	<command name="SubmitForm3x3Layout" priority="4">
+		<property name="portal.subrepo" value="false" />
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoPortlet">
@@ -2575,7 +2580,7 @@
 			<var name="fieldName" value="Checkbox" />
 		</execute>
 
-		<execute macro="FormPortlet#submit" />
+		<execute macro="FormPortlet#submitSuccessfully" />
 
 		<execute macro="Navigator#openURL" />
 

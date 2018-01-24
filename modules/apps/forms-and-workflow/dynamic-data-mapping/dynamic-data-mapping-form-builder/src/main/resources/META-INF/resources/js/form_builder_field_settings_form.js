@@ -39,6 +39,14 @@ AUI.add(
 						instance._fieldEventHandlers = [];
 					},
 
+					destructor: function() {
+						var instance = this;
+
+						(new A.EventHandle(instance._eventHandlers)).detach();
+
+						(new A.EventHandle(instance._fieldEventHandlers)).detach();
+					},
+
 					getEvaluationPayload: function() {
 						var instance = this;
 
@@ -47,6 +55,7 @@ AUI.add(
 						return A.merge(
 							FormBuilderSettingsForm.superclass.getEvaluationPayload.apply(instance, arguments),
 							{
+								newField: field.newField,
 								type: field.get('type')
 							}
 						);
