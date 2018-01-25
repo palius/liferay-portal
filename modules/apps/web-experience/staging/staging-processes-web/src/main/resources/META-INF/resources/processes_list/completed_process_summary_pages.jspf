@@ -1,3 +1,19 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
 <%!
 public ArrayList getChildPageNames(String basePageName, JSONObject layoutArrayChildElement) {
 	ArrayList pageNames = new ArrayList();
@@ -6,6 +22,7 @@ public ArrayList getChildPageNames(String basePageName, JSONObject layoutArrayCh
 
 	for (int i = 0; i < childrenLayouts.length(); ++i) {
 		JSONObject childLayout = childrenLayouts.getJSONObject(i);
+
 		String childPageName = basePageName + StringPool.FORWARD_SLASH + childLayout.getString("name");
 
 		pageNames.add(childPageName);
@@ -16,12 +33,11 @@ public ArrayList getChildPageNames(String basePageName, JSONObject layoutArrayCh
 		}
 	}
 
-	return  pageNames;
+	return pageNames;
 }
 
 public ArrayList getPageNames(JSONArray layoutsArray) {
 	ArrayList pageNames = new ArrayList();
-
 
 	for (int i = 0; i < layoutsArray.length(); ++i) {
 		JSONObject layoutArrayElement = layoutsArray.getJSONObject(i);
@@ -36,18 +52,38 @@ public ArrayList getPageNames(JSONArray layoutsArray) {
 		}
 	}
 
-	return  pageNames;
+	return pageNames;
 }
 %>
 
 <%
-String layoutsJSONString = LayoutsTreeUtil.getLayoutsJSON(request, groupId, isPrivateLayout, LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, selectedLayoutIds, false, "asd");
+boolean isPrivateLayout = MapUtil.getBoolean(exportImportConfigurationSettingsMap, "privateLayout");
 
-JSONObject layoutsJSON = JSONFactoryUtil.createJSONObject(layoutsJSONString);
+String publicPagesDescription = (isPrivateLayout) ? LanguageUtil.get(request, "private-pages") : LanguageUtil.get(request, "public-pages");
 
-JSONArray layoutsArray = layoutsJSON.getJSONArray("layouts");
+long layoutSetBranchId = MapUtil.getLong(parameterMap, "layoutSetBranchId");
 
-ArrayList<String> pageNames = getPageNames(layoutsArray);
+LayoutSetBranch layoutSetBranch = null;
+
+long[] selectedLayoutIds = null;
+
+ArrayList<String> pageNames = new ArrayList<>();
+
+if (layoutSetBranchId != 0) {
+	layoutSetBranch = LayoutSetBranchLocalServiceUtil.getLayoutSetBranch(layoutSetBranchId);
+
+	selectedLayoutIds = GetterUtil.getLongValues(exportImportConfigurationSettingsMap.get("layoutIds"));
+}
+
+if ((selectedLayoutIds != null) && (selectedLayoutIds.length != 0)) {
+	String layoutsJSONString = LayoutsTreeUtil.getLayoutsJSON(request, groupId, isPrivateLayout, LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, selectedLayoutIds, false, "asd");
+
+	JSONObject layoutsJSON = JSONFactoryUtil.createJSONObject(layoutsJSONString);
+
+	JSONArray layoutsArray = layoutsJSON.getJSONArray("layouts");
+
+	pageNames = getPageNames(layoutsArray);
+}
 
 boolean themeSettings = MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.THEME_REFERENCE);
 
@@ -62,39 +98,47 @@ boolean deleteMissingLayouts = MapUtil.getBoolean(parameterMap, PortletDataHandl
 
 <div class="process-summary-subtitle"><liferay-ui:message key="pages" /></div>
 
-<div class="process-summary-option"><span><liferay-ui:message key="page-option" />:</span> <%= publicPagesDescription %></div>
+<div class="process-summary-option"><span><liferay-ui:message key="pages-option" />:</span> <%= publicPagesDescription %></div>
 
-<div class="process-summary-option"><span><liferay-ui:message key="site-pages-variation" />:</span> <%= layoutSetBranch.getName() %></div>
+<c:if test="<%= layoutSetBranch != null %>">
+	<div class="process-summary-option"><span><liferay-ui:message key="site-pages-variation" />:</span> <%= layoutSetBranch.getName() %></div>
+</c:if>
 
-<div class="process-summary-option"><span><liferay-ui:message key="pages-to-publish" />:</span></div>
+<c:if test="<%= pageNames.size() != 0 %>">
+	<div class="process-summary-option"><span><liferay-ui:message key="pages-to-publish" />: </span></div>
 
-<%
-for (String pageName : pageNames) {
-%>
-	<div><%= pageName %></div>
-<%
-}
-%>
+	<%
+	for (String pageName : pageNames) {
+	%>
 
-<%
-if (themeSettings || logo || layoutSetSettings || layoutSetPrototypeSettings || deleteMissingLayouts) {
-%>
+		<div><%= pageName %></div>
+
+	<%
+	}
+	%>
+
+</c:if>
+
+<c:if test="<%= themeSettings || logo || layoutSetSettings || layoutSetPrototypeSettings || deleteMissingLayouts %>">
 	<div class="process-summary-option"><span><liferay-ui:message key="look-and-feel" />:</span></div>
 
-	<% if (themeSettings) %>
+	<c:if test="<%= themeSettings %>">
 		<div>- <liferay-ui:message key="theme-settings" /></div>
+	</c:if>
 
-	<% if (logo) %>
+	<c:if test="<%= logo %>">
 		<div>- <liferay-ui:message key="logo" /></div>
+	</c:if>
 
-	<% if (layoutSetSettings) %>
+	<c:if test="<%= layoutSetSettings %>">
 		<div>- <liferay-ui:message key="site-pages-settings" /></div>
+	</c:if>
 
-	<% if (layoutSetPrototypeSettings) %>
+	<c:if test="<%= layoutSetPrototypeSettings %>">
 		<div>- <liferay-ui:message key="site-template-settings" /></div>
+	</c:if>
 
-	<% if (deleteMissingLayouts) %>
+	<c:if test="<%= deleteMissingLayouts %>">
 		<div>- <liferay-ui:message key="delete-missing-layouts" /></div>
-<%
-}
-%>
+	</c:if>
+</c:if>

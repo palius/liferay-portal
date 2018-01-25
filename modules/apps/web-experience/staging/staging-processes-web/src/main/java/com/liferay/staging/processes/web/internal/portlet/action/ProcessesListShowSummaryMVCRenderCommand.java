@@ -16,6 +16,7 @@ package com.liferay.staging.processes.web.internal.portlet.action;
 
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.staging.constants.StagingProcessesPortletKeys;
+
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -29,7 +30,8 @@ import org.osgi.service.component.annotations.Component;
 	},
 	service = MVCRenderCommand.class
 )
-public class ProcessesListShowSummaryMVCRenderCommand extends GetGroupMVCRenderCommand {
+public class ProcessesListShowSummaryMVCRenderCommand
+	extends GetGroupMVCRenderCommand {
 
 	@Override
 	protected String getPath() {

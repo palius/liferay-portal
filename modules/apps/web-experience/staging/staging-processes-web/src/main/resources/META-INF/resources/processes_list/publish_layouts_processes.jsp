@@ -295,19 +295,21 @@ OrderByComparator<BackgroundTask> orderByComparator = BackgroundTaskComparatorFa
 						url="<%= deleteBackgroundTaskURL %>"
 					/>
 
-					<portlet:renderURL var="processSummaryURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-						<portlet:param name="mvcRenderCommandName" value="showSummary" />
-					</portlet:renderURL>
+					<c:if test="<%= !backgroundTask.isInProgress() %>">
+						<portlet:renderURL var="processSummaryURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+							<portlet:param name="mvcRenderCommandName" value="showSummary" />
+						</portlet:renderURL>
 
-					<%
-					String onClickFnName = liferayPortletResponse.getNamespace() + "showProcessSummary(" + String.valueOf(backgroundTask.getBackgroundTaskId()) + ", '" + HtmlUtil.escape(backgroundTaskDisplay.getDisplayName(request)) + "', '" + processSummaryURL + "');";
-					%>
+						<%
+						String onClickFnName = liferayPortletResponse.getNamespace() + "showProcessSummary(" + String.valueOf(backgroundTask.getBackgroundTaskId()) + ", '" + HtmlUtil.escape(backgroundTaskDisplay.getDisplayName(request)) + "', '" + processSummaryURL + "');";
+						%>
 
-					<liferay-ui:icon
-						onClick='<%= onClickFnName %>'
-						message="summary"
-						url="javascript:;"
-					/>
+						<liferay-ui:icon
+							message="summary"
+							onClick="<%= onClickFnName %>"
+							url="javascript:;"
+						/>
+					</c:if>
 				</liferay-ui:icon-menu>
 			</liferay-ui:search-container-column-text>
 		</liferay-ui:search-container-row>
