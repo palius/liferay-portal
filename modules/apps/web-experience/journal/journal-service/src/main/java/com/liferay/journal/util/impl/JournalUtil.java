@@ -1108,7 +1108,9 @@ public class JournalUtil {
 		while (itr.hasNext()) {
 			JournalArticle journalArticle = itr.next();
 
-			if (journalArticle.getArticleId().equals(articleId) &&
+			String journalArticleId = journalArticle.getArticleId();
+
+			if (journalArticleId.equals(articleId) &&
 				((journalArticle.getVersion() == version) || (version == 0))) {
 
 				itr.remove();
@@ -1252,9 +1254,7 @@ public class JournalUtil {
 		List<Element> curElements = curParentElement.elements(
 			"dynamic-element");
 
-		for (int i = 0; i < curElements.size(); i++) {
-			Element curElement = curElements.get(i);
-
+		for (Element curElement : curElements) {
 			_mergeArticleContentDelete(curElement, newDocument);
 
 			String instanceId = curElement.attributeValue("instance-id");

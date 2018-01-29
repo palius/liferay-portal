@@ -18,6 +18,7 @@ import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServices
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
 import com.liferay.dynamic.data.mapping.form.web.configuration.DDMFormWebConfiguration;
+import com.liferay.dynamic.data.mapping.form.web.internal.instance.lifecycle.AddDefaultSharedFormLayoutPortalInstanceLifecycleListener;
 import com.liferay.dynamic.data.mapping.form.web.internal.search.FieldSetSearch;
 import com.liferay.dynamic.data.mapping.form.web.internal.search.FieldSetSearchTerms;
 import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesJSONSerializer;
@@ -65,7 +66,9 @@ public class DDMFormAdminFieldSetDisplayContext
 
 	public DDMFormAdminFieldSetDisplayContext(
 		RenderRequest renderRequest, RenderResponse renderResponse,
-		DDMFormWebConfiguration ddlFormWebConfiguration,
+		AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
+			addDefaultSharedFormLayoutPortalInstanceLifecycleListener,
+		DDMFormWebConfiguration ddmFormWebConfiguration,
 		DDMFormInstanceRecordLocalService formInstanceRecordLocalService,
 		DDMFormInstanceService formInstanceService,
 		DDMFormFieldTypeServicesTracker formFieldTypeServicesTracker,
@@ -78,12 +81,13 @@ public class DDMFormAdminFieldSetDisplayContext
 		WorkflowEngineManager workflowEngineManager) {
 
 		super(
-			renderRequest, renderResponse, ddlFormWebConfiguration,
-			formInstanceRecordLocalService, formInstanceService,
-			formFieldTypeServicesTracker, formFieldTypesJSONSerializer,
-			formRenderer, formValuesFactory, formValuesMerger,
-			structureLocalService, structureService, jsonFactory, storageEngine,
-			workflowEngineManager);
+			renderRequest, renderResponse,
+			addDefaultSharedFormLayoutPortalInstanceLifecycleListener,
+			ddmFormWebConfiguration, formInstanceRecordLocalService,
+			formInstanceService, formFieldTypeServicesTracker,
+			formFieldTypesJSONSerializer, formRenderer, formValuesFactory,
+			formValuesMerger, structureLocalService, structureService,
+			jsonFactory, storageEngine, workflowEngineManager);
 	}
 
 	@Override
@@ -188,7 +192,7 @@ public class DDMFormAdminFieldSetDisplayContext
 
 		portletURL.setParameter("mvcPath", "/admin/view.jsp");
 		portletURL.setParameter("groupId", String.valueOf(getScopeGroupId()));
-		portletURL.setParameter("currentTab", "field-set");
+		portletURL.setParameter("currentTab", "element-set");
 
 		return portletURL;
 	}
@@ -213,10 +217,11 @@ public class DDMFormAdminFieldSetDisplayContext
 		fieldSetsSearch.setOrderByType(orderByType);
 
 		if (fieldSetsSearch.isSearch()) {
-			fieldSetsSearch.setEmptyResultsMessage("no-field-sets-were-found");
+			fieldSetsSearch.setEmptyResultsMessage(
+				"no-element-sets-were-found");
 		}
 		else {
-			fieldSetsSearch.setEmptyResultsMessage("there-are-no-field-sets");
+			fieldSetsSearch.setEmptyResultsMessage("there-are-no-element-sets");
 		}
 
 		setFieldSetsSearchResults(fieldSetsSearch);

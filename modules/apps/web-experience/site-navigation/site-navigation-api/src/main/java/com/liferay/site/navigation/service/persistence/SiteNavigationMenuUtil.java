@@ -604,6 +604,66 @@ public class SiteNavigationMenuUtil {
 	}
 
 	/**
+	* Returns the site navigation menu where groupId = &#63; and type = &#63; or throws a {@link NoSuchMenuException} if it could not be found.
+	*
+	* @param groupId the group ID
+	* @param type the type
+	* @return the matching site navigation menu
+	* @throws NoSuchMenuException if a matching site navigation menu could not be found
+	*/
+	public static SiteNavigationMenu findByG_T(long groupId, int type)
+		throws com.liferay.site.navigation.exception.NoSuchMenuException {
+		return getPersistence().findByG_T(groupId, type);
+	}
+
+	/**
+	* Returns the site navigation menu where groupId = &#63; and type = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	*
+	* @param groupId the group ID
+	* @param type the type
+	* @return the matching site navigation menu, or <code>null</code> if a matching site navigation menu could not be found
+	*/
+	public static SiteNavigationMenu fetchByG_T(long groupId, int type) {
+		return getPersistence().fetchByG_T(groupId, type);
+	}
+
+	/**
+	* Returns the site navigation menu where groupId = &#63; and type = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	*
+	* @param groupId the group ID
+	* @param type the type
+	* @param retrieveFromCache whether to retrieve from the finder cache
+	* @return the matching site navigation menu, or <code>null</code> if a matching site navigation menu could not be found
+	*/
+	public static SiteNavigationMenu fetchByG_T(long groupId, int type,
+		boolean retrieveFromCache) {
+		return getPersistence().fetchByG_T(groupId, type, retrieveFromCache);
+	}
+
+	/**
+	* Removes the site navigation menu where groupId = &#63; and type = &#63; from the database.
+	*
+	* @param groupId the group ID
+	* @param type the type
+	* @return the site navigation menu that was removed
+	*/
+	public static SiteNavigationMenu removeByG_T(long groupId, int type)
+		throws com.liferay.site.navigation.exception.NoSuchMenuException {
+		return getPersistence().removeByG_T(groupId, type);
+	}
+
+	/**
+	* Returns the number of site navigation menus where groupId = &#63; and type = &#63;.
+	*
+	* @param groupId the group ID
+	* @param type the type
+	* @return the number of matching site navigation menus
+	*/
+	public static int countByG_T(long groupId, int type) {
+		return getPersistence().countByG_T(groupId, type);
+	}
+
+	/**
 	* Caches the site navigation menu in the entity cache if it is enabled.
 	*
 	* @param siteNavigationMenu the site navigation menu
@@ -751,6 +811,10 @@ public class SiteNavigationMenuUtil {
 	*/
 	public static int countAll() {
 		return getPersistence().countAll();
+	}
+
+	public static java.util.Set<java.lang.String> getBadColumnNames() {
+		return getPersistence().getBadColumnNames();
 	}
 
 	public static SiteNavigationMenuPersistence getPersistence() {

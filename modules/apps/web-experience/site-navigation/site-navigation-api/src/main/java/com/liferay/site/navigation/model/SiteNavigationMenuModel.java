@@ -207,6 +207,20 @@ public interface SiteNavigationMenuModel extends BaseModel<SiteNavigationMenu>,
 	 */
 	public void setName(String name);
 
+	/**
+	 * Returns the type of this site navigation menu.
+	 *
+	 * @return the type of this site navigation menu
+	 */
+	public int getType();
+
+	/**
+	 * Sets the type of this site navigation menu.
+	 *
+	 * @param type the type of this site navigation menu
+	 */
+	public void setType(int type);
+
 	@Override
 	public boolean isNew();
 

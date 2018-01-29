@@ -16,11 +16,15 @@ package com.liferay.site.navigation.menu.item.layout.internal.type;
 
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.navigation.menu.item.layout.internal.constants.SiteNavigationMenuItemTypeLayoutConstants;
 import com.liferay.site.navigation.menu.item.layout.internal.constants.SiteNavigationMenuItemTypeLayoutWebKeys;
@@ -68,15 +72,13 @@ public class LayoutSiteNavigationMenuItemType
 		typeSettingsProperties.fastLoad(
 			siteNavigationMenuItem.getTypeSettings());
 
-		String layoutUuid = typeSettingsProperties.get("layoutUuid");
+		String label = typeSettingsProperties.getProperty("title");
 
-		Layout layout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
-			layoutUuid, siteNavigationMenuItem.getGroupId(), false);
-
-		if (layout == null) {
-			layout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
-				layoutUuid, siteNavigationMenuItem.getGroupId(), true);
+		if (Validator.isNotNull(label)) {
+			return label;
 		}
+
+		Layout layout = getLayout(siteNavigationMenuItem);
 
 		if (layout != null) {
 			return layout.getName(locale);
@@ -88,6 +90,33 @@ public class LayoutSiteNavigationMenuItemType
 	@Override
 	public String getType() {
 		return SiteNavigationMenuItemTypeLayoutConstants.LAYOUT;
+	}
+
+	@Override
+	public String getTypeSettingsFromLayout(Layout layout) {
+		UnicodeProperties unicodeProperties = new UnicodeProperties();
+
+		unicodeProperties.setProperty(
+			"groupId", String.valueOf(layout.getGroupId()));
+		unicodeProperties.setProperty("layoutUuid", layout.getUuid());
+		unicodeProperties.setProperty(
+			"privateLayout", String.valueOf(layout.isPrivateLayout()));
+
+		return unicodeProperties.toString();
+	}
+
+	@Override
+	public String getURL(
+			HttpServletRequest request,
+			SiteNavigationMenuItem siteNavigationMenuItem)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		Layout layout = getLayout(siteNavigationMenuItem);
+
+		return _portal.getLayoutFullURL(layout, themeDisplay, true);
 	}
 
 	@Override
@@ -109,10 +138,24 @@ public class LayoutSiteNavigationMenuItemType
 			SiteNavigationMenuItem siteNavigationMenuItem)
 		throws IOException {
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
 		request.setAttribute(
 			SiteNavigationMenuItemTypeLayoutWebKeys.ITEM_SELECTOR,
 			_itemSelector);
 
+		request.setAttribute(
+			WebKeys.SEL_LAYOUT, getLayout(siteNavigationMenuItem));
+		request.setAttribute(
+			WebKeys.TITLE,
+			getTitle(siteNavigationMenuItem, themeDisplay.getLocale()));
+
+		_jspRenderer.renderJSP(
+			_servletContext, request, response, "/edit_layout.jsp");
+	}
+
+	protected Layout getLayout(SiteNavigationMenuItem siteNavigationMenuItem) {
 		UnicodeProperties typeSettingsProperties = new UnicodeProperties();
 
 		typeSettingsProperties.fastLoad(
@@ -124,13 +167,8 @@ public class LayoutSiteNavigationMenuItemType
 		boolean privateLayout = GetterUtil.getBoolean(
 			typeSettingsProperties.get("privateLayout"));
 
-		Layout layout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
+		return _layoutLocalService.fetchLayoutByUuidAndGroupId(
 			layoutUuid, groupId, privateLayout);
-
-		request.setAttribute(WebKeys.SEL_LAYOUT, layout);
-
-		_jspRenderer.renderJSP(
-			_servletContext, request, response, "/edit_layout.jsp");
 	}
 
 	@Reference
@@ -141,6 +179,9 @@ public class LayoutSiteNavigationMenuItemType
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.site.navigation.menu.item.layout)",

@@ -76,7 +76,8 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 			{ "userName", Types.VARCHAR },
 			{ "createDate", Types.TIMESTAMP },
 			{ "modifiedDate", Types.TIMESTAMP },
-			{ "name", Types.VARCHAR }
+			{ "name", Types.VARCHAR },
+			{ "type_", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -89,9 +90,10 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table SiteNavigationMenu (siteNavigationMenuId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null)";
+	public static final String TABLE_SQL_CREATE = "create table SiteNavigationMenu (siteNavigationMenuId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,type_ INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table SiteNavigationMenu";
 	public static final String ORDER_BY_JPQL = " ORDER BY siteNavigationMenu.siteNavigationMenuId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY SiteNavigationMenu.siteNavigationMenuId ASC";
@@ -109,7 +111,8 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 			true);
 	public static final long GROUPID_COLUMN_BITMASK = 1L;
 	public static final long NAME_COLUMN_BITMASK = 2L;
-	public static final long SITENAVIGATIONMENUID_COLUMN_BITMASK = 4L;
+	public static final long TYPE_COLUMN_BITMASK = 4L;
+	public static final long SITENAVIGATIONMENUID_COLUMN_BITMASK = 8L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -132,6 +135,7 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 		model.setCreateDate(soapModel.getCreateDate());
 		model.setModifiedDate(soapModel.getModifiedDate());
 		model.setName(soapModel.getName());
+		model.setType(soapModel.getType());
 
 		return model;
 	}
@@ -205,6 +209,7 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("name", getName());
+		attributes.put("type", getType());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -260,6 +265,12 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 
 		if (name != null) {
 			setName(name);
+		}
+
+		Integer type = (Integer)attributes.get("type");
+
+		if (type != null) {
+			setType(type);
 		}
 	}
 
@@ -405,6 +416,29 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 		return GetterUtil.getString(_originalName);
 	}
 
+	@JSON
+	@Override
+	public int getType() {
+		return _type;
+	}
+
+	@Override
+	public void setType(int type) {
+		_columnBitmask |= TYPE_COLUMN_BITMASK;
+
+		if (!_setOriginalType) {
+			_setOriginalType = true;
+
+			_originalType = _type;
+		}
+
+		_type = type;
+	}
+
+	public int getOriginalType() {
+		return _originalType;
+	}
+
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -444,6 +478,7 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 		siteNavigationMenuImpl.setCreateDate(getCreateDate());
 		siteNavigationMenuImpl.setModifiedDate(getModifiedDate());
 		siteNavigationMenuImpl.setName(getName());
+		siteNavigationMenuImpl.setType(getType());
 
 		siteNavigationMenuImpl.resetOriginalValues();
 
@@ -514,6 +549,10 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 
 		siteNavigationMenuModelImpl._originalName = siteNavigationMenuModelImpl._name;
 
+		siteNavigationMenuModelImpl._originalType = siteNavigationMenuModelImpl._type;
+
+		siteNavigationMenuModelImpl._setOriginalType = false;
+
 		siteNavigationMenuModelImpl._columnBitmask = 0;
 	}
 
@@ -563,12 +602,14 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 			siteNavigationMenuCacheModel.name = null;
 		}
 
+		siteNavigationMenuCacheModel.type = getType();
+
 		return siteNavigationMenuCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("{siteNavigationMenuId=");
 		sb.append(getSiteNavigationMenuId());
@@ -586,6 +627,8 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 		sb.append(getModifiedDate());
 		sb.append(", name=");
 		sb.append(getName());
+		sb.append(", type=");
+		sb.append(getType());
 		sb.append("}");
 
 		return sb.toString();
@@ -593,7 +636,7 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(28);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.site.navigation.model.SiteNavigationMenu");
@@ -631,6 +674,10 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 			"<column><column-name>name</column-name><column-value><![CDATA[");
 		sb.append(getName());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>type</column-name><column-value><![CDATA[");
+		sb.append(getType());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -653,6 +700,9 @@ public class SiteNavigationMenuModelImpl extends BaseModelImpl<SiteNavigationMen
 	private boolean _setModifiedDate;
 	private String _name;
 	private String _originalName;
+	private int _type;
+	private int _originalType;
+	private boolean _setOriginalType;
 	private long _columnBitmask;
 	private SiteNavigationMenu _escapedModel;
 }

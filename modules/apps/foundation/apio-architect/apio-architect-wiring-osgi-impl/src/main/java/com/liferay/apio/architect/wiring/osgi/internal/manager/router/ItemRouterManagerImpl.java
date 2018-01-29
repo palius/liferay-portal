@@ -20,6 +20,8 @@ import static com.liferay.apio.architect.wiring.osgi.internal.manager.util.Manag
 
 import com.liferay.apio.architect.alias.ProvideFunction;
 import com.liferay.apio.architect.error.ApioDeveloperError.MustHavePathIdentifierMapper;
+import com.liferay.apio.architect.error.ApioDeveloperError.MustHaveValidGenericType;
+import com.liferay.apio.architect.operation.Operation;
 import com.liferay.apio.architect.router.ItemRouter;
 import com.liferay.apio.architect.routes.ItemRoutes;
 import com.liferay.apio.architect.routes.ItemRoutes.Builder;
@@ -27,8 +29,11 @@ import com.liferay.apio.architect.wiring.osgi.internal.manager.base.BaseManager;
 import com.liferay.apio.architect.wiring.osgi.manager.PathIdentifierMapperManager;
 import com.liferay.apio.architect.wiring.osgi.manager.ProviderManager;
 import com.liferay.apio.architect.wiring.osgi.manager.representable.ModelClassManager;
+import com.liferay.apio.architect.wiring.osgi.manager.representable.NameManager;
 import com.liferay.apio.architect.wiring.osgi.manager.router.ItemRouterManager;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.osgi.framework.ServiceReference;
@@ -62,6 +67,17 @@ public class ItemRouterManagerImpl
 	}
 
 	@Override
+	public <T> List<Operation> getOperations(Class<T> modelClass) {
+		Optional<ItemRoutes> optional = getServiceOptional(modelClass);
+
+		return optional.map(
+			ItemRoutes::getOperations
+		).orElseGet(
+			Collections::emptyList
+		);
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	protected ItemRoutes map(
 		ItemRouter itemRouter, ServiceReference<ItemRouter> serviceReference,
@@ -75,8 +91,14 @@ public class ItemRouterManagerImpl
 			serviceReference, ITEM_IDENTIFIER_CLASS,
 			() -> getTypeParamOrFail(itemRouter, ItemRouter.class, 1));
 
+		Optional<String> nameOptional = _nameManager.getNameOptional(
+			modelClass.getName());
+
+		String name = nameOptional.orElseThrow(
+			() -> new MustHaveValidGenericType(modelClass));
+
 		Builder builder = new Builder<>(
-			modelClass, provideFunction,
+			modelClass, name, provideFunction,
 			path -> {
 				Optional<?> optional = _pathIdentifierMapperManager.map(
 					identifierClass, path);
@@ -90,6 +112,9 @@ public class ItemRouterManagerImpl
 
 	@Reference
 	private ModelClassManager _modelClassManager;
+
+	@Reference
+	private NameManager _nameManager;
 
 	@Reference
 	private PathIdentifierMapperManager _pathIdentifierMapperManager;

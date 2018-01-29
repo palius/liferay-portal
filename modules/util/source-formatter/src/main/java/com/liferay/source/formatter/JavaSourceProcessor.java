@@ -69,12 +69,14 @@ public class JavaSourceProcessor extends BaseSourceProcessor {
 		throws Exception {
 
 		Set<String> modifiedContents = new HashSet<>();
+		Set<String> modifiedMessages = new TreeSet<>();
 
 		String newContent = format(
 			file, fileName, absolutePath, content, content, modifiedContents,
-			0);
+			modifiedMessages, 0);
 
-		file = processFormattedFile(file, fileName, content, newContent);
+		file = processFormattedFile(
+			file, fileName, content, newContent, modifiedMessages);
 
 		_processCheckstyle(file);
 	}
@@ -115,7 +117,15 @@ public class JavaSourceProcessor extends BaseSourceProcessor {
 		configuration = CheckstyleUtil.addAttribute(
 			configuration, "maxLineLength",
 			String.valueOf(sourceFormatterArgs.getMaxLineLength()),
+			"com.liferay.source.formatter.checkstyle.checks.Append");
+		configuration = CheckstyleUtil.addAttribute(
+			configuration, "maxLineLength",
+			String.valueOf(sourceFormatterArgs.getMaxLineLength()),
 			"com.liferay.source.formatter.checkstyle.checks.Concat");
+		configuration = CheckstyleUtil.addAttribute(
+			configuration, "maxLineLength",
+			String.valueOf(sourceFormatterArgs.getMaxLineLength()),
+			"com.liferay.source.formatter.checkstyle.checks.PlusStatement");
 		configuration = CheckstyleUtil.addAttribute(
 			configuration, "showDebugInformation",
 			String.valueOf(sourceFormatterArgs.isShowDebugInformation()),

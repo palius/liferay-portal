@@ -66,6 +66,7 @@ public class SiteNavigationMenuWrapper implements SiteNavigationMenu,
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("name", getName());
+		attributes.put("type", getType());
 
 		return attributes;
 	}
@@ -118,6 +119,12 @@ public class SiteNavigationMenuWrapper implements SiteNavigationMenu,
 
 		if (name != null) {
 			setName(name);
+		}
+
+		Integer type = (Integer)attributes.get("type");
+
+		if (type != null) {
+			setType(type);
 		}
 	}
 
@@ -209,6 +216,16 @@ public class SiteNavigationMenuWrapper implements SiteNavigationMenu,
 	@Override
 	public long getSiteNavigationMenuId() {
 		return _siteNavigationMenu.getSiteNavigationMenuId();
+	}
+
+	/**
+	* Returns the type of this site navigation menu.
+	*
+	* @return the type of this site navigation menu
+	*/
+	@Override
+	public int getType() {
+		return _siteNavigationMenu.getType();
 	}
 
 	/**
@@ -365,6 +382,16 @@ public class SiteNavigationMenuWrapper implements SiteNavigationMenu,
 	@Override
 	public void setSiteNavigationMenuId(long siteNavigationMenuId) {
 		_siteNavigationMenu.setSiteNavigationMenuId(siteNavigationMenuId);
+	}
+
+	/**
+	* Sets the type of this site navigation menu.
+	*
+	* @param type the type of this site navigation menu
+	*/
+	@Override
+	public void setType(int type) {
+		_siteNavigationMenu.setType(type);
 	}
 
 	/**

@@ -15,13 +15,13 @@
 package com.liferay.portal.osgi.debug.declarative.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.HashMapDictionary;
-import com.liferay.portal.kernel.util.ReflectionUtil;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -163,8 +163,8 @@ public class DeclarativeServiceDependencyManagerTest {
 
 			sb.append("name: ");
 			sb.append(DeclarativeServiceTestComponent.class.getName());
-			sb.append(", unsatisfied references: ");
-			sb.append("{name: declarativeServiceTestReference, target: null}");
+			sb.append(", unsatisfied references: {name: ");
+			sb.append("declarativeServiceTestReference, target: null}");
 
 			String s = sb.toString();
 

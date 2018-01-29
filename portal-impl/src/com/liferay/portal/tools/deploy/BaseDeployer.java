@@ -895,11 +895,13 @@ public class BaseDeployer implements AutoDeployer, Deployer {
 		// after the prefix, or 3.) the recommended deployment context as
 		// specified in liferay-plugin-package.properties, or 4.) the file name.
 
-		if (Validator.isNull(specifiedContext) &&
-			srcFile.getName().startsWith(DEPLOY_TO_PREFIX)) {
+		String srcFileName = srcFile.getName();
 
-			displayName = srcFile.getName().substring(
-				DEPLOY_TO_PREFIX.length(), srcFile.getName().length() - 4);
+		if (Validator.isNull(specifiedContext) &&
+			srcFileName.startsWith(DEPLOY_TO_PREFIX)) {
+
+			displayName = srcFileName.substring(
+				DEPLOY_TO_PREFIX.length(), srcFileName.length() - 4);
 
 			overwrite = true;
 			preliminaryContext = displayName;
@@ -1177,7 +1179,11 @@ public class BaseDeployer implements AutoDeployer, Deployer {
 			double webXmlVersion, File srcFile, String displayName)
 		throws Exception {
 
-		StringBundler sb = new StringBundler(61);
+		if (displayName.startsWith(StringPool.FORWARD_SLASH)) {
+			displayName = displayName.substring(1);
+		}
+
+		StringBundler sb = new StringBundler(62);
 
 		sb.append("<display-name>");
 		sb.append(displayName);
@@ -1228,8 +1234,8 @@ public class BaseDeployer implements AutoDeployer, Deployer {
 
 		if (Validator.isNotNull(portletTaglibDTD)) {
 			sb.append("<taglib>");
-			sb.append(
-				"<taglib-uri>http://java.sun.com/portlet_2_0</taglib-uri>");
+			sb.append("<taglib-uri>http://java.sun.com/portlet_2_0");
+			sb.append("</taglib-uri>");
 			sb.append("<taglib-location>");
 			sb.append("/WEB-INF/tld/liferay-portlet.tld");
 			sb.append("</taglib-location>");

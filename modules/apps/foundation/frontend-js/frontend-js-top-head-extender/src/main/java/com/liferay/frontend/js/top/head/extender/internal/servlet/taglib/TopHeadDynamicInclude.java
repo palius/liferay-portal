@@ -15,6 +15,7 @@
 package com.liferay.frontend.js.top.head.extender.internal.servlet.taglib;
 
 import com.liferay.frontend.js.top.head.extender.TopHeadResources;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.servlet.PortalWebResourceConstants;
 import com.liferay.portal.kernel.servlet.PortalWebResources;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
@@ -22,7 +23,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.JavaScriptBundleUtil;
 
@@ -241,7 +241,11 @@ public class TopHeadDynamicInclude implements DynamicInclude {
 		for (String url : urls) {
 			if (sb.length() == 0) {
 				sb.append("<script data-senna-track=\"permanent\" src=\"");
-				sb.append(comboURL);
+
+				ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+				sb.append(themeDisplay.getCDNBaseURL() + comboURL);
 			}
 
 			sb.append(StringPool.AMPERSAND);

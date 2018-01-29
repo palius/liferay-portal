@@ -14,13 +14,12 @@
 
 package com.liferay.apio.architect.message.hal.internal;
 
-import com.liferay.apio.architect.list.FunctionalList;
 import com.liferay.apio.architect.message.json.JSONObjectBuilder;
 import com.liferay.apio.architect.message.json.PageMessageMapper;
+import com.liferay.apio.architect.message.json.SingleModelMessageMapper;
 import com.liferay.apio.architect.representor.Representor;
 import com.liferay.apio.architect.wiring.osgi.manager.representable.RepresentableManager;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -42,6 +41,13 @@ public class HALPageMessageMapper<T> implements PageMessageMapper<T> {
 	@Override
 	public String getMediaType() {
 		return "application/hal+json";
+	}
+
+	@Override
+	public Optional<SingleModelMessageMapper<T>>
+		getSingleModelMessageMapperOptional() {
+
+		return Optional.of(_singleModelMessageMapper);
 	}
 
 	@Override
@@ -78,126 +84,6 @@ public class HALPageMessageMapper<T> implements PageMessageMapper<T> {
 	}
 
 	@Override
-	public void mapItemBooleanField(
-		JSONObjectBuilder pageJSONObjectBuilder,
-		JSONObjectBuilder itemJSONObjectBuilder, String fieldName,
-		Boolean value) {
-
-		itemJSONObjectBuilder.field(
-			fieldName
-		).booleanValue(
-			value
-		);
-	}
-
-	@Override
-	public void mapItemEmbeddedResourceBooleanField(
-		JSONObjectBuilder pageJSONObjectBuilder,
-		JSONObjectBuilder itemJSONObjectBuilder,
-		FunctionalList<String> embeddedPathElements, String fieldName,
-		Boolean value) {
-
-		_halSingleModelMessageMapper.mapEmbeddedResourceBooleanField(
-			itemJSONObjectBuilder, embeddedPathElements, fieldName, value);
-	}
-
-	@Override
-	public void mapItemEmbeddedResourceLink(
-		JSONObjectBuilder pageJSONObjectBuilder,
-		JSONObjectBuilder itemJSONObjectBuilder,
-		FunctionalList<String> embeddedPathElements, String fieldName,
-		String url) {
-
-		_halSingleModelMessageMapper.mapEmbeddedResourceLink(
-			itemJSONObjectBuilder, embeddedPathElements, fieldName, url);
-	}
-
-	@Override
-	public void mapItemEmbeddedResourceNumberField(
-		JSONObjectBuilder pageJSONObjectBuilder,
-		JSONObjectBuilder itemJSONObjectBuilder,
-		FunctionalList<String> embeddedPathElements, String fieldName,
-		Number value) {
-
-		_halSingleModelMessageMapper.mapEmbeddedResourceNumberField(
-			itemJSONObjectBuilder, embeddedPathElements, fieldName, value);
-	}
-
-	@Override
-	public void mapItemEmbeddedResourceStringField(
-		JSONObjectBuilder pageJSONObjectBuilder,
-		JSONObjectBuilder itemJSONObjectBuilder,
-		FunctionalList<String> embeddedPathElements, String fieldName,
-		String value) {
-
-		_halSingleModelMessageMapper.mapEmbeddedResourceStringField(
-			itemJSONObjectBuilder, embeddedPathElements, fieldName, value);
-	}
-
-	@Override
-	public void mapItemEmbeddedResourceURL(
-		JSONObjectBuilder pageJSONObjectBuilder,
-		JSONObjectBuilder itemJSONObjectBuilder,
-		FunctionalList<String> embeddedPathElements, String url) {
-
-		_halSingleModelMessageMapper.mapEmbeddedResourceURL(
-			itemJSONObjectBuilder, embeddedPathElements, url);
-	}
-
-	@Override
-	public void mapItemLink(
-		JSONObjectBuilder pageJSONObjectBuilder,
-		JSONObjectBuilder itemJSONObjectBuilder, String fieldName, String url) {
-
-		_halSingleModelMessageMapper.mapLink(
-			itemJSONObjectBuilder, fieldName, url);
-	}
-
-	@Override
-	public void mapItemLinkedResourceURL(
-		JSONObjectBuilder pageJSONObjectBuilder,
-		JSONObjectBuilder itemJSONObjectBuilder,
-		FunctionalList<String> embeddedPathElements, String url) {
-
-		_halSingleModelMessageMapper.mapLinkedResourceURL(
-			itemJSONObjectBuilder, embeddedPathElements, url);
-	}
-
-	@Override
-	public void mapItemNumberField(
-		JSONObjectBuilder pageJSONObjectBuilder,
-		JSONObjectBuilder itemJSONObjectBuilder, String fieldName,
-		Number value) {
-
-		itemJSONObjectBuilder.field(
-			fieldName
-		).numberValue(
-			value
-		);
-	}
-
-	@Override
-	public void mapItemSelfURL(
-		JSONObjectBuilder pageJSONObjectBuilder,
-		JSONObjectBuilder itemJSONObjectBuilder, String url) {
-
-		_halSingleModelMessageMapper.mapSelfURL(itemJSONObjectBuilder, url);
-	}
-
-	@Override
-	public void mapItemStringField(
-		JSONObjectBuilder pageJSONObjectBuilder,
-		JSONObjectBuilder itemJSONObjectBuilder, String fieldName,
-		String value) {
-
-		itemJSONObjectBuilder.field(
-			fieldName
-		).stringValue(
-			value
-		);
-	}
-
-	@Override
 	public void mapItemTotalCount(
 		JSONObjectBuilder jsonObjectBuilder, int totalCount) {
 
@@ -206,14 +92,6 @@ public class HALPageMessageMapper<T> implements PageMessageMapper<T> {
 		).numberValue(
 			totalCount
 		);
-	}
-
-	@Override
-	public void mapItemTypes(
-		JSONObjectBuilder pageJSONObjectBuilder,
-		JSONObjectBuilder itemJSONObjectBuilder, List<String> types) {
-
-		_halSingleModelMessageMapper.mapTypes(itemJSONObjectBuilder, types);
 	}
 
 	@Override
@@ -265,7 +143,7 @@ public class HALPageMessageMapper<T> implements PageMessageMapper<T> {
 		HttpHeaders httpHeaders) {
 
 		Optional<Representor<T, Object>> optional =
-			_representableManager.getRepresentorOptional(modelClass);
+			representableManager.getRepresentorOptional(modelClass);
 
 		optional.map(
 			Representor::getTypes
@@ -280,9 +158,9 @@ public class HALPageMessageMapper<T> implements PageMessageMapper<T> {
 	}
 
 	@Reference
-	private HALSingleModelMessageMapper _halSingleModelMessageMapper;
+	protected RepresentableManager representableManager;
 
-	@Reference
-	private RepresentableManager _representableManager;
+	private final SingleModelMessageMapper<T> _singleModelMessageMapper =
+		new HALSingleModelMessageMapper<>();
 
 }

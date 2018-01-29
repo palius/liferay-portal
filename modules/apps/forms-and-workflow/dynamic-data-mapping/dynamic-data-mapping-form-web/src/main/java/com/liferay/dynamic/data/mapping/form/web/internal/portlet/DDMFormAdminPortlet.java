@@ -23,6 +23,7 @@ import com.liferay.dynamic.data.mapping.form.web.configuration.DDMFormWebConfigu
 import com.liferay.dynamic.data.mapping.form.web.internal.constants.DDMFormPortletKeys;
 import com.liferay.dynamic.data.mapping.form.web.internal.display.context.DDMFormAdminDisplayContext;
 import com.liferay.dynamic.data.mapping.form.web.internal.display.context.DDMFormAdminFieldSetDisplayContext;
+import com.liferay.dynamic.data.mapping.form.web.internal.instance.lifecycle.AddDefaultSharedFormLayoutPortalInstanceLifecycleListener;
 import com.liferay.dynamic.data.mapping.io.DDMFormFieldTypesJSONSerializer;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
@@ -48,7 +49,6 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.SessionParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowEngineManager;
 
@@ -58,7 +58,6 @@ import java.util.Map;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
-import javax.portlet.PortletSession;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
@@ -189,18 +188,15 @@ public class DDMFormAdminPortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortalException {
 
-		String currentTab = SessionParamUtil.getString(
-			renderRequest, "currentTab");
+		String currentTab = ParamUtil.getString(
+			renderRequest, "currentTab", "forms");
 
-		PortletSession portletSession = renderRequest.getPortletSession();
-
-		portletSession.setAttribute("currentTab", currentTab);
-
-		if (currentTab.equals("field-set")) {
+		if (currentTab.equals("element-set")) {
 			renderRequest.setAttribute(
 				WebKeys.PORTLET_DISPLAY_CONTEXT,
 				new DDMFormAdminFieldSetDisplayContext(
 					renderRequest, renderResponse,
+					_addDefaultSharedFormLayoutPortalInstanceLifecycleListener,
 					_ddmFormWebConfigurationActivator.
 						getDDLFormWebConfiguration(),
 					_ddmFormInstanceRecordLocalService, _ddmFormInstanceService,
@@ -241,6 +237,7 @@ public class DDMFormAdminPortlet extends MVCPortlet {
 				WebKeys.PORTLET_DISPLAY_CONTEXT,
 				new DDMFormAdminDisplayContext(
 					renderRequest, renderResponse,
+					_addDefaultSharedFormLayoutPortalInstanceLifecycleListener,
 					_ddmFormWebConfigurationActivator.
 						getDDLFormWebConfiguration(),
 					_ddmFormInstanceRecordLocalService, _ddmFormInstanceService,
@@ -260,6 +257,10 @@ public class DDMFormAdminPortlet extends MVCPortlet {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMFormAdminPortlet.class);
+
+	@Reference
+	private AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
+		_addDefaultSharedFormLayoutPortalInstanceLifecycleListener;
 
 	@Reference
 	private DDMFormFieldTypeServicesTracker _ddmFormFieldTypeServicesTracker;

@@ -15,11 +15,13 @@
 package com.liferay.fragment.web.internal.portlet.action;
 
 import com.liferay.fragment.constants.FragmentPortletKeys;
+import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.fragment.service.FragmentEntryService;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import javax.portlet.ActionRequest;
@@ -35,7 +37,7 @@ import org.osgi.service.component.annotations.Reference;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + FragmentPortletKeys.FRAGMENT,
-		"mvc.command.name=editFragmentEntry"
+		"mvc.command.name=/fragment/edit_fragment_entry"
 	},
 	service = MVCActionCommand.class
 )
@@ -53,12 +55,28 @@ public class EditFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
 		String css = ParamUtil.getString(actionRequest, "cssContent");
 		String js = ParamUtil.getString(actionRequest, "jsContent");
 		String html = ParamUtil.getString(actionRequest, "htmlContent");
+		int status = ParamUtil.getInteger(actionRequest, "status");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			actionRequest);
 
-		_fragmentEntryService.updateFragmentEntry(
-			fragmentEntryId, name, css, html, js, serviceContext);
+		try {
+			_fragmentEntryService.updateFragmentEntry(
+				fragmentEntryId, name, css, html, js, status, serviceContext);
+		}
+		catch (FragmentEntryContentException fece) {
+			hideDefaultErrorMessage(actionRequest);
+
+			actionResponse.setRenderParameter(
+				"mvcRenderCommandName", "/fragment/edit_fragment_entry");
+			actionResponse.setRenderParameter(
+				"fragmentEntryId", String.valueOf(fragmentEntryId));
+			actionResponse.setRenderParameter("cssContent", css);
+			actionResponse.setRenderParameter("jsContent", js);
+			actionResponse.setRenderParameter("htmlContent", html);
+
+			SessionErrors.add(actionRequest, fece.getClass(), fece);
+		}
 	}
 
 	@Reference

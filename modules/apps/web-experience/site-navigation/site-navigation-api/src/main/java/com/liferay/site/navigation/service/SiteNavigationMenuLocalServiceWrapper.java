@@ -35,6 +35,24 @@ public class SiteNavigationMenuLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.site.navigation.model.SiteNavigationMenu addDefaultSiteNavigationMenu(
+		long userId, long groupId,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _siteNavigationMenuLocalService.addDefaultSiteNavigationMenu(userId,
+			groupId, serviceContext);
+	}
+
+	@Override
+	public com.liferay.site.navigation.model.SiteNavigationMenu addSiteNavigationMenu(
+		long userId, long groupId, java.lang.String name, int type,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _siteNavigationMenuLocalService.addSiteNavigationMenu(userId,
+			groupId, name, type, serviceContext);
+	}
+
+	@Override
 	public com.liferay.site.navigation.model.SiteNavigationMenu addSiteNavigationMenu(
 		long userId, long groupId, java.lang.String name,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -192,6 +210,12 @@ public class SiteNavigationMenuLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.site.navigation.model.SiteNavigationMenu fetchPrimarySiteNavigationMenu(
+		long groupId) {
+		return _siteNavigationMenuLocalService.fetchPrimarySiteNavigationMenu(groupId);
+	}
+
+	@Override
 	public com.liferay.site.navigation.model.SiteNavigationMenu fetchSiteNavigationMenu(
 		long siteNavigationMenuId) {
 		return _siteNavigationMenuLocalService.fetchSiteNavigationMenu(siteNavigationMenuId);
@@ -297,6 +321,15 @@ public class SiteNavigationMenuLocalServiceWrapper
 		java.lang.String keywords) {
 		return _siteNavigationMenuLocalService.getSiteNavigationMenusCount(groupId,
 			keywords);
+	}
+
+	@Override
+	public com.liferay.site.navigation.model.SiteNavigationMenu updateSiteNavigationMenu(
+		long userId, long siteNavigationMenuId, int type,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _siteNavigationMenuLocalService.updateSiteNavigationMenu(userId,
+			siteNavigationMenuId, type, serviceContext);
 	}
 
 	@Override

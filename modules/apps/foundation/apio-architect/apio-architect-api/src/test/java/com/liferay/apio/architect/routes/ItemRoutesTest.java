@@ -14,25 +14,32 @@
 
 package com.liferay.apio.architect.routes;
 
+import static com.liferay.apio.architect.operation.Method.DELETE;
+import static com.liferay.apio.architect.operation.Method.UPDATE;
 import static com.liferay.apio.architect.routes.RoutesTestUtil.FORM_BUILDER_FUNCTION;
 import static com.liferay.apio.architect.routes.RoutesTestUtil.IDENTIFIER_FUNCTION;
 import static com.liferay.apio.architect.routes.RoutesTestUtil.PROVIDE_FUNCTION;
 
 import static com.spotify.hamcrest.optional.OptionalMatchers.emptyOptional;
+import static com.spotify.hamcrest.optional.OptionalMatchers.optionalWithValue;
 
 import static java.util.Collections.singletonMap;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 
 import com.liferay.apio.architect.alias.routes.DeleteItemConsumer;
 import com.liferay.apio.architect.alias.routes.GetItemFunction;
 import com.liferay.apio.architect.alias.routes.UpdateItemFunction;
+import com.liferay.apio.architect.form.Form;
+import com.liferay.apio.architect.operation.Operation;
 import com.liferay.apio.architect.routes.ItemRoutes.Builder;
 import com.liferay.apio.architect.single.model.SingleModel;
 import com.liferay.apio.architect.uri.Path;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -46,7 +53,7 @@ public class ItemRoutesTest {
 	@Test
 	public void testEmptyBuilderBuildsEmptyRoutes() {
 		Builder<String, Long> builder = new Builder<>(
-			String.class, PROVIDE_FUNCTION, IDENTIFIER_FUNCTION);
+			String.class, "name", PROVIDE_FUNCTION, IDENTIFIER_FUNCTION);
 
 		ItemRoutes<String> itemRoutes = builder.build();
 
@@ -64,12 +71,16 @@ public class ItemRoutesTest {
 			itemRoutes.getUpdateItemFunctionOptional();
 
 		assertThat(updateItemFunctionOptional, is(emptyOptional()));
+
+		List<Operation> operations = itemRoutes.getOperations();
+
+		assertThat(operations, is(empty()));
 	}
 
 	@Test
 	public void testFiveParameterBuilderMethodsCreatesValidRoutes() {
 		Builder<String, Long> builder = new Builder<>(
-			String.class, PROVIDE_FUNCTION, IDENTIFIER_FUNCTION);
+			String.class, "name", PROVIDE_FUNCTION, IDENTIFIER_FUNCTION);
 
 		ItemRoutes<String> itemRoutes = builder.addGetter(
 			this::_testAndReturnFourParameterGetterRoute, String.class,
@@ -88,7 +99,7 @@ public class ItemRoutesTest {
 	@Test
 	public void testFourParameterBuilderMethodsCreatesValidRoutes() {
 		Builder<String, Long> builder = new Builder<>(
-			String.class, PROVIDE_FUNCTION, IDENTIFIER_FUNCTION);
+			String.class, "name", PROVIDE_FUNCTION, IDENTIFIER_FUNCTION);
 
 		ItemRoutes<String> itemRoutes = builder.addGetter(
 			this::_testAndReturnThreeParameterGetterRoute, String.class,
@@ -107,7 +118,7 @@ public class ItemRoutesTest {
 	@Test
 	public void testOneParameterBuilderMethodsCreatesValidRoutes() {
 		Builder<String, Long> builder = new Builder<>(
-			String.class, PROVIDE_FUNCTION, IDENTIFIER_FUNCTION);
+			String.class, "name", PROVIDE_FUNCTION, IDENTIFIER_FUNCTION);
 
 		ItemRoutes<String> itemRoutes = builder.addGetter(
 			this::_testAndReturnNoParameterGetterRoute
@@ -123,7 +134,7 @@ public class ItemRoutesTest {
 	@Test
 	public void testThreeParameterBuilderMethodsCreatesValidRoutes() {
 		Builder<String, Long> builder = new Builder<>(
-			String.class, PROVIDE_FUNCTION, IDENTIFIER_FUNCTION);
+			String.class, "name", PROVIDE_FUNCTION, IDENTIFIER_FUNCTION);
 
 		ItemRoutes<String> itemRoutes = builder.addGetter(
 			this::_testAndReturnTwoParameterGetterRoute, String.class,
@@ -141,7 +152,7 @@ public class ItemRoutesTest {
 	@Test
 	public void testTwoParameterBuilderMethodsCreatesValidRoutes() {
 		Builder<String, Long> builder = new Builder<>(
-			String.class, PROVIDE_FUNCTION, IDENTIFIER_FUNCTION);
+			String.class, "name", PROVIDE_FUNCTION, IDENTIFIER_FUNCTION);
 
 		ItemRoutes<String> itemRoutes = builder.addGetter(
 			this::_testAndReturnOneParameterGetterRoute, String.class
@@ -159,7 +170,7 @@ public class ItemRoutesTest {
 		Long identifier, String string, Long aLong, Boolean aBoolean,
 		Integer integer) {
 
-		assertThat(integer, is(equalTo(2017)));
+		assertThat(integer, is(2017));
 
 		return _testAndReturnThreeParameterGetterRoute(
 			identifier, string, aLong, aBoolean);
@@ -169,27 +180,27 @@ public class ItemRoutesTest {
 		Long identifier, Map<String, Object> body, String string, Long aLong,
 		Boolean aBoolean, Integer integer) {
 
-		assertThat(integer, is(equalTo(2017)));
+		assertThat(integer, is(2017));
 
 		return _testAndReturnThreeParameterUpdaterRoute(
 			identifier, body, string, aLong, aBoolean);
 	}
 
 	private String _testAndReturnNoParameterGetterRoute(Long identifier) {
-		assertThat(identifier, is(equalTo(42L)));
+		assertThat(identifier, is(42L));
 
 		return "Apio";
 	}
 
 	private void _testAndReturnNoParameterRemoverRoute(Long identifier) {
-		assertThat(identifier, is(equalTo(42L)));
+		assertThat(identifier, is(42L));
 	}
 
 	private String _testAndReturnNoParameterUpdaterRoute(
 		Long identifier, Map<String, Object> body) {
 
-		assertThat(identifier, is(equalTo(42L)));
-		assertThat(body, is(equalTo(_body)));
+		assertThat(identifier, is(42L));
+		assertThat(body, is(_body));
 
 		return "Updated";
 	}
@@ -197,7 +208,7 @@ public class ItemRoutesTest {
 	private String _testAndReturnOneParameterGetterRoute(
 		Long identifier, String string) {
 
-		assertThat(string, is(equalTo("Apio")));
+		assertThat(string, is("Apio"));
 
 		return _testAndReturnNoParameterGetterRoute(identifier);
 	}
@@ -205,7 +216,7 @@ public class ItemRoutesTest {
 	private String _testAndReturnOneParameterUpdaterRoute(
 		Long identifier, Map<String, Object> body, String string) {
 
-		assertThat(string, is(equalTo("Apio")));
+		assertThat(string, is("Apio"));
 
 		return _testAndReturnNoParameterUpdaterRoute(identifier, body);
 	}
@@ -231,7 +242,7 @@ public class ItemRoutesTest {
 	private String _testAndReturnTwoParameterGetterRoute(
 		Long identifier, String string, Long aLong) {
 
-		assertThat(aLong, is(equalTo(42L)));
+		assertThat(aLong, is(42L));
 
 		return _testAndReturnOneParameterGetterRoute(identifier, string);
 	}
@@ -239,7 +250,7 @@ public class ItemRoutesTest {
 	private String _testAndReturnTwoParameterUpdaterRoute(
 		Long identifier, Map<String, Object> body, String string, Long aLong) {
 
-		assertThat(aLong, is(equalTo(42L)));
+		assertThat(aLong, is(42L));
 
 		return _testAndReturnOneParameterUpdaterRoute(identifier, body, string);
 	}
@@ -248,12 +259,22 @@ public class ItemRoutesTest {
 		Long identifier, String string, Long aLong, Boolean aBoolean,
 		Integer integer) {
 
-		assertThat(integer, is(equalTo(2017)));
+		assertThat(integer, is(2017));
 
 		_testThreeParameterRemoverRoute(identifier, string, aLong, aBoolean);
 	}
 
 	private void _testItemRoutes(ItemRoutes<String> itemRoutes) {
+		Optional<Form> optional = itemRoutes.getFormOptional();
+
+		Form form = optional.get();
+
+		assertThat(form.id, is("u/name"));
+
+		Map body = (Map)form.get(_body);
+
+		assertThat(body, is(_body));
+
 		Path path = new Path("name", "42");
 
 		Optional<DeleteItemConsumer> deleteItemConsumerOptional =
@@ -279,8 +300,8 @@ public class ItemRoutesTest {
 			path
 		);
 
-		assertThat(singleModel.getModelClass(), is(equalTo(String.class)));
-		assertThat(singleModel.getModel(), is(equalTo("Apio")));
+		assertThat(singleModel.getModelClass(), is(String.class));
+		assertThat(singleModel.getModel(), is("Apio"));
 
 		Optional<UpdateItemFunction<String>> updateItemFunctionOptional =
 			itemRoutes.getUpdateItemFunctionOptional();
@@ -296,13 +317,28 @@ public class ItemRoutesTest {
 			_body
 		);
 
-		assertThat(
-			updatedSingleModel.getModelClass(), is(equalTo(String.class)));
-		assertThat(updatedSingleModel.getModel(), is(equalTo("Updated")));
+		assertThat(updatedSingleModel.getModelClass(), is(String.class));
+		assertThat(updatedSingleModel.getModel(), is("Updated"));
+
+		List<Operation> operations = itemRoutes.getOperations();
+
+		assertThat(operations, hasSize(2));
+
+		Operation firstOperation = operations.get(0);
+
+		assertThat(firstOperation.getFormOptional(), is(emptyOptional()));
+		assertThat(firstOperation.method, is(DELETE));
+		assertThat(firstOperation.name, is("name/delete"));
+
+		Operation secondOperation = operations.get(1);
+
+		assertThat(secondOperation.getFormOptional(), is(optionalWithValue()));
+		assertThat(secondOperation.method, is(UPDATE));
+		assertThat(secondOperation.name, is("name/update"));
 	}
 
 	private void _testOneParameterRemoverRoute(Long identifier, String string) {
-		assertThat(string, is(equalTo("Apio")));
+		assertThat(string, is("Apio"));
 
 		_testAndReturnNoParameterRemoverRoute(identifier);
 	}
@@ -318,7 +354,7 @@ public class ItemRoutesTest {
 	private void _testTwoParameterRemoverRoute(
 		Long identifier, String string, Long aLong) {
 
-		assertThat(aLong, is(equalTo(42L)));
+		assertThat(aLong, is(42L));
 
 		_testOneParameterRemoverRoute(identifier, string);
 	}

@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -44,6 +45,8 @@ import com.liferay.site.navigation.model.impl.SiteNavigationMenuModelImpl;
 import com.liferay.site.navigation.service.persistence.SiteNavigationMenuPersistence;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Field;
 
 import java.util.Collections;
 import java.util.Date;
@@ -1954,9 +1957,262 @@ public class SiteNavigationMenuPersistenceImpl extends BasePersistenceImpl<SiteN
 	private static final String _FINDER_COLUMN_G_N_NAME_1 = "siteNavigationMenu.name IS NULL";
 	private static final String _FINDER_COLUMN_G_N_NAME_2 = "siteNavigationMenu.name LIKE ?";
 	private static final String _FINDER_COLUMN_G_N_NAME_3 = "(siteNavigationMenu.name IS NULL OR siteNavigationMenu.name LIKE '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_G_T = new FinderPath(SiteNavigationMenuModelImpl.ENTITY_CACHE_ENABLED,
+			SiteNavigationMenuModelImpl.FINDER_CACHE_ENABLED,
+			SiteNavigationMenuImpl.class, FINDER_CLASS_NAME_ENTITY,
+			"fetchByG_T",
+			new String[] { Long.class.getName(), Integer.class.getName() },
+			SiteNavigationMenuModelImpl.GROUPID_COLUMN_BITMASK |
+			SiteNavigationMenuModelImpl.TYPE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_G_T = new FinderPath(SiteNavigationMenuModelImpl.ENTITY_CACHE_ENABLED,
+			SiteNavigationMenuModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_T",
+			new String[] { Long.class.getName(), Integer.class.getName() });
+
+	/**
+	 * Returns the site navigation menu where groupId = &#63; and type = &#63; or throws a {@link NoSuchMenuException} if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param type the type
+	 * @return the matching site navigation menu
+	 * @throws NoSuchMenuException if a matching site navigation menu could not be found
+	 */
+	@Override
+	public SiteNavigationMenu findByG_T(long groupId, int type)
+		throws NoSuchMenuException {
+		SiteNavigationMenu siteNavigationMenu = fetchByG_T(groupId, type);
+
+		if (siteNavigationMenu == null) {
+			StringBundler msg = new StringBundler(6);
+
+			msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			msg.append("groupId=");
+			msg.append(groupId);
+
+			msg.append(", type=");
+			msg.append(type);
+
+			msg.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(msg.toString());
+			}
+
+			throw new NoSuchMenuException(msg.toString());
+		}
+
+		return siteNavigationMenu;
+	}
+
+	/**
+	 * Returns the site navigation menu where groupId = &#63; and type = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param type the type
+	 * @return the matching site navigation menu, or <code>null</code> if a matching site navigation menu could not be found
+	 */
+	@Override
+	public SiteNavigationMenu fetchByG_T(long groupId, int type) {
+		return fetchByG_T(groupId, type, true);
+	}
+
+	/**
+	 * Returns the site navigation menu where groupId = &#63; and type = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param type the type
+	 * @param retrieveFromCache whether to retrieve from the finder cache
+	 * @return the matching site navigation menu, or <code>null</code> if a matching site navigation menu could not be found
+	 */
+	@Override
+	public SiteNavigationMenu fetchByG_T(long groupId, int type,
+		boolean retrieveFromCache) {
+		Object[] finderArgs = new Object[] { groupId, type };
+
+		Object result = null;
+
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_G_T,
+					finderArgs, this);
+		}
+
+		if (result instanceof SiteNavigationMenu) {
+			SiteNavigationMenu siteNavigationMenu = (SiteNavigationMenu)result;
+
+			if ((groupId != siteNavigationMenu.getGroupId()) ||
+					(type != siteNavigationMenu.getType())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler query = new StringBundler(4);
+
+			query.append(_SQL_SELECT_SITENAVIGATIONMENU_WHERE);
+
+			query.append(_FINDER_COLUMN_G_T_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_T_TYPE_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(type);
+
+				List<SiteNavigationMenu> list = q.list();
+
+				if (list.isEmpty()) {
+					finderCache.putResult(FINDER_PATH_FETCH_BY_G_T, finderArgs,
+						list);
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"SiteNavigationMenuPersistenceImpl.fetchByG_T(long, int, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					SiteNavigationMenu siteNavigationMenu = list.get(0);
+
+					result = siteNavigationMenu;
+
+					cacheResult(siteNavigationMenu);
+
+					if ((siteNavigationMenu.getGroupId() != groupId) ||
+							(siteNavigationMenu.getType() != type)) {
+						finderCache.putResult(FINDER_PATH_FETCH_BY_G_T,
+							finderArgs, siteNavigationMenu);
+					}
+				}
+			}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_G_T, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (SiteNavigationMenu)result;
+		}
+	}
+
+	/**
+	 * Removes the site navigation menu where groupId = &#63; and type = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param type the type
+	 * @return the site navigation menu that was removed
+	 */
+	@Override
+	public SiteNavigationMenu removeByG_T(long groupId, int type)
+		throws NoSuchMenuException {
+		SiteNavigationMenu siteNavigationMenu = findByG_T(groupId, type);
+
+		return remove(siteNavigationMenu);
+	}
+
+	/**
+	 * Returns the number of site navigation menus where groupId = &#63; and type = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param type the type
+	 * @return the number of matching site navigation menus
+	 */
+	@Override
+	public int countByG_T(long groupId, int type) {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_T;
+
+		Object[] finderArgs = new Object[] { groupId, type };
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(3);
+
+			query.append(_SQL_COUNT_SITENAVIGATIONMENU_WHERE);
+
+			query.append(_FINDER_COLUMN_G_T_GROUPID_2);
+
+			query.append(_FINDER_COLUMN_G_T_TYPE_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(groupId);
+
+				qPos.add(type);
+
+				count = (Long)q.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_G_T_GROUPID_2 = "siteNavigationMenu.groupId = ? AND ";
+	private static final String _FINDER_COLUMN_G_T_TYPE_2 = "siteNavigationMenu.type = ?";
 
 	public SiteNavigationMenuPersistenceImpl() {
 		setModelClass(SiteNavigationMenu.class);
+
+		try {
+			Field field = BasePersistenceImpl.class.getDeclaredField(
+					"_dbColumnNames");
+
+			field.setAccessible(true);
+
+			Map<String, String> dbColumnNames = new HashMap<String, String>();
+
+			dbColumnNames.put("type", "type_");
+
+			field.set(this, dbColumnNames);
+		}
+		catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(e, e);
+			}
+		}
 	}
 
 	/**
@@ -1969,6 +2225,11 @@ public class SiteNavigationMenuPersistenceImpl extends BasePersistenceImpl<SiteN
 		entityCache.putResult(SiteNavigationMenuModelImpl.ENTITY_CACHE_ENABLED,
 			SiteNavigationMenuImpl.class, siteNavigationMenu.getPrimaryKey(),
 			siteNavigationMenu);
+
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_T,
+			new Object[] {
+				siteNavigationMenu.getGroupId(), siteNavigationMenu.getType()
+			}, siteNavigationMenu);
 
 		siteNavigationMenu.resetOriginalValues();
 	}
@@ -2023,6 +2284,9 @@ public class SiteNavigationMenuPersistenceImpl extends BasePersistenceImpl<SiteN
 
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+
+		clearUniqueFindersCache((SiteNavigationMenuModelImpl)siteNavigationMenu,
+			true);
 	}
 
 	@Override
@@ -2033,6 +2297,47 @@ public class SiteNavigationMenuPersistenceImpl extends BasePersistenceImpl<SiteN
 		for (SiteNavigationMenu siteNavigationMenu : siteNavigationMenus) {
 			entityCache.removeResult(SiteNavigationMenuModelImpl.ENTITY_CACHE_ENABLED,
 				SiteNavigationMenuImpl.class, siteNavigationMenu.getPrimaryKey());
+
+			clearUniqueFindersCache((SiteNavigationMenuModelImpl)siteNavigationMenu,
+				true);
+		}
+	}
+
+	protected void cacheUniqueFindersCache(
+		SiteNavigationMenuModelImpl siteNavigationMenuModelImpl) {
+		Object[] args = new Object[] {
+				siteNavigationMenuModelImpl.getGroupId(),
+				siteNavigationMenuModelImpl.getType()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_T, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_T, args,
+			siteNavigationMenuModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		SiteNavigationMenuModelImpl siteNavigationMenuModelImpl,
+		boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					siteNavigationMenuModelImpl.getGroupId(),
+					siteNavigationMenuModelImpl.getType()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_T, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_T, args);
+		}
+
+		if ((siteNavigationMenuModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_G_T.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					siteNavigationMenuModelImpl.getOriginalGroupId(),
+					siteNavigationMenuModelImpl.getOriginalType()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_T, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_T, args);
 		}
 	}
 
@@ -2236,6 +2541,9 @@ public class SiteNavigationMenuPersistenceImpl extends BasePersistenceImpl<SiteN
 			SiteNavigationMenuImpl.class, siteNavigationMenu.getPrimaryKey(),
 			siteNavigationMenu, false);
 
+		clearUniqueFindersCache(siteNavigationMenuModelImpl, false);
+		cacheUniqueFindersCache(siteNavigationMenuModelImpl);
+
 		siteNavigationMenu.resetOriginalValues();
 
 		return siteNavigationMenu;
@@ -2260,6 +2568,7 @@ public class SiteNavigationMenuPersistenceImpl extends BasePersistenceImpl<SiteN
 		siteNavigationMenuImpl.setCreateDate(siteNavigationMenu.getCreateDate());
 		siteNavigationMenuImpl.setModifiedDate(siteNavigationMenu.getModifiedDate());
 		siteNavigationMenuImpl.setName(siteNavigationMenu.getName());
+		siteNavigationMenuImpl.setType(siteNavigationMenu.getType());
 
 		return siteNavigationMenuImpl;
 	}
@@ -2647,6 +2956,11 @@ public class SiteNavigationMenuPersistenceImpl extends BasePersistenceImpl<SiteN
 	}
 
 	@Override
+	public Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
+	@Override
 	protected Map<String, Integer> getTableColumnsMap() {
 		return SiteNavigationMenuModelImpl.TABLE_COLUMNS_MAP;
 	}
@@ -2689,4 +3003,7 @@ public class SiteNavigationMenuPersistenceImpl extends BasePersistenceImpl<SiteN
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No SiteNavigationMenu exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No SiteNavigationMenu exists with the key {";
 	private static final Log _log = LogFactoryUtil.getLog(SiteNavigationMenuPersistenceImpl.class);
+	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"type"
+			});
 }

@@ -61,6 +61,15 @@ AUI.add(
 				return instance._conditionsIndexes.length > 1;
 			},
 
+			_clearOperatorField: function(index) {
+				var instance = this;
+
+				var operator = instance._getOperator(index);
+
+				operator.cleanSelect();
+				operator.render();
+			},
+
 			_deleteCondition: function(index) {
 				var instance = this;
 
@@ -307,7 +316,7 @@ AUI.add(
 						deleteIcon: Liferay.Util.getLexiconIconTpl('trash', 'icon-monospaced'),
 						if: instance.get('if'),
 						index: index,
-						logicOperator: instance.get('logicOperator')
+						logicalOperator: instance.get('logicOperator')
 					},
 					container
 				);
@@ -323,14 +332,23 @@ AUI.add(
 				var instance = this;
 
 				var field = event.target;
-
 				var fieldName = field.get('fieldName');
+				var options = field.get('options').concat(field.get('fixedOptions'));
 
 				if (fieldName) {
 					var index = fieldName.split('-')[0];
 
 					if (fieldName.match('-condition-first-operand')) {
-						var type = instance._getDataType(field.getValue(), field.get('options'));
+						var operatorSelected = instance._getOperator(index);
+						var type = instance._getDataType(field.getValue(), options);
+
+						operatorSelected.cleanSelect();
+
+						instance._hideSecondOperandField(index);
+
+						instance._hideSecondOperandTypeField(index);
+
+						instance._clearOperatorField(index);
 
 						instance._updateOperatorList(type, index);
 					}
@@ -377,9 +395,22 @@ AUI.add(
 				var secondOperandOptions = instance._getSecondOperand(index, 'options');
 				var secondOperandsInput = instance._getSecondOperand(index, 'input');
 
-				instance._setVisibleToOperandField(secondOperandFields);
-				instance._setVisibleToOperandField(secondOperandOptions);
-				instance._setVisibleToOperandField(secondOperandsInput);
+				instance._setVisibleToOperandField(secondOperandFields, false);
+				instance._setVisibleToOperandField(secondOperandOptions, false);
+				instance._setVisibleToOperandField(secondOperandsInput, false);
+
+				secondOperandFields.set('value', '');
+				secondOperandOptions.set('value', '');
+				secondOperandsInput.set('value', '');
+			},
+
+			_hideSecondOperandTypeField: function(index) {
+				var instance = this;
+
+				var secondOperandType = instance._getSecondOperandType(index);
+
+				instance._setVisibleToOperandField(secondOperandType, false);
+				secondOperandType.set('value', '');
 			},
 
 			_isBinaryCondition: function(index) {
@@ -447,6 +478,8 @@ AUI.add(
 			_renderFirstOperand: function(index, condition, container) {
 				var instance = this;
 
+				var fixedFields = [];
+
 				var value = [];
 
 				if (condition) {
@@ -455,11 +488,12 @@ AUI.add(
 
 				var fields = instance.get('fields').slice();
 
-				fields.unshift(currentUser);
+				fixedFields.push(currentUser);
 
 				var field = instance.createSelectField(
 					{
 						fieldName: index + '-condition-first-operand',
+						fixedOptions: fixedFields,
 						label: instance.get('strings').if,
 						options: fields,
 						showLabel: false,
@@ -629,9 +663,9 @@ AUI.add(
 				}
 			},
 
-			_setVisibleToOperandField: function(field) {
+			_setVisibleToOperandField: function(field, visibility) {
 				if (field) {
-					field.set('visible', false);
+					field.set('visible', visibility);
 				}
 			},
 
@@ -772,7 +806,7 @@ AUI.add(
 							}
 						];
 					}
-
+					secondOperandType.cleanSelect();
 					secondOperandType.set('options', options);
 				}
 			},
@@ -787,8 +821,8 @@ AUI.add(
 						secondOperandType.set('visible', true);
 					}
 					else {
-						instance._getSecondOperand(index, 'fields').set('value', '');
-						secondOperandType.set('visible', false);
+						instance._hideSecondOperandField(index);
+						instance._hideSecondOperandTypeField(index);
 					}
 				}
 			}

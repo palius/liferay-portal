@@ -14,6 +14,7 @@
 
 package com.liferay.shopping.service.persistence.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQLUtil;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -25,7 +26,6 @@ import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.shopping.model.ShoppingItem;
 import com.liferay.shopping.model.impl.ShoppingItemImpl;
@@ -53,8 +53,7 @@ public class ShoppingItemFinderImpl
 			StringBundler sb = new StringBundler();
 
 			sb.append("SELECT COUNT(*) AS COUNT_VALUE FROM ShoppingItem ");
-			sb.append("WHERE ");
-			sb.append("ShoppingItem.groupId = ? AND (");
+			sb.append("WHERE ShoppingItem.groupId = ? AND (");
 
 			if (ArrayUtil.isNotEmpty(categoryIds)) {
 				sb.append(StringPool.OPEN_PARENTHESIS);
@@ -70,8 +69,8 @@ public class ShoppingItemFinderImpl
 				sb.append(") AND ");
 			}
 
-			sb.append("ShoppingItem.featured = ? AND ");
-			sb.append("ShoppingItem.smallImage = ?");
+			sb.append("ShoppingItem.featured = ? AND ShoppingItem.smallImage ");
+			sb.append("= ?");
 
 			SQLQuery q = session.createSynchronizedSQLQuery(sb.toString());
 
@@ -130,8 +129,7 @@ public class ShoppingItemFinderImpl
 			StringBundler sb = new StringBundler();
 
 			sb.append("SELECT COUNT(*) AS COUNT_VALUE FROM ShoppingItem ");
-			sb.append("WHERE ");
-			sb.append("ShoppingItem.groupId = ? AND (");
+			sb.append("WHERE ShoppingItem.groupId = ? AND (");
 
 			if (ArrayUtil.isNotEmpty(categoryIds)) {
 				sb.append(StringPool.OPEN_PARENTHESIS);
@@ -147,9 +145,8 @@ public class ShoppingItemFinderImpl
 				sb.append(") AND ");
 			}
 
-			sb.append("(ShoppingItem.name LIKE ? OR ");
-			sb.append("ShoppingItem.description LIKE ? OR ");
-			sb.append("ShoppingItem.properties LIKE ?))");
+			sb.append("(ShoppingItem.name LIKE ? OR ShoppingItem.description ");
+			sb.append("LIKE ? OR ShoppingItem.properties LIKE ?))");
 
 			String sql = CustomSQLUtil.replaceOrderBy(sb.toString(), obc);
 
@@ -203,8 +200,7 @@ public class ShoppingItemFinderImpl
 			StringBundler sb = new StringBundler();
 
 			sb.append("SELECT COUNT(*) AS COUNT_VALUE FROM ShoppingItem ");
-			sb.append("WHERE ");
-			sb.append("ShoppingItem.groupId = ? AND (");
+			sb.append("WHERE ShoppingItem.groupId = ? AND (");
 
 			if (ArrayUtil.isNotEmpty(categoryIds)) {
 				sb.append(StringPool.OPEN_PARENTHESIS);
@@ -220,8 +216,7 @@ public class ShoppingItemFinderImpl
 				sb.append(") AND ");
 			}
 
-			sb.append("ShoppingItem.sale = ? AND ");
-			sb.append("ShoppingItem.smallImage = ?");
+			sb.append("ShoppingItem.sale = ? AND ShoppingItem.smallImage = ?");
 
 			SQLQuery q = session.createSynchronizedSQLQuery(sb.toString());
 
@@ -283,8 +278,7 @@ public class ShoppingItemFinderImpl
 
 			StringBundler sb = new StringBundler();
 
-			sb.append("SELECT {ShoppingItem.*} FROM ShoppingItem ");
-			sb.append("WHERE ");
+			sb.append("SELECT {ShoppingItem.*} FROM ShoppingItem WHERE ");
 			sb.append("ShoppingItem.groupId = ? AND (");
 
 			if (ArrayUtil.isNotEmpty(categoryIds)) {
@@ -301,8 +295,8 @@ public class ShoppingItemFinderImpl
 				sb.append(") AND ");
 			}
 
-			sb.append("ShoppingItem.featured = ? AND ");
-			sb.append("ShoppingItem.smallImage = ?");
+			sb.append("ShoppingItem.featured = ? AND ShoppingItem.smallImage ");
+			sb.append("= ?");
 
 			SQLQuery q = session.createSynchronizedSQLQuery(sb.toString());
 
@@ -351,8 +345,7 @@ public class ShoppingItemFinderImpl
 
 			StringBundler sb = new StringBundler();
 
-			sb.append("SELECT {ShoppingItem.*} FROM ShoppingItem ");
-			sb.append("WHERE ");
+			sb.append("SELECT {ShoppingItem.*} FROM ShoppingItem WHERE ");
 			sb.append("ShoppingItem.groupId = ? AND (");
 
 			if (ArrayUtil.isNotEmpty(categoryIds)) {
@@ -369,9 +362,8 @@ public class ShoppingItemFinderImpl
 				sb.append(") AND ");
 			}
 
-			sb.append("(ShoppingItem.name LIKE ? OR ");
-			sb.append("ShoppingItem.description LIKE ? OR ");
-			sb.append("ShoppingItem.properties LIKE ?))");
+			sb.append("(ShoppingItem.name LIKE ? OR ShoppingItem.description ");
+			sb.append("LIKE ? OR ShoppingItem.properties LIKE ?))");
 
 			String sql = CustomSQLUtil.replaceOrderBy(sb.toString(), obc);
 
@@ -419,8 +411,7 @@ public class ShoppingItemFinderImpl
 
 			StringBundler sb = new StringBundler();
 
-			sb.append("SELECT {ShoppingItem.*} FROM ShoppingItem ");
-			sb.append("WHERE ");
+			sb.append("SELECT {ShoppingItem.*} FROM ShoppingItem WHERE ");
 			sb.append("ShoppingItem.groupId = ? AND (");
 
 			if (ArrayUtil.isNotEmpty(categoryIds)) {
@@ -437,8 +428,7 @@ public class ShoppingItemFinderImpl
 				sb.append(") AND ");
 			}
 
-			sb.append("ShoppingItem.sale = ? AND ");
-			sb.append("ShoppingItem.smallImage = ?");
+			sb.append("ShoppingItem.sale = ? AND ShoppingItem.smallImage = ?");
 
 			SQLQuery q = session.createSynchronizedSQLQuery(sb.toString());
 
