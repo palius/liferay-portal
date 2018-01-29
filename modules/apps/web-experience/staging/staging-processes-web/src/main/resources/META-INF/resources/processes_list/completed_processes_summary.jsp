@@ -1,4 +1,4 @@
-<%--
+<%@ page import="java.util.TreeSet" %><%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -31,16 +31,17 @@ Map<String, Serializable> parameterMap = (Map<String, Serializable>)exportImport
 <div class="container-fluid-1280">
 	<%@ include file="/processes_list/completed_process_summary_pages.jspf" %>
 
+	<%@ include file="/processes_list/completed_process_summary_dates.jspf" %>
+
 	<%@ include file="/processes_list/completed_process_summary_deletions_permissions.jspf" %>
 
 	<%
-	for (String key : parameterMap.keySet()) {
+	for(String key: new TreeSet<String>(parameterMap.keySet())) {
 	%>
 
-		<div><strong><%= key %></strong> :: <%= MapUtil.getString(parameterMap, key) %></div>
+		<div><b><%= key %></b> :: <%= MapUtil.getString(parameterMap, key) %></div>
 
 	<%
 	}
 	%>
-
 </div>

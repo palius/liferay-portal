@@ -1,0 +1,90 @@
+<%@ page import="com.liferay.exportimport.kernel.lar.ExportImportDateUtil" %>
+<%@ page import="com.liferay.portal.kernel.util.DateUtil" %>
+<%@ page import="static java.lang.Integer.parseInt" %>
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+<%!
+String getDayEnding(String day) {
+	if (parseInt(day, 10) >= 11 && parseInt(day, 10) <= 13) {
+		return day += "th";
+	}
+
+	switch (parseInt(day, 10) % 10) {
+		case 1:
+			return day += "st";
+		case 2:
+			return day += "nd";
+		case 3:
+			return day += "rd";
+		default:
+			return day += "th";
+	}
+}
+%>
+
+<%
+String range = MapUtil.getString(parameterMap, "range");
+%>
+
+<div class="process-summary-subtitle"><liferay-ui:message key="content" /></div>
+
+<div class="process-summary-option"><span><liferay-ui:message key="date-restriction-options" /></span></div>
+
+<c:if test="<%= range.equals(ExportImportDateUtil.RANGE_ALL) %>">
+	<div><%= LanguageUtil.get(request, "all") %></div>
+</c:if>
+
+<c:if test="<%= range.equals(ExportImportDateUtil.RANGE_FROM_LAST_PUBLISH_DATE) %>">
+	<div><%= LanguageUtil.get(request, "from-last-publish-date") %></div>
+</c:if>
+
+<c:if test="<%= range.equals(ExportImportDateUtil.RANGE_LAST) %>">
+	<%
+	String last = MapUtil.getString(parameterMap, "last");
+	String languageKey = "x-hours";
+
+	if (parseInt(last, 10) == 168) {
+		last = "7";
+		languageKey = "x-days";
+	}
+	%>
+
+	<div><%= LanguageUtil.get(request, "last") + StringPool.SPACE + LanguageUtil.format(request, languageKey, last, false) %></div>
+</c:if>
+
+<c:if test="<%= range.equals(ExportImportDateUtil.RANGE_DATE_RANGE) %>">
+	<%
+	String startDayOfMonthString = getDayEnding(DateUtil.getDate(ExportImportDateUtil.getDateRange(exportImportConfigurationId).getStartDate(), "d", request.getLocale()));
+
+	String startDatePattern = "EEEE, '" + startDayOfMonthString + " of ' MMMM 'of' yyyy 'at' K:mma";
+
+	String startDateString = DateUtil.getDate(ExportImportDateUtil.getDateRange(exportImportConfigurationId).getStartDate(), startDatePattern, request.getLocale());
+
+	String endDayOfMonthString = getDayEnding(DateUtil.getDate(ExportImportDateUtil.getDateRange(exportImportConfigurationId).getEndDate(), "d", request.getLocale()));
+
+	String endDatePattern = "EEEE, '" + endDayOfMonthString + " of ' MMMM 'of' yyyy 'at' K:mma";
+
+	String endDateString = DateUtil.getDate(ExportImportDateUtil.getDateRange(exportImportConfigurationId).getEndDate(), endDatePattern, request.getLocale());
+	%>
+
+	<div><%= LanguageUtil.get(request, "date-range") %>:</div>
+
+	<div class="">
+		<%= startDateString + StringPool.SPACE + LanguageUtil.get(request, "and") %><br />
+		<%=  endDateString %>.
+	</div>
+</c:if>
