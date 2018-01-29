@@ -80,7 +80,6 @@
 			<property name="allowedExportPackageDirName" value="modules/apps/knowledge-base/knowledge-base-markdown-converter" />
 			<property name="allowedExportPackageDirName" value="modules/apps/knowledge-base/knowledge-base-service" />
 			<property name="allowedExportPackageDirName" value="modules/apps/mail-reader/mail-reader-service" />
-			<property name="allowedExportPackageDirName" value="modules/apps/marketplace/marketplace-store-web" />
 			<property name="allowedExportPackageDirName" value="modules/apps/portal-security-wedeploy-auth/portal-security-wedeploy-auth-service" />
 			<property name="allowedExportPackageDirName" value="modules/apps/push-notifications/push-notifications-service" />
 			<property name="allowedExportPackageDirName" value="modules/apps/shopping/shopping-service" />
@@ -137,6 +136,16 @@
 		<check name="GradleBlockOrderCheck" />
 		<check name="GradleBodyCheck" />
 		<check name="GradleDependenciesCheck" />
+		<check name="GradleExportedPackageDependenciesCheck">
+			<property name="exportPackageBundleSymbolicNamePrefix" value="com.liferay.arquillian." />
+			<property name="exportPackageBundleSymbolicNamePrefix" value="com.liferay.frontend." />
+			<property name="exportPackageBundleSymbolicNamePrefix" value="com.liferay.gradle." />
+			<property name="exportPackageBundleSymbolicNamePrefix" value="com.liferay.portal." />
+			<property name="exportPackageBundleSymbolicNamePrefix" value="com.liferay.project." />
+			<property name="exportPackageBundleSymbolicNamePrefix" value="com.liferay.util." />
+			<property name="exportPackageBundleSymbolicNamePrefix" value="com.liferay.webjars." />
+			<property name="exportPackageBundleSymbolicNamePrefix" value="com.liferay.whip" />
+		</check>
 		<check name="GradleImportsCheck" />
 		<check name="GradleIndentationCheck" />
 		<check name="GradlePropertiesCheck" />
