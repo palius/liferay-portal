@@ -10,7 +10,6 @@
 	<short-name>liferay-staging</short-name>
 	<uri>http://liferay.com/tld/staging</uri>
 	<tag>
-<<<<<<< HEAD
 		<description>Renders the UI section for an <![CDATA[<code>alert</code>]]>.</description>
 		<name>alert</name>
 		<tag-class>com.liferay.staging.taglib.servlet.taglib.AlertTag</tag-class>
@@ -38,9 +37,6 @@
 	</tag>
 	<tag>
 		<description>Renders the UI section for an <![CDATA[<code>exportImportConfiguration</code>]]> object's basic information.</description>
-=======
-		<description>Renders the UI section for an <![CDATA[<code>ExportImportConfiguration</code>]]> object's basic information.</description>
->>>>>>> f82efee57869490291d19af5c94622764eb8e900
 		<name>configuration-header</name>
 		<tag-class>com.liferay.staging.taglib.servlet.taglib.ConfigurationHeaderTag</tag-class>
 		<body-content>JSP</body-content>

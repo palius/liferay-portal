@@ -94,13 +94,6 @@ BackgroundTask lastCompletedInitialPublicationBackgroundTask = BackgroundTaskMan
 							}
 						);
 					</aui:script>
-<<<<<<< HEAD
-=======
-
-					<aui:button-row>
-						<aui:button type="submit" />
-					</aui:button-row>
->>>>>>> f82efee57869490291d19af5c94622764eb8e900
 				</c:if>
 			</aui:form>
 		</div>
