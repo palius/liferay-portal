@@ -488,8 +488,8 @@ public class AssetPublisherUtil {
 			if (assetRendererFactory == null) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
-						assetEntry.getClassName() + " has no " +
-							"AssetRendererFactory");
+						"No asset renderer factory associated with " +
+							assetEntry.getClassName());
 				}
 
 				continue;
