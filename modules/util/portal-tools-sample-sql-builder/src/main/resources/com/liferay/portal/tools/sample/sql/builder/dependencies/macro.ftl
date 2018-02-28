@@ -12,7 +12,6 @@
 		<#local assetCategoryIds = dataFactory.getAssetCategoryIds(assetEntryModel)>
 
 		<#list assetCategoryIds as assetCategoryId>
-
 			<#local assetEntryAssetCategoryRelId = dataFactory.getCounterNext()>
 
 			insert into AssetEntryAssetCategoryRel values (${assetEntryAssetCategoryRelId}, ${assetEntryModel.entryId}, ${assetCategoryId}, 0);
