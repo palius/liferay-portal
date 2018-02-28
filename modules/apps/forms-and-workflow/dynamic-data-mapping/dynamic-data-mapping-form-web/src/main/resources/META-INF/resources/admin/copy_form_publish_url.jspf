@@ -16,7 +16,9 @@
 
 <div class="bs-popover-left publish-popover-content">
 	<div class="arrow"></div>
+
 	<div class="popover-header"><liferay-ui:message key="copy-url" /></div>
+
 	<div class="popover-body">
 		<div class="form-group">
 			<div class="input-group">
