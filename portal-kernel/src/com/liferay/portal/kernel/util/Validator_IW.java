@@ -195,8 +195,8 @@ public class Validator_IW {
 		return Validator.isFileName(name);
 	}
 
-	public boolean isFilePath(java.lang.String path, boolean parentDirAllowed) {
-		return Validator.isFilePath(path, parentDirAllowed);
+	public boolean isFilePath(java.lang.String path, boolean isParentDirAllowed) {
+		return Validator.isFilePath(path, isParentDirAllowed);
 	}
 
 	public boolean isGregorianDate(int month, int day, int year) {
@@ -247,6 +247,14 @@ public class Validator_IW {
 		return Validator.isNotNull(obj);
 	}
 
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
+	public boolean isNotNull(java.lang.Object[] array) {
+		return Validator.isNotNull(array);
+	}
+
 	public boolean isNotNull(java.lang.String s) {
 		return Validator.isNotNull(s);
 	}
@@ -257,6 +265,14 @@ public class Validator_IW {
 
 	public boolean isNull(java.lang.Object obj) {
 		return Validator.isNull(obj);
+	}
+
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
+	public boolean isNull(java.lang.Object[] array) {
+		return Validator.isNull(array);
 	}
 
 	public boolean isNull(java.lang.String s) {
