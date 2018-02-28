@@ -23,9 +23,7 @@ boolean anonymous = jsonObject.getBoolean("anonymous");
 
 long userNotificationEventUserId = jsonObject.getLong("userId");
 
-boolean applicable = userNotificationFeedEntry.isApplicable();
-
-boolean notificationUnread = !actionRequired && !userNotificationEvent.isArchived() && applicable;
+boolean notificationUnread = !actionRequired && !userNotificationEvent.isArchived() && userNotificationFeedEntry.isApplicable();
 
 if (notificationUnread) {
 	row.setCssClass("unread");
@@ -52,7 +50,7 @@ if (notificationUnread) {
 			<liferay-ui:message key="notification-no-longer-applies" />
 		</liferay-ui:search-container-column-text>
 	</c:when>
-	<c:when test="<%= !applicable %>">
+	<c:when test="<%= !userNotificationFeedEntry.isApplicable() %>">
 		<liferay-ui:search-container-column-text colspan="<%= 2 %>">
 			<liferay-ui:message key="<%= userNotificationFeedEntry.getBody() %>" />
 		</liferay-ui:search-container-column-text>
