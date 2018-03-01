@@ -203,10 +203,10 @@ public class HtmlTopTagTest {
 				dataSennaTrackAttribute + " is not contained in " +
 					htmlTopTagOutputString);
 
-			int countOfDataSennaTrackAttrs = StringUtil.count(
+			int countOfDataSennaTrackAttributeNames = StringUtil.count(
 				htmlTopTagOutputString, dataSennaTrackAttributeName);
 
-			Assert.assertEquals(1, countOfDataSennaTrackAttrs);
+			Assert.assertEquals(1, countOfDataSennaTrackAttributeNames);
 		}
 		else {
 			Assert.assertFalse(
