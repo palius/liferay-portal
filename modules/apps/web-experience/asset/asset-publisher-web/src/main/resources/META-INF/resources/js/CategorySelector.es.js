@@ -12,6 +12,17 @@ import templates from './CategorySelector.soy';
 class CategorySelector extends Component {
 
 	/**
+	 * Updates the calculated rule fields for `queryValues` and `categoryIdsTitles`
+	 * every time a new category entry is added or removed to the selection
+	 * @protected
+	 */
+
+	onEntriesChanged_() {
+		this.rule.categoryIdsTitles = this.categoriesSelector_.entries.values.map((element) => element.value);
+		this.rule.queryValues = this.categoriesSelector_.entries.keys.join(',');
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 
@@ -41,17 +52,6 @@ class CategorySelector extends Component {
 				this.element.parentNode.removeAttribute('tabindex');
 			}.bind(this)
 		);
-	}
-
-	/**
-	 * Updates the calculated rule fields for `queryValues` and `categoryIdsTitles`
-	 * every time a new category entry is added or removed to the selection
-	 * @protected
-	 */
-
-	onEntriesChanged_() {
-		this.rule.categoryIdsTitles = this.categoriesSelector_.entries.values.map((element) => element.value);
-		this.rule.queryValues = this.categoriesSelector_.entries.keys.join(',');
 	}
 }
 
