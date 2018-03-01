@@ -173,6 +173,7 @@ public class HtmlTopTagTest {
 		htmlTopTag.setPageContext(pageContext);
 
 		htmlTopTag.setPosition("auto");
+
 		htmlTopTag.doStartTag();
 
 		BodyContent bodyContent = pageContext.pushBody();
