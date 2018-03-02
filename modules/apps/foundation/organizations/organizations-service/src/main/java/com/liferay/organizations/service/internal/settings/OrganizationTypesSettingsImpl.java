@@ -102,8 +102,7 @@ public class OrganizationTypesSettingsImpl
 	)
 	protected void addOrganizationTypeConfigurationWrapper(
 		OrganizationTypeConfigurationWrapper
-			organizationTypeConfigurationWrapper,
-		Map<String, Object> properties) {
+			organizationTypeConfigurationWrapper) {
 
 		_organizationTypeConfigurationWrappers.put(
 			organizationTypeConfigurationWrapper.getName(),
@@ -126,8 +125,7 @@ public class OrganizationTypesSettingsImpl
 
 	protected void removeOrganizationTypeConfigurationWrapper(
 		OrganizationTypeConfigurationWrapper
-			organizationTypeConfigurationWrapper,
-		Map<String, Object> properties) {
+			organizationTypeConfigurationWrapper) {
 
 		_organizationTypeConfigurationWrappers.remove(
 			organizationTypeConfigurationWrapper.getName());
