@@ -56,10 +56,11 @@ public abstract class BaseUpgradeLocalizedColumn extends UpgradeProcess {
 			String tableName = getTableName(tableClass);
 
 			if (!hasColumnType(tableClass, columnName, "clob null") &&
-				_isAlterNeeded(tableName, columnName)) {
+				!_alreadyAltered.contains(tableName + columnName)) {
 
 				alter(tableClass, new AlterColumnType(columnName, "TEXT null"));
-				_alterPerformed(tableName, columnName);
+
+				_alreadyAltered.add(tableName + columnName);
 			}
 
 			for (long companyId : companyIds) {
@@ -100,12 +101,6 @@ public abstract class BaseUpgradeLocalizedColumn extends UpgradeProcess {
 		}
 	}
 
-	private void _alterPerformed(String tableName, String columnName) {
-		String element = tableName + columnName;
-
-		_alreadyAltered.add(element);
-	}
-
 	private String _escape(String string) {
 		return string.replace(
 			StringPool.APOSTROPHE, StringPool.DOUBLE_APOSTROPHE);
@@ -134,12 +129,6 @@ public abstract class BaseUpgradeLocalizedColumn extends UpgradeProcess {
 		finally {
 			CompanyThreadLocal.setCompanyId(originalCompanyId);
 		}
-	}
-
-	private boolean _isAlterNeeded(String tableName, String columnName) {
-		String element = tableName + columnName;
-
-		return !_alreadyAltered.contains(element);
 	}
 
 	private void _upgrade(
