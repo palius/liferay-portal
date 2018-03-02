@@ -685,20 +685,19 @@ public class ServiceBuilder {
 
 			_uadDirName = _apiDirName.replace("-api/", "-uad/");
 
-			_uadTestIntegrationDirName = _apiDirName.replace(
-				"-api/", "-uad-test/");
-
-			_uadTestIntegrationDirName = _uadTestIntegrationDirName.replace(
-				"/main/", "/testIntegration/");
-
-			_uadTestUnitDirName = _uadDirName.replace("/main/", "/test/");
-
 			_uadOutputPath =
 				_uadDirName + "/" + StringUtil.replace(packagePath, '.', '/');
+
+			_uadTestIntegrationDirName = StringUtil.replace(
+				_apiDirName, new String[] {"-api/", "/main/"},
+				new String[] {"-uad-test/", "/testIntegration/"});
 
 			_uadTestIntegrationOutputPath =
 				_uadTestIntegrationDirName + "/" +
 					StringUtil.replace(packagePath, '.', '/');
+
+			_uadTestUnitDirName = _uadDirName.replace("/main/", "/test/");
+
 			_uadTestUnitOutputPath =
 				_uadTestUnitDirName + "/" +
 					StringUtil.replace(packagePath, '.', '/');
