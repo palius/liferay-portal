@@ -696,10 +696,10 @@ public class ServiceBuilder {
 				_uadTestIntegrationDirName + "/" +
 					StringUtil.replace(packagePath, '.', '/');
 
-			_uadTestUnitDirName = _uadDirName.replace("/main/", "/test/");
+			String uadTestUnitDirName = _uadDirName.replace("/main/", "/test/");
 
 			_uadTestUnitOutputPath =
-				_uadTestUnitDirName + "/" +
+				uadTestUnitDirName + "/" +
 					StringUtil.replace(packagePath, '.', '/');
 
 			_autoImportDefaultReferences = GetterUtil.getBoolean(
@@ -6474,7 +6474,6 @@ public class ServiceBuilder {
 	private String _uadOutputPath;
 	private String _uadTestIntegrationDirName;
 	private String _uadTestIntegrationOutputPath;
-	private String _uadTestUnitDirName;
 	private String _uadTestUnitOutputPath;
 
 }
