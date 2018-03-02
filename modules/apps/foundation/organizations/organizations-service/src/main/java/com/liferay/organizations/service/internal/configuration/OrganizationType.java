@@ -32,33 +32,33 @@ import org.osgi.service.component.annotations.Modified;
 public class OrganizationType {
 
 	public String[] getChildrenTypes() {
-		return _organizationsTypesConfiguration.childrenTypes();
+		return _organizationTypeConfiguration.childrenTypes();
 	}
 
 	public String getName() {
-		return _organizationsTypesConfiguration.name();
+		return _organizationTypeConfiguration.name();
 	}
 
 	public boolean isCountryEnabled() {
-		return _organizationsTypesConfiguration.countryEnabled();
+		return _organizationTypeConfiguration.countryEnabled();
 	}
 
 	public boolean isCountryRequired() {
-		return _organizationsTypesConfiguration.countryRequired();
+		return _organizationTypeConfiguration.countryRequired();
 	}
 
 	public boolean isRootable() {
-		return _organizationsTypesConfiguration.rootable();
+		return _organizationTypeConfiguration.rootable();
 	}
 
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
-		_organizationsTypesConfiguration = ConfigurableUtil.createConfigurable(
+		_organizationTypeConfiguration = ConfigurableUtil.createConfigurable(
 			OrganizationTypeConfiguration.class, properties);
 	}
 
 	private volatile OrganizationTypeConfiguration
-		_organizationsTypesConfiguration;
+		_organizationTypeConfiguration;
 
 }
