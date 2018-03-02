@@ -82,7 +82,7 @@ public class UpgradeWSRP extends UpgradeProcess {
 				String uuid = url.substring(
 					url.lastIndexOf(StringPool.SLASH) + 1);
 
-				if (!_producerUuids.contains(uuid)) {
+				if (!_uuids.contains(uuid)) {
 					continue;
 				}
 
@@ -139,7 +139,7 @@ public class UpgradeWSRP extends UpgradeProcess {
 				long wsrpProducerId = rs.getLong(2);
 				String portletIds = rs.getString(3);
 
-				_producerUuids.add(uuid);
+				_uuids.add(uuid);
 
 				updateWSRPProducer(
 					renamePortletIdsMap, wsrpProducerId, portletIds);
@@ -185,6 +185,6 @@ public class UpgradeWSRP extends UpgradeProcess {
 		{"97", "com_liferay_quick_note_web_portlet_QuickNotePortlet"}
 	};
 
-	private final List<String> _producerUuids = new ArrayList<>();
+	private final List<String> _uuids = new ArrayList<>();
 
 }
