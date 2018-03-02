@@ -328,9 +328,7 @@ if (forcePost && (portletURL != null)) {
 <%!
 private String _getHREF(String formName, String curParam, int cur, String jsCall, String url, String urlAnchor) throws Exception {
 	if (Validator.isNotNull(url)) {
-		String href = url = HttpUtil.removeParameter(url, curParam);
-
-		return HttpUtil.addParameter(href, curParam, cur + urlAnchor);
+		return HttpUtil.addParameter(HttpUtil.removeParameter(url, curParam), curParam, cur + urlAnchor);
 	}
 
 	return "javascript:document." + formName + "." + curParam + ".value = '" + cur + "'; " + jsCall;
