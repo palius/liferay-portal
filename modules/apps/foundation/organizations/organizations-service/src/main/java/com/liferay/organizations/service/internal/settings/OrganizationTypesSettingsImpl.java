@@ -14,7 +14,7 @@
 
 package com.liferay.organizations.service.internal.settings;
 
-import com.liferay.organizations.service.internal.configuration.OrganizationType;
+import com.liferay.organizations.service.internal.configuration.OrganizationTypeConfigurationWrapper;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -38,85 +38,105 @@ public class OrganizationTypesSettingsImpl
 
 	@Override
 	public String[] getChildrenTypes(String type) {
-		OrganizationType organizationType = getOrganizationType(type);
+		OrganizationTypeConfigurationWrapper
+			organizationTypeConfigurationWrapper =
+				getOrganizationTypeConfigurationWrapper(type);
 
-		if (organizationType == null) {
+		if (organizationTypeConfigurationWrapper == null) {
 			return new String[0];
 		}
 
-		return organizationType.getChildrenTypes();
+		return organizationTypeConfigurationWrapper.getChildrenTypes();
 	}
 
 	@Override
 	public String[] getTypes() {
-		return ArrayUtil.toStringArray(_organizationTypes.keySet());
+		return ArrayUtil.toStringArray(
+			_organizationTypeConfigurationWrappers.keySet());
 	}
 
 	@Override
 	public boolean isCountryEnabled(String type) {
-		OrganizationType organizationType = getOrganizationType(type);
+		OrganizationTypeConfigurationWrapper
+			organizationTypeConfigurationWrapper =
+				getOrganizationTypeConfigurationWrapper(type);
 
-		if (organizationType == null) {
+		if (organizationTypeConfigurationWrapper == null) {
 			return false;
 		}
 
-		return organizationType.isCountryEnabled();
+		return organizationTypeConfigurationWrapper.isCountryEnabled();
 	}
 
 	@Override
 	public boolean isCountryRequired(String type) {
-		OrganizationType organizationType = getOrganizationType(type);
+		OrganizationTypeConfigurationWrapper
+			organizationTypeConfigurationWrapper =
+				getOrganizationTypeConfigurationWrapper(type);
 
-		if (organizationType == null) {
+		if (organizationTypeConfigurationWrapper == null) {
 			return false;
 		}
 
-		return organizationType.isCountryRequired();
+		return organizationTypeConfigurationWrapper.isCountryRequired();
 	}
 
 	@Override
 	public boolean isRootable(String type) {
-		OrganizationType organizationType = getOrganizationType(type);
+		OrganizationTypeConfigurationWrapper
+			organizationTypeConfigurationWrapper =
+				getOrganizationTypeConfigurationWrapper(type);
 
-		if (organizationType == null) {
+		if (organizationTypeConfigurationWrapper == null) {
 			return false;
 		}
 
-		return organizationType.isRootable();
+		return organizationTypeConfigurationWrapper.isRootable();
 	}
 
 	@Reference(
 		cardinality = ReferenceCardinality.MULTIPLE,
 		policy = ReferencePolicy.DYNAMIC,
 		policyOption = ReferencePolicyOption.GREEDY,
-		unbind = "removeOrganizationType"
+		unbind = "removeOrganizationTypeConfigurationWrapper"
 	)
-	protected void addOrganizationType(
-		OrganizationType organizationType, Map<String, Object> properties) {
+	protected void addOrganizationTypeConfigurationWrapper(
+		OrganizationTypeConfigurationWrapper
+			organizationTypeConfigurationWrapper,
+		Map<String, Object> properties) {
 
-		_organizationTypes.put(organizationType.getName(), organizationType);
+		_organizationTypeConfigurationWrappers.put(
+			organizationTypeConfigurationWrapper.getName(),
+			organizationTypeConfigurationWrapper);
 	}
 
-	protected OrganizationType getOrganizationType(String type) {
-		OrganizationType organizationType = _organizationTypes.get(type);
+	protected OrganizationTypeConfigurationWrapper
+		getOrganizationTypeConfigurationWrapper(String type) {
 
-		if (organizationType == null) {
+		OrganizationTypeConfigurationWrapper
+			organizationTypeConfigurationWrapper =
+				_organizationTypeConfigurationWrappers.get(type);
+
+		if (organizationTypeConfigurationWrapper == null) {
 			_log.error("Unable to get organization type: " + type);
 		}
 
-		return organizationType;
+		return organizationTypeConfigurationWrapper;
 	}
 
-	protected void removeOrganizationType(
-		OrganizationType organizationType, Map<String, Object> properties) {
+	protected void removeOrganizationTypeConfigurationWrapper(
+		OrganizationTypeConfigurationWrapper
+			organizationTypeConfigurationWrapper,
+		Map<String, Object> properties) {
 
-		_organizationTypes.remove(organizationType.getName());
+		_organizationTypeConfigurationWrappers.remove(
+			organizationTypeConfigurationWrapper.getName());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OrganizationTypesSettingsImpl.class);
 
-	private final Map<String, OrganizationType> _organizationTypes =
-		new ConcurrentHashMap<>();
+	private final Map<String, OrganizationTypeConfigurationWrapper>
+		_organizationTypeConfigurationWrappers = new ConcurrentHashMap<>();
 
 }

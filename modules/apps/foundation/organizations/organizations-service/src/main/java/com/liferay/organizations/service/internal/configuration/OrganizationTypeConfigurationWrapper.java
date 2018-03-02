@@ -27,9 +27,9 @@ import org.osgi.service.component.annotations.Modified;
  */
 @Component(
 	configurationPid = "com.liferay.organizations.service.internal.configuration.OrganizationTypeConfiguration",
-	immediate = true, service = OrganizationType.class
+	immediate = true, service = OrganizationTypeConfigurationWrapper.class
 )
-public class OrganizationType {
+public class OrganizationTypeConfigurationWrapper {
 
 	public String[] getChildrenTypes() {
 		return _organizationTypeConfiguration.childrenTypes();
