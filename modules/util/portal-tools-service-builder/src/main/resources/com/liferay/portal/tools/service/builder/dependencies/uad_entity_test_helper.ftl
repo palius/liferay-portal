@@ -19,7 +19,7 @@ public class ${entity.name}UADEntityTestHelper {
 	 * Implement add${entity.name}() to enable some UAD tests.
 	 *
 	 * <p>
-	 * Several UAD tests depend on creating one or more valid ${entity.names} with a specified userId in order to execute correctly. Implement add${entity.name}() such that it creates a valid ${entity.name} with the specified userId value and returns it in order to enable the UAD tests that depend on it.
+	 * Several UAD tests depend on creating one or more valid ${entity.names} with a specified user ID in order to execute correctly. Implement add${entity.name}() such that it creates a valid ${entity.name} with the specified user ID value and returns it in order to enable the UAD tests that depend on it.
 	 * </p>
 	 *
 	 */
@@ -34,7 +34,7 @@ public class ${entity.name}UADEntityTestHelper {
 		 * Implement add${entity.name}WithStatusByUserId() to enable some UAD tests.
 		 *
 		 * <p>
-		 * Several UAD tests depend on creating one or more valid ${entity.names} with specified userId and statusByUserId in order to execute correctly. Implement add${entity.name}WithStatusByUserId() such that it creates a valid ${entity.name} with the specified userId and statusByUserId values and returns it in order to enable the UAD tests that depend on it.
+		 * Several UAD tests depend on creating one or more valid ${entity.names} with specified user ID and status by user ID in order to execute correctly. Implement add${entity.name}WithStatusByUserId() such that it creates a valid ${entity.name} with the specified user ID and status by user ID values and returns it in order to enable the UAD tests that depend on it.
 		 * </p>
 		 *
 		 */
