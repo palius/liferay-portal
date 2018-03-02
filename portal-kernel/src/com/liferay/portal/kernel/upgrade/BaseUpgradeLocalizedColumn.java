@@ -56,12 +56,13 @@ public abstract class BaseUpgradeLocalizedColumn extends UpgradeProcess {
 			String tableName = getTableName(tableClass);
 
 			if (!hasColumnType(tableClass, columnName, "clob null") &&
-				!_alreadyAltered.contains(
+				!_alteredTableNameColumnNames.contains(
 					tableName + StringPool.POUND + columnName)) {
 
 				alter(tableClass, new AlterColumnType(columnName, "TEXT null"));
 
-				_alreadyAltered.add(tableName + StringPool.POUND + columnName);
+				_alteredTableNameColumnNames.add(
+					tableName + StringPool.POUND + columnName);
 			}
 
 			for (long companyId : companyIds) {
@@ -169,6 +170,7 @@ public abstract class BaseUpgradeLocalizedColumn extends UpgradeProcess {
 		}
 	}
 
-	private static final Set<String> _alreadyAltered = new HashSet<>();
+	private static final Set<String> _alteredTableNameColumnNames =
+		new HashSet<>();
 
 }
