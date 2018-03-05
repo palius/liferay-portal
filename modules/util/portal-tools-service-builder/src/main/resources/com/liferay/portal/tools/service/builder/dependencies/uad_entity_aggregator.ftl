@@ -4,6 +4,7 @@ import ${apiPackagePath}.model.${entity.name};
 import ${apiPackagePath}.service.${entity.name}LocalService;
 import ${packagePath}.uad.constants.${portletShortName}UADConstants;
 import ${packagePath}.uad.entity.${entity.name}UADEntity;
+
 import com.liferay.portal.kernel.dao.orm.Criterion;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;

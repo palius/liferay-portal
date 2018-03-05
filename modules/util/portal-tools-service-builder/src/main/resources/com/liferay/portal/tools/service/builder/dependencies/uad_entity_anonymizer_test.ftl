@@ -4,6 +4,7 @@ import ${apiPackagePath}.model.${entity.name};
 import ${apiPackagePath}.service.${entity.name}LocalService;
 import ${packagePath}.uad.constants.${portletShortName}UADConstants;
 import ${packagePath}.uad.test.${entity.name}UADEntityTestHelper;
+
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.User;
@@ -14,6 +15,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.user.associated.data.aggregator.UADEntityAggregator;
 import com.liferay.user.associated.data.anonymizer.UADEntityAnonymizer;
 import com.liferay.user.associated.data.test.util.BaseUADEntityAnonymizerTestCase;
+
 <#if entity.hasEntityColumn("statusByUserId")>
 	import com.liferay.user.associated.data.test.util.WhenHasStatusByUserIdField;
 </#if>
@@ -85,11 +87,15 @@ public class ${entity.name}UADEntityAnonymizerTest extends BaseUADEntityAnonymiz
 					<#else>
 						!${uadAnonymizableEntityColumn.name}.equals(
 					</#if>
+
 					user.get${textFormatter.format(uadAnonymizableEntityColumn.UADAnonymizeFieldName, 6)}())
+
 					<#sep> && </#sep>
 				</#list>
+
 				<#sep> && </#sep>
 			</#list>) {
+
 			return true;
 		}
 
