@@ -3956,17 +3956,18 @@ public class ServiceBuilder {
 	}
 
 	private void _createUADEntityAnonymizer(Entity entity) throws Exception {
+		Map<String, Object> context = _getContext();
+
 		JavaClass javaClass = _getJavaClass(
 			StringBundler.concat(
 				_outputPath, "/service/impl/", entity.getName(),
 				_getSessionTypeName(_SESSION_TYPE_LOCAL), "ServiceImpl.java"));
 
-		String deleteEntityMethodName = _getDeleteEntityMethodName(
+		String deleteUADEntityMethodName = _getDeleteUADEntityMethodName(
 			javaClass, entity.getName());
 
-		Map<String, Object> context = _getContext();
+		context.put("deleteUADEntityMethodName", deleteUADEntityMethodName);
 
-		context.put("deleteEntityMethodName", deleteEntityMethodName);
 		context.put("entity", entity);
 
 		// Content
@@ -4689,7 +4690,7 @@ public class ServiceBuilder {
 		return sb.toString();
 	}
 
-	private String _getDeleteEntityMethodName(
+	private String _getDeleteUADEntityMethodName(
 		JavaClass javaClass, String entityName) {
 
 		for (JavaMethod javaMethod : javaClass.getMethods(false)) {

@@ -45,10 +45,12 @@ public class ${entity.name}UADEntityAnonymizer extends BaseUADEntityAnonymizer {
 
 		actionableDynamicQuery.setPerformActionMethod(
 			new ActionableDynamicQuery.PerformActionMethod<${entity.name}>() {
+
 				@Override
 				public void performAction(${entity.name} ${entity.varName}) throws PortalException {
 					_autoAnonymize(${entity.varName}, userId);
 				}
+
 			});
 
 		actionableDynamicQuery.performActions();
@@ -56,7 +58,7 @@ public class ${entity.name}UADEntityAnonymizer extends BaseUADEntityAnonymizer {
 
 	@Override
 	public void delete(UADEntity uadEntity) throws PortalException {
-		_${entity.varName}LocalService.${deleteEntityMethodName}(_get${entity.name}(uadEntity));
+		_${entity.varName}LocalService.${deleteUADEntityMethodName}(_get${entity.name}(uadEntity));
 	}
 
 	@Override
@@ -65,10 +67,12 @@ public class ${entity.name}UADEntityAnonymizer extends BaseUADEntityAnonymizer {
 
 		actionableDynamicQuery.setPerformActionMethod(
 			new ActionableDynamicQuery.PerformActionMethod<${entity.name}>() {
+
 				@Override
 				public void performAction(${entity.name} ${entity.varName}) throws PortalException {
-					_${entity.varName}LocalService.${deleteEntityMethodName}(${entity.varName});
+					_${entity.varName}LocalService.${deleteUADEntityMethodName}(${entity.varName});
 				}
+
 			});
 
 		actionableDynamicQuery.performActions();
