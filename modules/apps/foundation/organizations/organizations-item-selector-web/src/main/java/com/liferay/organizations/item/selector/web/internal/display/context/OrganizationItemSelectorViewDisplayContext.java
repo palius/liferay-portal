@@ -15,6 +15,8 @@
 package com.liferay.organizations.item.selector.web.internal.display.context;
 
 import com.liferay.organizations.item.selector.web.internal.search.OrganizationItemSelectorChecker;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -26,8 +28,6 @@ import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portlet.usersadmin.search.OrganizationSearch;
 import com.liferay.portlet.usersadmin.search.OrganizationSearchTerms;
 import com.liferay.users.admin.kernel.util.UsersAdmin;
@@ -143,17 +143,16 @@ public class OrganizationItemSelectorViewDisplayContext {
 		OrganizationSearchTerms organizationSearchTerms =
 			(OrganizationSearchTerms)_searchContainer.getSearchTerms();
 
-		long companyId = CompanyThreadLocal.getCompanyId();
-		String keywords = organizationSearchTerms.getKeywords();
-
 		BaseModelSearchResult<Organization> organizationBaseModelSearchResult =
 			_organizationLocalService.searchOrganizations(
-				companyId, OrganizationConstants.ANY_PARENT_ORGANIZATION_ID,
-				keywords, null, _searchContainer.getStart(),
-				_searchContainer.getEnd(), null);
+				CompanyThreadLocal.getCompanyId(),
+				OrganizationConstants.ANY_PARENT_ORGANIZATION_ID,
+				organizationSearchTerms.getKeywords(), null,
+				_searchContainer.getStart(), _searchContainer.getEnd(), null);
 
 		_searchContainer.setTotal(
 			organizationBaseModelSearchResult.getLength());
+
 		_searchContainer.setResults(
 			organizationBaseModelSearchResult.getBaseModels());
 
