@@ -56,7 +56,7 @@ String SVG_FILE_TITLE = "lexicon.icon.camera.svg";
 	</div>
 </div>
 
-<h4>Image Card with sticker</h4>
+<h4>Image Card with Sticker</h4>
 
 <div class="row">
 	<div class="col-md-4" id="image-card-block">
@@ -94,7 +94,7 @@ String SVG_FILE_TITLE = "lexicon.icon.camera.svg";
 	</div>
 </div>
 
-<h4>Image Card with sticker shape</h4>
+<h4>Image Card with Sticker Shape</h4>
 
 <div class="row">
 	<div class="col-md-4" id="image-card-block">
@@ -135,7 +135,7 @@ String SVG_FILE_TITLE = "lexicon.icon.camera.svg";
 	</div>
 </div>
 
-<h4>Image Card with labels</h4>
+<h4>Image Card with Labels</h4>
 
 <div class="row">
 	<div class="col-md-4" id="image-card-block">
