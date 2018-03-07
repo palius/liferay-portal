@@ -56,9 +56,7 @@ public class DeleteUserAssociatedDataMVCActionCommand
 
 		uadEntityAnonymizer.deleteAll(selUserId);
 
-		String redirect = ParamUtil.getString(actionRequest, "redirect");
-
-		sendRedirect(actionRequest, actionResponse, redirect);
+		sendRedirect(actionRequest, actionResponse);
 	}
 
 	@Reference
