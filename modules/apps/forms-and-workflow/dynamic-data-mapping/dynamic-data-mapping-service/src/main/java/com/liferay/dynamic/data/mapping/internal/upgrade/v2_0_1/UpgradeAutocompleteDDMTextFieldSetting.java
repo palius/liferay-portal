@@ -66,6 +66,10 @@ public class UpgradeAutocompleteDDMTextFieldSetting extends UpgradeProcess {
 					String newDefinition = upgradeDDMFormInstanceStructure(
 						definition);
 
+					if (Objects.equals(definition, newDefinition)) {
+						continue;
+					}
+
 					ps2.setString(1, newDefinition);
 
 					ps2.setLong(2, structureId);
@@ -78,6 +82,18 @@ public class UpgradeAutocompleteDDMTextFieldSetting extends UpgradeProcess {
 		}
 	}
 
+	protected boolean isAutocompleteEnabled(Map<String, Object> properties) {
+		String dataSourceType = (String)properties.get("dataSourceType");
+
+		boolean autocomplete = false;
+
+		if (Validator.isNotNull(dataSourceType)) {
+			autocomplete = true;
+		}
+
+		return autocomplete;
+	}
+
 	protected String upgradeDDMFormInstanceStructure(String definition)
 		throws Exception {
 
@@ -87,17 +103,9 @@ public class UpgradeAutocompleteDDMTextFieldSetting extends UpgradeProcess {
 			if (Objects.equals(ddmFormField.getType(), "text")) {
 				Map<String, Object> properties = ddmFormField.getProperties();
 
-				String dataSourceType = (String)properties.get(
-					"dataSourceType");
-
-				boolean autocomplete = false;
-
-				if (Validator.isNotNull(dataSourceType)) {
-					autocomplete = true;
-				}
-
 				if (!properties.containsKey("autocomplete")) {
-					properties.put("autocomplete", autocomplete);
+					properties.put(
+						"autocomplete", isAutocompleteEnabled(properties));
 				}
 			}
 		}
