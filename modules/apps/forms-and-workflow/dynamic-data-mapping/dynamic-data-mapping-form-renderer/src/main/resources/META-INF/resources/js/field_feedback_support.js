@@ -4,6 +4,7 @@ AUI.add(
 		var Lang = A.Lang;
 
 		var TPL_ERROR_MESSAGE = '<div class="form-feedback-item help-block">{errorMessage}</div>';
+
 		var FieldFeedbackSupport = function() {
 		};
 
