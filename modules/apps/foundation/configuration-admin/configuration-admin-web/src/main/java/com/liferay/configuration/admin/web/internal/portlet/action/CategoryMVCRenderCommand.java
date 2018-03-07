@@ -68,8 +68,9 @@ public class CategoryMVCRenderCommand implements MVCRenderCommand {
 					getConfigurationCategoryMenuDisplay(
 						configurationCategory, themeDisplay.getLanguageId());
 
-			PortletURL backURL = renderResponse.createRenderURL();
 			PortletURL redirectURL = renderResponse.createRenderURL();
+
+			PortletURL backURL = renderResponse.createRenderURL();
 
 			redirectURL.setParameter("redirect", backURL.toString());
 
