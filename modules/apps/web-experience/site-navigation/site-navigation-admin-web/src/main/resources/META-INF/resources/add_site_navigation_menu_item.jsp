@@ -23,13 +23,6 @@ long siteNavigationMenuId = ParamUtil.getLong(request, "siteNavigationMenuId");
 
 String type = ParamUtil.getString(request, "type");
 
-SiteNavigationMenuItemType siteNavigationMenuItemType = siteNavigationMenuItemTypeRegistry.getSiteNavigationMenuItemType(type);
-
-portletDisplay.setShowBackIcon(true);
-portletDisplay.setURLBack(redirect);
-
-renderResponse.setTitle(LanguageUtil.format(request, "add-x", siteNavigationMenuItemType.getLabel(locale)));
-
 PortletURL addURL = siteNavigationMenuItemType.getAddURL(renderRequest, renderResponse);
 
 if (addURL == null) {
@@ -37,6 +30,13 @@ if (addURL == null) {
 
 	addURL.setParameter(ActionRequest.ACTION_NAME, "/navigation_menu/add_site_navigation_menu_item");
 }
+
+SiteNavigationMenuItemType siteNavigationMenuItemType = siteNavigationMenuItemTypeRegistry.getSiteNavigationMenuItemType(type);
+
+portletDisplay.setShowBackIcon(true);
+portletDisplay.setURLBack(redirect);
+
+renderResponse.setTitle(LanguageUtil.format(request, "add-x", siteNavigationMenuItemType.getLabel(locale)));
 %>
 
 <aui:form action="<%= addURL.toString() %>" cssClass="container-fluid-1280">
