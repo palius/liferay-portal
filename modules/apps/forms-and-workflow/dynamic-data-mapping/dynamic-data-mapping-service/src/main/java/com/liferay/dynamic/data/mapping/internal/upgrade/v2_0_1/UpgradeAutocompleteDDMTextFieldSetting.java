@@ -85,13 +85,11 @@ public class UpgradeAutocompleteDDMTextFieldSetting extends UpgradeProcess {
 	protected boolean isAutocompleteEnabled(Map<String, Object> properties) {
 		String dataSourceType = (String)properties.get("dataSourceType");
 
-		boolean autocomplete = false;
-
 		if (Validator.isNotNull(dataSourceType)) {
-			autocomplete = true;
+			return true;
 		}
 
-		return autocomplete;
+		return false;
 	}
 
 	protected String upgradeDDMFormInstanceStructure(String definition)
