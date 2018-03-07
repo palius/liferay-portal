@@ -28,8 +28,6 @@ if (Validator.isNull(redirect)) {
 ConfigurationModel configurationModel = (ConfigurationModel)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_MODEL);
 String ddmFormHTML = (String)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_MODEL_FORM_HTML);
 
-String category = configurationModel.getCategory();
-
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(portletURL.toString());
 
@@ -41,7 +39,7 @@ ResourceBundle componentResourceBundle = resourceBundleLoader.loadResourceBundle
 
 String configurationModelName = (componentResourceBundle != null) ? LanguageUtil.get(componentResourceBundle, configurationModel.getName()) : configurationModel.getName();
 
-renderResponse.setTitle(LanguageUtil.get(request, "category." + category));
+renderResponse.setTitle(LanguageUtil.get(request, "category." + configurationModel.getCategory()));
 %>
 
 <liferay-ui:error exception="<%= ConfigurationModelListenerException.class %>">

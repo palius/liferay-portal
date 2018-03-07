@@ -28,8 +28,6 @@ if (Validator.isNull(redirect)) {
 ConfigurationModelIterator configurationModelIterator = (ConfigurationModelIterator)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_MODEL_ITERATOR);
 ConfigurationModel configurationModel = (ConfigurationModel)request.getAttribute(ConfigurationAdminWebKeys.FACTORY_CONFIGURATION_MODEL);
 
-String category = configurationModel.getCategory();
-
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(portletURL.toString());
 
@@ -41,7 +39,7 @@ ResourceBundle componentResourceBundle = resourceBundleLoader.loadResourceBundle
 
 String factoryConfigurationModelName = (componentResourceBundle != null) ? LanguageUtil.get(componentResourceBundle, configurationModel.getName()) : configurationModel.getName();
 
-renderResponse.setTitle(LanguageUtil.get(request, "category." + category));
+renderResponse.setTitle(LanguageUtil.get(request, "category." + configurationModel.getCategory()));
 %>
 
 <div class="container-fluid container-fluid-max-xl container-form-lg">
