@@ -131,7 +131,6 @@ AUI.add(
 						instance._eventHandlers.push(
 							instance.after('*:valueChange', instance._afterFieldValueChange)
 						);
-
 					},
 
 					_afterTabViewSelectionChange: function() {
