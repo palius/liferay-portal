@@ -108,6 +108,10 @@ public class UpgradePortletPreferences extends BaseUpgradePortletPreferences {
 
 	private static final String[][] _CLASS_NAMES = {
 		{
+			"com.liferay.portlet.blogs.model.BlogsEntry",
+			"com.liferay.blogs.model.BlogsEntry"
+		},
+		{
 			"com.liferay.portlet.bookmarks.model.BookmarksEntry",
 			"com.liferay.bookmarks.model.BookmarksEntry"
 		},
@@ -138,10 +142,6 @@ public class UpgradePortletPreferences extends BaseUpgradePortletPreferences {
 		{
 			"com.liferay.portlet.wiki.model.WikiPage",
 			"com.liferay.wiki.model.WikiPage"
-		},
-		{
-			"com.liferay.portlet.blogs.model.BlogsEntry",
-			"com.liferay.blogs.model.BlogsEntry"
 		}
 	};
 
