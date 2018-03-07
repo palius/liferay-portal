@@ -17,6 +17,8 @@
 <%@ include file="/init.jsp" %>
 
 <%
+String id = PortalUtil.generateRandomKey(request, "configuration_category_menu.jsp");
+
 ConfigurationModel configurationModel = (ConfigurationModel)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_MODEL);
 
 if (configurationModel == null) {
@@ -25,8 +27,6 @@ if (configurationModel == null) {
 
 ConfigurationCategoryMenuDisplay configurationCategoryMenuDisplay = (ConfigurationCategoryMenuDisplay)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_MENU_DISPLAY);
 ResourceBundleLoaderProvider resourceBundleLoaderProvider = (ResourceBundleLoaderProvider)request.getAttribute(ConfigurationAdminWebKeys.RESOURCE_BUNDLE_LOADER_PROVIDER);
-
-String id = PortalUtil.generateRandomKey(request, "configuration_category_menu.jsp");
 
 ResourceBundleLoader resourceBundleLoader = resourceBundleLoaderProvider.getResourceBundleLoader(configurationModel.getBundleSymbolicName());
 
