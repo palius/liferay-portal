@@ -458,14 +458,14 @@ public class ConfigurationModelRetrieverImpl
 	}
 
 	private BundleContext _bundleContext;
-	private ServiceTrackerMap<String, ConfigurationCategory>
-		_configurationCategoryServiceTrackerMap;
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
 
 	private ServiceTrackerMap<String, List<ConfigurationCategory>>
 		_configurationCategoriesServiceTrackerMap;
+	private ServiceTrackerMap<String, ConfigurationCategory>
+		_configurationCategoryServiceTrackerMap;
 
 	@Reference
 	private ExtendedMetaTypeService _extendedMetaTypeService;
