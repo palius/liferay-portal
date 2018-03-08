@@ -29,29 +29,6 @@ import java.util.Collection;
 public interface ScopeLocator {
 
 	/**
-	 * Returns a list of scope aliases available for the given portal instance.
-	 * <br />
-	 *
-	 * @param companyId the portal instance context
-	 * @return a non-null collection of scope aliases from the portal instance
-	 * @review
-	 */
-	public Collection<String> getScopeAliases(long companyId);
-
-	/**
-	 * Returns a list of scope aliases available for the given portal instance,
-	 * filtered by application name.
-	 *
-	 * @param companyId the portal instance context
-	 * @param applicationName name of application exporting the scopes
-	 * @return a non-null collection of scope aliases from the portal instance
-	 * filtered by {@code applicationName}
-	 * @review
-	 */
-	public Collection<String> getScopeAliases(
-		long companyId, String applicationName);
-
-	/**
 	 * Returns a collection of application exported scopes matching a
 	 * {@code scopesAlias} in the given portal instance.
 	 * @param companyId the company for which the scopes are to be located
@@ -78,5 +55,28 @@ public interface ScopeLocator {
 	 */
 	public Collection<LiferayOAuth2Scope> getLiferayOAuth2Scopes(
 		long companyId, String scopesAlias, String applicationName);
+
+	/**
+	 * Returns a list of scope aliases available for the given portal instance.
+	 * <br />
+	 *
+	 * @param companyId the portal instance context
+	 * @return a non-null collection of scope aliases from the portal instance
+	 * @review
+	 */
+	public Collection<String> getScopeAliases(long companyId);
+
+	/**
+	 * Returns a list of scope aliases available for the given portal instance,
+	 * filtered by application name.
+	 *
+	 * @param companyId the portal instance context
+	 * @param applicationName name of application exporting the scopes
+	 * @return a non-null collection of scope aliases from the portal instance
+	 * filtered by {@code applicationName}
+	 * @review
+	 */
+	public Collection<String> getScopeAliases(
+		long companyId, String applicationName);
 
 }
