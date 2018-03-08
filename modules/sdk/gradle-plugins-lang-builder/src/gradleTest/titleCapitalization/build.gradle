@@ -25,6 +25,6 @@ runGradleTest {
 			languageProperties.load it
 		}
 
-		assert languageProperties.getProperty("add-and-customize-borders-around-this-widget") == "Add and customize borders around this widget"
+		assert languageProperties.getProperty("add-and-customize-borders-around-this-widget") == "Add and customize borders around this widget."
 	}
 }
