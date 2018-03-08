@@ -269,15 +269,6 @@ public class ConfigurationModelRetrieverImpl
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 
-		_configurationCategoryServiceTrackerMap =
-			ServiceTrackerMapFactory.openSingleValueMap(
-				bundleContext, ConfigurationCategory.class, null,
-				(serviceReference, emitter) -> {
-					ConfigurationCategory configurationCategory =
-						bundleContext.getService(serviceReference);
-
-					emitter.emit(configurationCategory.getKey());
-				});
 		_configurationCategoriesServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, ConfigurationCategory.class, null,
@@ -286,6 +277,15 @@ public class ConfigurationModelRetrieverImpl
 						bundleContext.getService(serviceReference);
 
 					emitter.emit(configurationCategory.getCategorySection());
+				});
+		_configurationCategoryServiceTrackerMap =
+			ServiceTrackerMapFactory.openSingleValueMap(
+				bundleContext, ConfigurationCategory.class, null,
+				(serviceReference, emitter) -> {
+					ConfigurationCategory configurationCategory =
+						bundleContext.getService(serviceReference);
+
+					emitter.emit(configurationCategory.getKey());
 				});
 	}
 
