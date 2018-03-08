@@ -22,13 +22,13 @@
 JournalArticle article = journalContentDisplayContext.getArticle();
 JournalArticleDisplay articleDisplay = journalContentDisplayContext.getArticleDisplay();
 
-if (journalContentDisplayContext.isShowArticle()) {
-	renderResponse.setTitle(articleDisplay.getTitle());
-}
-
 journalContentDisplayContext.incrementViewCounter();
 
 AssetRendererFactory<JournalArticle> assetRendererFactory = AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClass(JournalArticle.class);
+
+if (journalContentDisplayContext.isShowArticle()) {
+	renderResponse.setTitle(articleDisplay.getTitle());
+}
 %>
 
 <c:choose>

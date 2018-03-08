@@ -93,8 +93,7 @@ public class JournalContentConfigurationAction
 			JournalContentDisplayContext journalContentDisplayContext =
 				JournalContentDisplayContext.create(
 					portletRequest, portletResponse,
-					themeDisplay.getPortletDisplay(),
-					_DDM_STRUCTURE_CLASS_NAME_ID);
+					themeDisplay.getPortletDisplay(), _CLASS_NAME_ID);
 
 			request.setAttribute(
 				JournalContentWebKeys.JOURNAL_CONTENT_DISPLAY_CONTEXT,
@@ -175,8 +174,8 @@ public class JournalContentConfigurationAction
 		return StringUtil.toUpperCase(article.getArticleId());
 	}
 
-	private static final long _DDM_STRUCTURE_CLASS_NAME_ID =
-		PortalUtil.getClassNameId(DDMStructure.class);
+	private static final long _CLASS_NAME_ID = PortalUtil.getClassNameId(
+		DDMStructure.class);
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		JournalContentConfigurationAction.class);
