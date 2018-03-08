@@ -50,7 +50,7 @@ if (configurationModel.isFactory()) {
 	bindRedirectURL = viewFactoryInstancesURL.toString();
 }
 
-	renderResponse.setTitle(LanguageUtil.get(request, "category." + configurationModel.getCategory()));
+renderResponse.setTitle(LanguageUtil.get(request, "category." + configurationModel.getCategory()));
 %>
 
 <liferay-ui:error exception="<%= ConfigurationModelListenerException.class %>">
