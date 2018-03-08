@@ -487,9 +487,9 @@ public class ConfigurationModelRetrieverImpl
 				configurationCategorySectionDisplay2.
 					getConfigurationCategorySection();
 
-			int index1 = _orderedCategories.indexOf(
+			int index1 = _orderedConfigurationCategorySections.indexOf(
 				configurationCategorySection1);
-			int index2 = _orderedCategories.indexOf(
+			int index2 = _orderedConfigurationCategorySections.indexOf(
 				configurationCategorySection2);
 
 			if ((index1 == -1) && (index2 == -1)) {
@@ -513,11 +513,12 @@ public class ConfigurationModelRetrieverImpl
 				configurationCategorySection2);
 		}
 
-		private final List<String> _orderedCategories = ListUtil.fromArray(
-			new String[] {
-				"content-management", "social", "commerce", "platform",
-				"security"
-			});
+		private final List<String> _orderedConfigurationCategorySections =
+			ListUtil.fromArray(
+				new String[] {
+					"content-management", "social", "commerce", "platform",
+					"security"
+				});
 
 	}
 
