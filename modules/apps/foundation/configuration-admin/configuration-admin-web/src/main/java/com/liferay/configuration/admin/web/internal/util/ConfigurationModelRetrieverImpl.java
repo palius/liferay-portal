@@ -490,8 +490,7 @@ public class ConfigurationModelRetrieverImpl
 			int index1 = _orderedCategories.indexOf(
 				configurationCategorySection1);
 			int index2 = _orderedCategories.indexOf(
-				configurationCategorySectionDisplay2.
-					getConfigurationCategorySection());
+				configurationCategorySection2);
 
 			if ((index1 == -1) && (index2 == -1)) {
 				return configurationCategorySection1.compareTo(
