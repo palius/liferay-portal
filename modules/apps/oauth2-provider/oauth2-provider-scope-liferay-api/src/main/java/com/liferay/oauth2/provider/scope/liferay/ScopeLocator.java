@@ -36,7 +36,7 @@ public interface ScopeLocator {
 	 * @return a non-null collection of scope aliases from the portal instance
 	 * @review
 	 */
-	public Collection<String> locateScopeAliases(long companyId);
+	public Collection<String> getScopeAliases(long companyId);
 
 	/**
 	 * Returns a list of scope aliases available for the given portal instance,
@@ -48,7 +48,7 @@ public interface ScopeLocator {
 	 * filtered by {@code applicationName}
 	 * @review
 	 */
-	public Collection<String> locateScopeAliasesForApplication(
+	public Collection<String> getScopeAliases(
 		long companyId, String applicationName);
 
 	/**
@@ -60,7 +60,7 @@ public interface ScopeLocator {
 	 * and scope alias
 	 * @review
 	 */
-	public Collection<LiferayOAuth2Scope> locateScopes(
+	public Collection<LiferayOAuth2Scope> getLiferayOAuth2Scopes(
 		long companyId, String scopesAlias);
 
 	/**
@@ -76,7 +76,7 @@ public interface ScopeLocator {
 	 * and scope alias, filtered by {@code applicationName}
 	 * @review
 	 */
-	public Collection<LiferayOAuth2Scope> locateScopesForApplication(
+	public Collection<LiferayOAuth2Scope> getLiferayOAuth2Scopes(
 		long companyId, String scopesAlias, String applicationName);
 
 }
