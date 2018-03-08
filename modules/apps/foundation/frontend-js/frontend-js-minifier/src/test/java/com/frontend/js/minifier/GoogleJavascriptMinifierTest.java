@@ -40,9 +40,9 @@ public class GoogleJavascriptMinifierTest {
 				JDKLoggerTestUtil.configureJDKLogger(
 					GoogleJavaScriptMinifier.class.getName(), Level.SEVERE)) {
 
-			String minifiedJs = googleJavaScriptMinifier.compress("test", code);
+			String minifiedJS = googleJavaScriptMinifier.compress("test", code);
 
-			Assert.assertEquals(0, minifiedJs.length());
+			Assert.assertEquals(0, minifiedJS.length());
 
 			List<LogRecord> logRecords = captureHandler.getLogRecords();
 
@@ -71,9 +71,9 @@ public class GoogleJavascriptMinifierTest {
 
 		String code = " \t\r\n";
 
-		String minifiedJs = googleJavaScriptMinifier.compress("test", code);
+		String minifiedJS = googleJavaScriptMinifier.compress("test", code);
 
-		Assert.assertEquals(0, minifiedJs.length());
+		Assert.assertEquals(0, minifiedJS.length());
 	}
 
 }
