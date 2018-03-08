@@ -141,7 +141,7 @@ public class ConfigurationModelRetrieverImpl
 				categorizedConfigurationModels.keySet()) {
 
 			ConfigurationCategory curConfigurationCategory =
-				_categoryServiceTrackerMap.getService(
+				_configurationCategoryServiceTrackerMap.getService(
 					curConfigurationCategoryKey);
 
 			if (curConfigurationCategory == null) {
@@ -269,7 +269,7 @@ public class ConfigurationModelRetrieverImpl
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 
-		_categoryServiceTrackerMap =
+		_configurationCategoryServiceTrackerMap =
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundleContext, ConfigurationCategory.class, null,
 				(serviceReference, emitter) -> {
@@ -278,8 +278,7 @@ public class ConfigurationModelRetrieverImpl
 
 					emitter.emit(configurationCategory.getKey());
 				});
-
-		_configurationCategorySectionServiceTrackerMap =
+		_configurationCategoriesServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, ConfigurationCategory.class, null,
 				(serviceReference, emitter) -> {
@@ -346,7 +345,7 @@ public class ConfigurationModelRetrieverImpl
 		String configurationCategorySection) {
 
 		List<ConfigurationCategory> configurationCategories =
-			_configurationCategorySectionServiceTrackerMap.getService(
+			_configurationCategoriesServiceTrackerMap.getService(
 				configurationCategorySection);
 
 		if (configurationCategories == null) {
@@ -359,7 +358,8 @@ public class ConfigurationModelRetrieverImpl
 	protected ConfigurationCategory getConfigurationCategory(
 		String configurationCategoryKey) {
 
-		return _categoryServiceTrackerMap.getService(configurationCategoryKey);
+		return _configurationCategoryServiceTrackerMap.getService(
+			configurationCategoryKey);
 	}
 
 	protected ConfigurationModel getConfigurationModel(
@@ -459,13 +459,13 @@ public class ConfigurationModelRetrieverImpl
 
 	private BundleContext _bundleContext;
 	private ServiceTrackerMap<String, ConfigurationCategory>
-		_categoryServiceTrackerMap;
+		_configurationCategoryServiceTrackerMap;
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
 
 	private ServiceTrackerMap<String, List<ConfigurationCategory>>
-		_configurationCategorySectionServiceTrackerMap;
+		_configurationCategoriesServiceTrackerMap;
 
 	@Reference
 	private ExtendedMetaTypeService _extendedMetaTypeService;
