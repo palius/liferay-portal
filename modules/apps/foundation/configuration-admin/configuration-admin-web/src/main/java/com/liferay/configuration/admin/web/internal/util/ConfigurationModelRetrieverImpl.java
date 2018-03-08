@@ -279,7 +279,7 @@ public class ConfigurationModelRetrieverImpl
 					emitter.emit(configurationCategory.getKey());
 				});
 
-		_categorySectionServiceTrackerMap =
+		_configurationCategorySectionServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, ConfigurationCategory.class, null,
 				(serviceReference, emitter) -> {
@@ -346,7 +346,7 @@ public class ConfigurationModelRetrieverImpl
 		String configurationCategorySection) {
 
 		List<ConfigurationCategory> configurationCategories =
-			_categorySectionServiceTrackerMap.getService(
+			_configurationCategorySectionServiceTrackerMap.getService(
 				configurationCategorySection);
 
 		if (configurationCategories == null) {
@@ -459,7 +459,7 @@ public class ConfigurationModelRetrieverImpl
 
 	private BundleContext _bundleContext;
 	private ServiceTrackerMap<String, List<ConfigurationCategory>>
-		_categorySectionServiceTrackerMap;
+		_configurationCategorySectionServiceTrackerMap;
 	private ServiceTrackerMap<String, ConfigurationCategory>
 		_categoryServiceTrackerMap;
 
@@ -474,20 +474,20 @@ public class ConfigurationModelRetrieverImpl
 
 		@Override
 		public int compare(
-			ConfigurationCategorySectionDisplay categorySectionDisplay1,
-			ConfigurationCategorySectionDisplay categorySectionDisplay2) {
+			ConfigurationCategorySectionDisplay configurationCategorySectionDisplay1,
+			ConfigurationCategorySectionDisplay configurationCategorySectionDisplay2) {
 
-			String categorySection1 =
-				categorySectionDisplay1.getConfigurationCategorySection();
-			String categorySection2 =
-				categorySectionDisplay2.getConfigurationCategorySection();
+			String configurationCategorySection1 =
+				configurationCategorySectionDisplay1.getConfigurationCategorySection();
+			String configurationCategorySection2 =
+				configurationCategorySectionDisplay2.getConfigurationCategorySection();
 
-			int index1 = _orderedCategories.indexOf(categorySection1);
+			int index1 = _orderedCategories.indexOf(configurationCategorySection1);
 			int index2 = _orderedCategories.indexOf(
-				categorySectionDisplay2.getConfigurationCategorySection());
+				configurationCategorySectionDisplay2.getConfigurationCategorySection());
 
 			if ((index1 == -1) && (index2 == -1)) {
-				return categorySection1.compareTo(categorySection2);
+				return configurationCategorySection1.compareTo(configurationCategorySection2);
 			}
 			else if (index1 == -1) {
 				return 1;
@@ -502,7 +502,7 @@ public class ConfigurationModelRetrieverImpl
 				return -1;
 			}
 
-			return categorySection1.compareTo(categorySection2);
+			return configurationCategorySection1.compareTo(configurationCategorySection2);
 		}
 
 		private final List<String> _orderedCategories = ListUtil.fromArray(
