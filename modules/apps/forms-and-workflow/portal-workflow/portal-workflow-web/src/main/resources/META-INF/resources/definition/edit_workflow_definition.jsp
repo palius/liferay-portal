@@ -19,10 +19,6 @@
 <%
 String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 
-String inputTitleName = randomNamespace + "title";
-
-String formId = randomNamespace + "form";
-
 String redirect = ParamUtil.getString(request, "redirect");
 
 WorkflowDefinition workflowDefinition = (WorkflowDefinition)request.getAttribute(WebKeys.WORKFLOW_DEFINITION);
@@ -267,7 +263,7 @@ renderResponse.setTitle((workflowDefinition == null) ? LanguageUtil.get(request,
 
 <div class="hide" id="<%= randomNamespace %>titleInputLocalized">
 	<c:if test="<%= workflowDefinition != null %>">
-		<aui:form name="<%= formId %>">
+		<aui:form name='<%= randomNamespace + "form" %>'>
 			<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 			<aui:input name="name" type="hidden" value="<%= PortalUUIDUtil.generate() %>" />
 			<aui:input name="content" type="hidden" value="<%= workflowDefinition.getContent() %>" />
@@ -278,7 +274,7 @@ renderResponse.setTitle((workflowDefinition == null) ? LanguageUtil.get(request,
 			<aui:fieldset>
 				<aui:col>
 					<aui:field-wrapper label="title">
-						<liferay-ui:input-localized name="<%= inputTitleName %>" xml="<%= duplicateTitle %>" />
+						<liferay-ui:input-localized name='<%= randomNamespace + "title" %>' xml="<%= duplicateTitle %>" />
 					</aui:field-wrapper>
 				</aui:col>
 

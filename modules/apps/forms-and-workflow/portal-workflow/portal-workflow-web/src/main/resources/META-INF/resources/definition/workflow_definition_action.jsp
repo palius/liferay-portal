@@ -19,10 +19,6 @@
 <%
 String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 
-String inputTitleName = randomNamespace + "title";
-
-String formId = randomNamespace + "form";
-
 ResultRow row = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
 
 WorkflowDefinition workflowDefinition = (WorkflowDefinition)row.getObject();
@@ -96,7 +92,7 @@ String duplicateTitle = workflowDefinitionDisplayContext.getDuplicateTitle(workf
 </liferay-ui:icon-menu>
 
 <div class="hide" id="<%= randomNamespace %>titleInputLocalized">
-	<aui:form name="<%= formId %>">
+	<aui:form name='<%= randomNamespace + "form" %>'>
 		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 		<aui:input name="name" type="hidden" value="<%= PortalUUIDUtil.generate() %>" />
 		<aui:input name="content" type="hidden" value="<%= workflowDefinition.getContent() %>" />
@@ -107,7 +103,7 @@ String duplicateTitle = workflowDefinitionDisplayContext.getDuplicateTitle(workf
 		<aui:fieldset>
 			<aui:col>
 				<aui:field-wrapper label="title">
-					<liferay-ui:input-localized name="<%= inputTitleName %>" xml="<%= duplicateTitle %>" />
+					<liferay-ui:input-localized name='<%= randomNamespace + "title" %>' xml="<%= duplicateTitle %>" />
 				</aui:field-wrapper>
 			</aui:col>
 
