@@ -151,6 +151,12 @@ AUI.add(
 						arrowSelect.focus();
 					},
 
+					getEvaluationContext: function(context) {
+						return {
+							multiple: context.multiple
+						};
+					},
+
 					getTemplateContext: function() {
 						var instance = this;
 
@@ -171,12 +177,6 @@ AUI.add(
 								value: instance.getValue()
 							}
 						);
-					},
-
-					getEvaluationContext: function(context) {
-						return {
-							multiple: context.multiple
-						};
 					},
 
 					getValue: function() {

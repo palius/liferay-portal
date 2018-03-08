@@ -55,6 +55,12 @@ AUI.add(
 						return 'input';
 					},
 
+					getEvaluationContext: function(context) {
+						return {
+							dataType: context.dataType
+						};
+					},
+
 					getTemplateContext: function() {
 						var instance = this;
 
@@ -64,12 +70,6 @@ AUI.add(
 								predefinedValue: instance.get('predefinedValue')
 							}
 						);
-					},
-
-					getEvaluationContext: function(context) {
-						return {
-							dataType: context.dataType
-						};
 					},
 
 					getValue: function() {
