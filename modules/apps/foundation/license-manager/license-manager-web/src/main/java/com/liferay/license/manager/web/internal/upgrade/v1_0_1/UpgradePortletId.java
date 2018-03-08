@@ -24,7 +24,7 @@ import java.sql.ResultSet;
  * @author David Zhang
  * @author Alberto Chaparro
  */
-public class UpgradeMissingPortletId extends BaseUpgradePortletId {
+public class UpgradePortletId extends BaseUpgradePortletId {
 
 	@Override
 	protected void doUpgrade() throws Exception {
