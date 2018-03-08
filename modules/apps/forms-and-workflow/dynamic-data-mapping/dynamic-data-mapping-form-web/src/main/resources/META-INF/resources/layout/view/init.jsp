@@ -29,5 +29,5 @@ page import="com.liferay.portal.kernel.util.Validator" %>
 <liferay-theme:defineObjects />
 
 <liferay-util:html-top>
-	<meta content="initial-scale=1.0, width=device-width" name="viewport">
+	<meta content="initial-scale=1.0, width=device-width" name="viewport" />
 </liferay-util:html-top>
