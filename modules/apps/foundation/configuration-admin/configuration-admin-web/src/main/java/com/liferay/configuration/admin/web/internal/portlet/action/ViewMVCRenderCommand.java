@@ -52,7 +52,7 @@ public class ViewMVCRenderCommand implements MVCRenderCommand {
 					getConfigurationCategorySectionDisplays();
 
 		renderRequest.setAttribute(
-			ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_SET_DISPLAYS,
+			ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_SECTION_DISPLAYS,
 			configurationCategorySectionDisplays);
 
 		renderRequest.setAttribute(
