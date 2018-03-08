@@ -1,5 +1,4 @@
 <#if entries?has_content>
-
 	<#assign normalizedDefaultLanguageId = stringUtil.toLowerCase(stringUtil.replace(languageId, "_", "-")) />
 
 	<div class="truncate-text">
