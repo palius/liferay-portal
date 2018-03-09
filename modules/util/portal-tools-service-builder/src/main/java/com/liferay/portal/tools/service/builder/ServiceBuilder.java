@@ -4385,6 +4385,7 @@ public class ServiceBuilder {
 		context.put("propsUtil", _propsUtil);
 		context.put("serviceBuilder", this);
 		context.put("stringUtil", StringUtil_IW.getInstance());
+		//context.put("system", staticModels.get("java.lang.System"));
 		context.put(
 			"textFormatter", staticModels.get(TextFormatter.class.getName()));
 		context.put("uadBundleName", _getUADBundleName());
