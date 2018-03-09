@@ -79,7 +79,6 @@ public class AssetDisplayPageFriendlyURLResolver
 		request.setAttribute(
 			AssetDisplayLayoutTypeControllerWebKeys.ASSET_DISPLAY_CONTRIBUTOR,
 			assetDisplayContributor);
-
 		request.setAttribute(
 			AssetDisplayLayoutTypeControllerWebKeys.ASSET_ENTRY, assetEntry);
 
