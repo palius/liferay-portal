@@ -222,8 +222,6 @@ name = HtmlUtil.escapeJS(name);
 
 			var editorConfig = <%= (editorConfigJSONObject != null) ? editorConfigJSONObject.toString() : "{}" %>;
 
-	console.log(JSON.stringify(editorConfig,null,"  "));
-
 			var defaultConfig = {
 				file_picker_callback: window['<%= name %>'].filePickerCallback,
 				init_instance_callback: window['<%= name %>'].initInstanceCallback
