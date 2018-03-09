@@ -24,6 +24,7 @@
 
 <%
 Map<String, String> data = new HashMap<>();
+
 data.put("customProperty", "customValue");
 %>
 
