@@ -96,7 +96,7 @@ public class ResourcesTag extends IncludeTag {
 
 		if (editorRenderer == null) {
 			throw new IllegalStateException(
-				"Editor renderer was not found: " + _editorName);
+				"No editor renderer found for " + _editorName);
 		}
 
 		return editorRenderer;
