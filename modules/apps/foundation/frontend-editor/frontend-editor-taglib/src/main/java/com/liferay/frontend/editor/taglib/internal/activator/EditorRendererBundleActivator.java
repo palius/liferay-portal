@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.frontend.editor.taglib.internal;
+package com.liferay.frontend.editor.taglib.internal.activator;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -20,7 +20,7 @@ import org.osgi.framework.BundleContext;
 /**
  * @author Iván Zaera Avellón
  */
-public class Activator implements BundleActivator {
+public class EditorRendererBundleActivator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
