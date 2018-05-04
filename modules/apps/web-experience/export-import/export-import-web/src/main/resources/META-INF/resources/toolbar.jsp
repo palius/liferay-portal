@@ -1,3 +1,5 @@
+
+
 <%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
@@ -38,6 +40,18 @@ portletURL.setParameter("orderByCol", orderByCol);
 portletURL.setParameter("orderByType", orderByType);
 portletURL.setParameter("searchContainerId", String.valueOf(searchContainerId));
 %>
+
+<clay:management-toolbar
+	actionItems="<%= exportImportToolbarDisplayContext.getActionItems() %>"
+	creationMenu="<%= exportImportToolbarDisplayContext.getCreationMenu() %>"
+	filterItems="<%= exportImportToolbarDisplayContext.getFilterItems() %>"
+	searchContainerId="<%= searchContainerId %>"
+	showCreationMenu="<%= true %>"
+	showSearch="<%= false %>"
+	sortingOrder="<%= exportImportToolbarDisplayContext.getSortingOrder() %>"
+	sortingURL="<%= exportImportToolbarDisplayContext.getSortingURL() %>"
+	viewTypes="<%= exportImportToolbarDisplayContext.getViewTypes() %>"
+/>
 
 <liferay-frontend:management-bar
 	includeCheckBox="<%= true %>"
