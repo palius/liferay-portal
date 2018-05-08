@@ -41,18 +41,6 @@ portletURL.setParameter("orderByType", orderByType);
 portletURL.setParameter("searchContainerId", String.valueOf(searchContainerId));
 %>
 
-<clay:management-toolbar
-	actionItems="<%= exportImportToolbarDisplayContext.getActionItems() %>"
-	creationMenu="<%= exportImportToolbarDisplayContext.getCreationMenu() %>"
-	filterItems="<%= exportImportToolbarDisplayContext.getFilterItems() %>"
-	searchContainerId="<%= searchContainerId %>"
-	showCreationMenu="<%= true %>"
-	showSearch="<%= false %>"
-	sortingOrder="<%= exportImportToolbarDisplayContext.getSortingOrder() %>"
-	sortingURL="<%= exportImportToolbarDisplayContext.getSortingURL() %>"
-	viewTypes="<%= exportImportToolbarDisplayContext.getViewTypes() %>"
-/>
-
 <liferay-frontend:management-bar
 	includeCheckBox="<%= true %>"
 	searchContainerId="<%= searchContainerId %>"
@@ -80,8 +68,8 @@ portletURL.setParameter("searchContainerId", String.valueOf(searchContainerId));
 		/>
 
 		<%
-		GroupDisplayContextHelper groupDisplayContextHelper = new GroupDisplayContextHelper(request);
-		%>
+			GroupDisplayContextHelper groupDisplayContextHelper = new GroupDisplayContextHelper(request);
+	%>
 
 		<c:choose>
 			<c:when test='<%= mvcRenderCommandName.equals("importLayoutsView") %>'>

@@ -17,16 +17,13 @@ package com.liferay.exportimport.web.internal.display.context;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownGroupItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.JSPCreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.JSPDropdownItemList;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.util.ParamUtil;
-
-import java.util.List;
-import java.util.Objects;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import javax.portlet.PortletURL;
 
@@ -36,137 +33,238 @@ import javax.servlet.jsp.PageContext;
 /**
  * @author Péter Alius
  */
-public class ExportImportToolbarDisplayContext extends ToolbarDisplayContext {
+public abstract class ExportImportToolbarDisplayContext {
 
 	public ExportImportToolbarDisplayContext(
 		HttpServletRequest request, PageContext pageContext,
 		LiferayPortletResponse portletResponse) {
 
-		super(request, pageContext, portletResponse);
+		_request = request;
+
+		_pageContext = pageContext;
+
+		_portletResponse = portletResponse;
+
+		Portlet portlet = portletResponse.getPortlet();
+
+		_portletNamespace = PortalUtil.getPortletNamespace(
+			portlet.getRootPortletId());
 	}
 
-	public JSPDropdownItemList getActionItems() {
-		JSPDropdownItemList itemList = new JSPDropdownItemList(
-			getPageContext());
+	public abstract JSPDropdownItemList getActionItems();
 
-		itemList.add(
-			getDropdownItem(
-				LanguageUtil.get(getRequest(), "delete"),
-				"javascript:" + getPortletNamespace() + "deleteEntries();"));
+	public DropdownGroupItem getFilterByList() {
+		HttpServletRequest request = getRequest();
 
-		return itemList;
-	}
+		DropdownGroupItem filterByGroup = new DropdownGroupItem();
 
-	public JSPCreationMenu getCreationMenu() {
-		return new JSPCreationMenu(getPageContext()) {
-			{
-				addPrimaryDropdownItem(
-					dropdownItem -> {
-						dropdownItem.setHref(
-							getPortletResponse().createRenderURL(), "mvcPath",
-							"/export/add_button.jsp");
-						dropdownItem.setLabel("add-tag");
-					});
-			}
-		};
+		filterByGroup.setLabel(LanguageUtil.get(request, "filter"));
+
+		DropdownItemList filterByList = new DropdownItemList();
+
+		DropdownItem allItems = new DropdownItem();
+
+		allItems.setHref(
+			getRenderURL(), "groupId",
+			String.valueOf(ParamUtil.getLong(request, "groupId")),
+			"privateLayout",
+			String.valueOf(ParamUtil.getBoolean(request, "privateLayout")),
+			"displayStyle",
+			ParamUtil.getString(request, "displayStyle", "descriptive"),
+			"orderByCol", ParamUtil.getString(request, "orderByCol"),
+			"orderByType", ParamUtil.getString(request, "orderByType"),
+			"navigation", "all", "searchContainerId",
+			ParamUtil.getString(request, "searchContainerId"));
+
+		allItems.setLabel(LanguageUtil.get(request, "all"));
+
+		DropdownItem completedItems = new DropdownItem();
+
+		completedItems.setHref(
+			getRenderURL(), "groupId",
+			String.valueOf(ParamUtil.getLong(request, "groupId")),
+			"privateLayout",
+			String.valueOf(ParamUtil.getBoolean(request, "privateLayout")),
+			"displayStyle",
+			ParamUtil.getString(request, "displayStyle", "descriptive"),
+			"orderByCol", ParamUtil.getString(request, "orderByCol"),
+			"orderByType", ParamUtil.getString(request, "orderByType"),
+			"navigation", "completed", "searchContainerId",
+			ParamUtil.getString(request, "searchContainerId"));
+
+		completedItems.setLabel(LanguageUtil.get(request, "completed"));
+
+		DropdownItem inProgressItems = new DropdownItem();
+
+		inProgressItems.setHref(
+			getRenderURL(), "groupId",
+			String.valueOf(ParamUtil.getLong(request, "groupId")),
+			"privateLayout",
+			String.valueOf(ParamUtil.getBoolean(request, "privateLayout")),
+			"displayStyle",
+			ParamUtil.getString(request, "displayStyle", "descriptive"),
+			"orderByCol", ParamUtil.getString(request, "orderByCol"),
+			"orderByType", ParamUtil.getString(request, "orderByType"),
+			"navigation", "in-progress", "searchContainerId",
+			ParamUtil.getString(request, "searchContainerId"));
+
+		inProgressItems.setLabel(LanguageUtil.get(request, "in-progress"));
+
+		filterByList.add(allItems);
+		filterByList.add(completedItems);
+		filterByList.add(inProgressItems);
+
+		filterByGroup.setSeparator(true);
+		filterByGroup.setDropdownItems(filterByList);
+
+		return filterByGroup;
 	}
 
 	public DropdownItemList getFilterItems() {
-		DropdownItemList ddil = new DropdownItemList();
-
-		DropdownGroupItem ddgi = getOrderByList();
-
-		ddil.add(ddgi);
-
-		return ddil;
-	}
-
-	public DropdownGroupItem getOrderByList() {
-		DropdownGroupItem ddgi = new DropdownGroupItem();
-
-		ddgi.setLabel("order-by");
-
-		DropdownItemList ddil2 = new DropdownItemList();
-
-		DropdownItem ddi = new DropdownItem();
-
-		ddi.setHref(getPortletResponse().createRenderURL(),
-			"orderByCol", "name", "orderByType",
-			ParamUtil.getString(getRequest(), "orderByType", "asc"));
-		ddi.setLabel("name");
-
-		DropdownItem ddi2 = new DropdownItem();
-
-		ddi2.setHref(getPortletResponse().createRenderURL(),
-			"orderByCol", "create-date", "orderByType",
-			ParamUtil.getString(getRequest(), "orderByType", "asc"));
-		ddi2.setLabel("create-date");
-
-		DropdownItem ddi3 = new DropdownItem();
-
-		ddi3.setHref(getPortletResponse().createRenderURL(),
-			"orderByCol", "completion-date", "orderByType",
-			ParamUtil.getString(getRequest(), "orderByType", "asc"));
-		ddi3.setLabel("completion-date");
-
-		ddil2.add(ddi);
-		ddil2.add(ddi2);
-		ddil2.add(ddi3);
-
-		ddgi.setDropdownItems(ddil2);
-
-		return ddgi;
-	}
-
-	public String getSearchContainerId() {
-		return ParamUtil.getString(getRequest(), "searchContainerId");
-	}
-
-	public String getSortingOrder() {
-		return ParamUtil.getString(getRequest(), "orderByType", "asc");
-	}
-
-	public String getSortingURL() {
-		PortletURL sortingURL = getPortletResponse().createRenderURL();
-
-		String mvcRenderCommandName = ParamUtil.getString(
-			getRequest(), "mvcRenderCommandName");
-
-		long groupId = ParamUtil.getLong(getRequest(), "groupId");
-		boolean privateLayout = ParamUtil.getBoolean(
-			getRequest(), "privateLayout");
-		String displayStyle = ParamUtil.getString(
-			getRequest(), "displayStyle", "descriptive");
-		String orderByCol = ParamUtil.getString(getRequest(), "orderByCol");
-		String orderByType = ParamUtil.getString(getRequest(), "orderByType");
-		String navigation = ParamUtil.getString(
-			getRequest(), "navigation", "all");
-		String searchContainerId = ParamUtil.getString(
-			getRequest(), "searchContainerId");
-
-		sortingURL.setParameter("mvcRenderCommandName", mvcRenderCommandName);
-		sortingURL.setParameter("groupId", String.valueOf(groupId));
-		sortingURL.setParameter("privateLayout", String.valueOf(privateLayout));
-		sortingURL.setParameter("displayStyle", displayStyle);
-		sortingURL.setParameter("navigation", navigation);
-		sortingURL.setParameter("orderByCol", orderByCol);
-		sortingURL.setParameter(
-			"searchContainerId", String.valueOf(searchContainerId));
-
-		sortingURL.setParameter(
-			"orderByType", Objects.equals(orderByType, "asc") ? "desc" : "asc");
-
-		return sortingURL.toString();
-	}
-
-	public List<ViewTypeItem> getViewTypes() {
-		PortletURL renderURL = getPortletResponse().createRenderURL();
-
-		return new ViewTypeItemList(renderURL, getDisplayStyle()) {
+		return new DropdownItemList() {
 			{
-				addListViewTypeItem(); addTableViewTypeItem();
+				add(getFilterByList());
+				add(getOrderByList());
 			}
 		};
 	}
+
+	public DropdownGroupItem getOrderByList() {
+		HttpServletRequest request = getRequest();
+
+		DropdownGroupItem orderByGroup = new DropdownGroupItem();
+
+		orderByGroup.setLabel(LanguageUtil.get(request, "order-by"));
+
+		DropdownItemList orderByList = new DropdownItemList();
+
+		DropdownItem orderByName = new DropdownItem();
+
+		orderByName.setHref(
+			getRenderURL(), "groupId",
+			String.valueOf(ParamUtil.getLong(request, "groupId")),
+			"privateLayout",
+			String.valueOf(ParamUtil.getBoolean(request, "privateLayout")),
+			"displayStyle",
+			ParamUtil.getString(request, "displayStyle", "descriptive"),
+			"orderByCol", "name", "orderByType",
+			ParamUtil.getString(request, "orderByType"), "navigation",
+			ParamUtil.getString(request, "navigation", "all"),
+			"searchContainerId",
+			ParamUtil.getString(request, "searchContainerId"));
+
+		orderByName.setLabel(LanguageUtil.get(request, "name"));
+
+		DropdownItem orderByCreateDate = new DropdownItem();
+
+		orderByCreateDate.setHref(
+			getRenderURL(), "groupId",
+			String.valueOf(ParamUtil.getLong(request, "groupId")),
+			"privateLayout",
+			String.valueOf(ParamUtil.getBoolean(request, "privateLayout")),
+			"displayStyle",
+			ParamUtil.getString(request, "displayStyle", "descriptive"),
+			"orderByCol", "create-date", "orderByType",
+			ParamUtil.getString(request, "orderByType"), "navigation",
+			ParamUtil.getString(request, "navigation", "all"),
+			"searchContainerId",
+			ParamUtil.getString(request, "searchContainerId"));
+
+		orderByCreateDate.setLabel(LanguageUtil.get(request, "create-date"));
+
+		DropdownItem orderByCompletionDate = new DropdownItem();
+
+		orderByCreateDate.setHref(
+			getRenderURL(), "groupId",
+			String.valueOf(ParamUtil.getLong(request, "groupId")),
+			"privateLayout",
+			String.valueOf(ParamUtil.getBoolean(request, "privateLayout")),
+			"displayStyle",
+			ParamUtil.getString(request, "displayStyle", "descriptive"),
+			"orderByCol", "completion-date", "orderByType",
+			ParamUtil.getString(request, "orderByType"), "navigation",
+			ParamUtil.getString(request, "navigation", "all"),
+			"searchContainerId",
+			ParamUtil.getString(request, "searchContainerId"));
+
+		orderByCompletionDate.setLabel(
+			LanguageUtil.get(request, "completion-date"));
+
+		orderByList.add(orderByName);
+		orderByList.add(orderByCreateDate);
+		orderByList.add(orderByCompletionDate);
+
+		orderByGroup.setDropdownItems(orderByList);
+
+		return orderByGroup;
+	}
+
+	public abstract String getSortingURL();
+
+	protected String getDisplayStyle() {
+		return ParamUtil.getString(_request, "displayStyle", "list");
+	}
+
+	protected DropdownItem getDropdownItem(String label, String href) {
+		return _getDropdownItem(label, href, false, false, StringPool.BLANK);
+	}
+
+	protected DropdownItem getDropdownItem(
+		String label, String href, boolean separator) {
+
+		return _getDropdownItem(
+			label, href, separator, false, StringPool.BLANK);
+	}
+
+	protected DropdownItem getDropdownItem(
+		String label, String href, boolean separator, boolean quickAction,
+		String icon) {
+
+		return _getDropdownItem(label, href, separator, quickAction, icon);
+	}
+
+	protected DropdownItem getDropdownItem(
+		String label, String href, boolean quickAction, String icon) {
+
+		return _getDropdownItem(label, href, false, quickAction, icon);
+	}
+
+	protected PageContext getPageContext() {
+		return _pageContext;
+	}
+
+	protected String getPortletNamespace() {
+		return _portletNamespace;
+	}
+
+	protected PortletURL getRenderURL() {
+		return _portletResponse.createRenderURL();
+	}
+
+	protected HttpServletRequest getRequest() {
+		return _request;
+	}
+
+	private DropdownItem _getDropdownItem(
+		String label, String href, boolean separator, boolean quickAction,
+		String icon) {
+
+		DropdownItem item = new DropdownItem();
+
+		item.setLabel(label);
+		item.setHref(href);
+
+		item.setSeparator(separator);
+
+		item.setQuickAction(quickAction);
+		item.setIcon(icon);
+
+		return item;
+	}
+
+	private final PageContext _pageContext;
+	private final String _portletNamespace;
+	private final LiferayPortletResponse _portletResponse;
+	private final HttpServletRequest _request;
 
 }

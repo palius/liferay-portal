@@ -17,7 +17,11 @@
 <%@ include file="/init.jsp" %>
 
 <%
-long liveGroupId = ParamUtil.getLong(request, "liveGroupId");
+GroupDisplayContextHelper groupDisplayContextHelper = new GroupDisplayContextHelper(request);
+
+String mvcRenderCommandName = ParamUtil.getString(request, "mvcRenderCommandName", "exportsLayoutView");
+
+long groupId = ParamUtil.getLong(request, "groupId");
 boolean privateLayout = ParamUtil.getBoolean(request, "privateLayout");
 String displayStyle = ParamUtil.getString(request, "displayStyle", "descriptive");
 String navigation = ParamUtil.getString(request, "navigation", "all");
@@ -27,20 +31,28 @@ String searchContainerId = ParamUtil.getString(request, "searchContainerId");
 %>
 
 <div id="<portlet:namespace />exportProcessesSearchContainer">
-	<liferay-util:include page="/toolbar.jsp" servletContext="<%= application %>">
-		<liferay-util:param name="mvcRenderCommandName" value="exportLayoutsView" />
-		<liferay-util:param name="groupId" value="<%= String.valueOf(liveGroupId) %>" />
-		<liferay-util:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
-		<liferay-util:param name="displayStyle" value="<%= displayStyle %>" />
-		<liferay-util:param name="navigation" value="<%= navigation %>" />
-		<liferay-util:param name="orderByCol" value="<%= orderByCol %>" />
-		<liferay-util:param name="orderByType" value="<%= orderByType %>" />
-		<liferay-util:param name="searchContainerId" value="<%= searchContainerId %>" />
-	</liferay-util:include>
+
+	<%
+	ExportExportImportToolbarDisplayContext exportToolbarDisplayContext =
+		new ExportExportImportToolbarDisplayContext(request, pageContext, liferayPortletResponse);
+	%>
+
+	<clay:management-toolbar
+		actionItems="<%= exportToolbarDisplayContext.getActionItems() %>"
+		creationMenu="<%= exportToolbarDisplayContext.getCreationMenu() %>"
+		filterItems="<%= exportToolbarDisplayContext.getFilterItems() %>"
+		id="<portlet:namespace/>exportLayoutProcessesToolbar"
+		searchContainerId="<%= exportToolbarDisplayContext.getSearchContainerId() %>"
+		showCreationMenu="<%= true %>"
+		showSearch="<%= false %>"
+		sortingOrder="<%= exportToolbarDisplayContext.getSortingOrder() %>"
+		sortingURL="<%= exportToolbarDisplayContext.getSortingURL() %>"
+		viewTypes="<%= exportToolbarDisplayContext.getViewTypes() %>"
+	/>
 
 	<div class="container-fluid-1280" id="<portlet:namespace />processesContainer">
 		<liferay-util:include page="/export/processes_list/export_layouts_processes.jsp" servletContext="<%= application %>">
-			<liferay-util:param name="groupId" value="<%= String.valueOf(liveGroupId) %>" />
+			<liferay-util:param name="groupId" value="<%= String.valueOf(groupDisplayContextHelper.getLiveGroupId()) %>" />
 			<liferay-util:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
 			<liferay-util:param name="displayStyle" value="<%= displayStyle %>" />
 			<liferay-util:param name="navigation" value="<%= navigation %>" />

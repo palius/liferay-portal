@@ -1,3 +1,5 @@
+<%@ page import="com.liferay.exportimport.web.internal.display.context.ImportExportImportToolbarDisplayContext" %>
+
 <%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
@@ -27,6 +29,25 @@ String searchContainerId = ParamUtil.getString(request, "searchContainerId");
 %>
 
 <div id="<portlet:namespace />importProcessesSearchContainer">
+
+	<%
+	ImportExportImportToolbarDisplayContext importToolbarDisplayContext =
+		new ImportExportImportToolbarDisplayContext(request, pageContext, liferayPortletResponse);
+	%>
+
+	<clay:management-toolbar
+		actionItems="<%= importToolbarDisplayContext.getActionItems() %>"
+		creationMenu="<%= importToolbarDisplayContext.getCreationMenu() %>"
+		filterItems="<%= importToolbarDisplayContext.getFilterItems() %>"
+		id="<portlet:namespace/>importLayoutProcessesToolbar"
+		searchContainerId="<%= importToolbarDisplayContext.getSearchContainerId() %>"
+		showCreationMenu="<%= true %>"
+		showSearch="<%= false %>"
+		sortingOrder="<%= importToolbarDisplayContext.getSortingOrder() %>"
+		sortingURL="<%= importToolbarDisplayContext.getSortingURL() %>"
+		viewTypes="<%= importToolbarDisplayContext.getViewTypes() %>"
+	/>
+
 	<liferay-util:include page="/toolbar.jsp" servletContext="<%= application %>">
 		<liferay-util:param name="mvcRenderCommandName" value="importLayoutsView" />
 		<liferay-util:param name="groupId" value="<%= String.valueOf(groupId) %>" />
