@@ -203,11 +203,11 @@ if (liveLayout != null) {
 														<liferay-util:include page="/view_layout_set_branch_details.jsp" servletContext="<%= application %>" />
 													</div>
 
-													<c:if test="<%= !layoutRevision.isIncomplete() %>">
-														<div class="staging-bar-flex-column">
+													<div class="staging-bar-flex-column">
+														<c:if test="<%= !layoutRevision.isIncomplete() %>">
 															<liferay-util:include page="/view_layout_branch_details.jsp" servletContext="<%= application %>" />
-														</div>
-													</c:if>
+														</c:if>
+													</div>
 												</li>
 												<li class="control-menu-nav-item staging-bar-level-2-nav-item">
 													<aui:model-context bean="<%= layoutRevision %>" model="<%= LayoutRevision.class %>" />

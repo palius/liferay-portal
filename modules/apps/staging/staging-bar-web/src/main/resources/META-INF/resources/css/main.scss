@@ -98,8 +98,25 @@
 	padding: 0 8px;
 }
 
+.staging-level-3-message {
+	position: static;
+	display: inline-block;
+
+	.staging-level-3-message-container {
+		left: 0;
+		position: absolute;
+		right: 0;
+		top: 100%;
+		padding-bottom: 7px;
+		padding-top: 6px;
+	}
+}
+
 .staging-ready {
 	padding-top: 70px;
+}
+.staging-ready-level-3 {
+	padding-top: 130px;
 }
 
 .staging-variation-label {
