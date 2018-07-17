@@ -89,7 +89,7 @@ AUI.add(
 
 													layoutRevisionDetails.setContent(response);
 
-													window.location.reload();
+													//window.location.reload();
 												}
 											}
 										}
@@ -160,7 +160,7 @@ AUI.add(
 							dialog: {
 								after: {
 									destroy: function(event) {
-										window.location.reload();
+										//window.location.reload();
 									}
 								},
 								destroyOnHide: true
@@ -191,7 +191,7 @@ AUI.add(
 									instance._getNotification().show();
 								},
 								success: function(event, id, obj) {
-									window.location.reload();
+									//window.location.reload();
 								}
 							}
 						}

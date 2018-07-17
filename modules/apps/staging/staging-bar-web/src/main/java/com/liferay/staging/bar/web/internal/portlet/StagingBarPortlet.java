@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.MultiSessionMessages;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -414,6 +415,14 @@ public class StagingBarPortlet extends MVCPortlet {
 	protected void addLayoutRevisionSessionMessages(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws IOException {
+
+		boolean enabledInSitePageVariation = ParamUtil.getBoolean(actionRequest, "enabledInSitePageVariation", false);
+
+		if (enabledInSitePageVariation) {
+			actionRequest.setAttribute("enabledInSitePageVariation", "true");
+			actionResponse.setProperty("enabledInSitePageVariation", "true");
+			SessionMessages.add(actionRequest, "enabledInSitePageVariation");
+		}
 
 		MultiSessionMessages.add(
 			actionRequest,

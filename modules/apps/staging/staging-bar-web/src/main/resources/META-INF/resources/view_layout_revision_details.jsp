@@ -1,3 +1,5 @@
+<%@ page import="com.liferay.portal.kernel.servlet.SessionMessages" %>
+
 <%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
@@ -50,7 +52,17 @@ else if (hasWorkflowTask) {
 else {
 	taglibHelpMessage = "a-new-version-is-created-automatically-if-this-page-is-modified";
 }
+
+Boolean enabledInSitePageVariation = false;
+
+if (SessionMessages.contains(renderRequest, "enabledInSitePageVariation") || SessionMessages.contains(request, "enabledInSitePageVariation")) {
+	SessionMessages.add(request, "enabledInSitePageVariation");
+	request.setAttribute("enabledInSitePageVariation", true);
+	enabledInSitePageVariation = true;
+}
 %>
+
+<liferay-ui:success key="enabledInSitePageVariation" message="enabled-in-site-page-variation" />
 
 <ul class="control-menu-nav staging-layout-revision-details-list">
 	<c:if test="<%= !hasWorkflowTask %>">
@@ -108,8 +120,16 @@ else {
 						}
 						%>
 
+						<portlet:actionURL name="updateLayoutRevision" var="publishURL2">
+							<portlet:param name="enabledInSitePageVariation" value="<%= Boolean.TRUE.toString() %>" />
+							<portlet:param name="redirect" value="<%= PortalUtil.getLayoutFullURL(themeDisplay) %>" />
+							<portlet:param name="layoutRevisionId" value="<%= String.valueOf(layoutRevision.getLayoutRevisionId()) %>" />
+							<portlet:param name="major" value="<%= Boolean.TRUE.toString() %>" />
+							<portlet:param name="workflowAction" value="<%= String.valueOf(layoutRevision.isIncomplete() ? WorkflowConstants.ACTION_SAVE_DRAFT : WorkflowConstants.ACTION_PUBLISH) %>" />
+						</portlet:actionURL>
+
 						<div class="btn-group-item">
-							<a class="btn btn-secondary btn-sm" href="javascript:Liferay.fire('<%= liferayPortletResponse.getNamespace() %>submit', {incomplete: <%= layoutRevision.isIncomplete() %>, publishURL: '<%= publishURL %>', currentURL: '<%= currentURL %>'}); void(0);" id="submitLink">
+							<a class="btn btn-secondary btn-sm" href="javascript:Liferay.fire('<%= liferayPortletResponse.getNamespace() %>submit', {incomplete: <%= layoutRevision.isIncomplete() %>, publishURL: '<%= publishURL2 %>', currentURL: '<%= currentURL %>'}); void(0);" id="submitLink">
 								<liferay-ui:message key="<%= label %>" />
 							</a>
 						</div>
