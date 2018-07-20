@@ -24,7 +24,7 @@
 	/>
 
 	<c:if test="<%= items > 0 %>">
-		<span class="staging-taglib-checkbox-items"><%= items + StringPool.SPACE + LanguageUtil.get(request, "items") %></span>
+		<span class="staging-taglib-checkbox-items"><span class="staging-taglib-checkbox-items-count"><%= items %></span><%= StringPool.SPACE + LanguageUtil.get(request, "items") %></span>
 	</c:if>
 
 	<c:if test="<%= deletions > 0 %>">

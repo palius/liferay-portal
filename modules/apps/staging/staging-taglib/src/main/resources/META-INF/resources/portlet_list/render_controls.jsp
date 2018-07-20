@@ -50,13 +50,15 @@ for (int i = 0; i < controls.length; i++) {
 
 				String className = controls[i].getClassName();
 
+				long modelAdditionCount = 0;
+
 				if (Validator.isNotNull(className) && (manifestSummary != null)) {
 					StagedModelType stagedModelType = new StagedModelType(className, controls[i].getReferrerClassName());
 
-					long modelAdditionCount = manifestSummary.getModelAdditionCount(stagedModelType);
+					modelAdditionCount = manifestSummary.getModelAdditionCount(stagedModelType);
 
 					if (modelAdditionCount != 0) {
-						controlLabel += modelAdditionCount > 0 ? " (" + modelAdditionCount + ")" : StringPool.BLANK;
+						controlLabel += modelAdditionCount > 0 ? " (<span class='asdinglol'>" + modelAdditionCount + "</span>)" : StringPool.BLANK;
 					}
 					else if (!showAllPortlets) {
 						continue control;
@@ -85,9 +87,30 @@ for (int i = 0; i < controls.length; i++) {
 
 				<%
 				}
+
+				String moduleName = controlName.substring(1, controlName.lastIndexOf(StringPool.UNDERLINE));
+
+				String submoduleName = controlName.substring(controlName.lastIndexOf(StringPool.UNDERLINE) + 1, controlName.length());
 				%>
 
-				<aui:input checked="<%= MapUtil.getBoolean(parameterMap, controlName, control.getDefaultState()) || MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.PORTLET_DATA_ALL) %>" data="<%= data %>" disabled="<%= disabled %>" helpMessage="<%= control.getHelpMessage(locale, action) %>" ignoreRequestValue="<%= disabled %>" label="<%= controlLabel %>" name="<%= controlInputName %>" type="checkbox" />
+				<aui:script>
+					var moduleName = "<%= moduleName %>";
+					var submoduleName = "<%= submoduleName %>";
+
+					if (!controls[moduleName]) {
+						controls[moduleName] = {
+							"totalAdditions": 0
+						};
+					}
+
+					controls[moduleName][submoduleName] = {
+						"additions": <%= modelAdditionCount %>
+					};
+
+					controls[moduleName]["totalAdditions"] += <%= modelAdditionCount %>;
+				</aui:script>
+
+				<aui:input checked="<%= MapUtil.getBoolean(parameterMap, controlName, control.getDefaultState()) || MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.PORTLET_DATA_ALL) %>" data="<%= data %>" disabled="<%= disabled %>" helpMessage="<%= control.getHelpMessage(locale, action) %>" ignoreRequestValue="<%= disabled %>" label="<%= controlLabel %>" name="<%= controlInputName %>" type="checkbox" onclick="alius" data-addition-count="<%= String.valueOf(modelAdditionCount) %>" data-should-work-now="true" data-module-name="<%= moduleName %>" data-full-parent-id="<%= PortletDataHandlerKeys.PORTLET_DATA + StringPool.UNDERLINE + portletId %>" />
 
 				<c:if test="<%= children != null %>">
 					<ul class="list-unstyled" id="<portlet:namespace /><%= controlName %>Controls">

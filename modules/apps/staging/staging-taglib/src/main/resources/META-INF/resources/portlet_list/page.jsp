@@ -17,6 +17,9 @@
 <%@ include file="/portlet_list/init.jsp" %>
 
 <ul class="portlet-list">
+	<aui:script>
+		var controls = {};
+	</aui:script>
 
 	<%
 	DateRange dateRange = null;
@@ -169,6 +172,29 @@
 								}
 							}
 							%>
+
+							<aui:script>
+								AUI.$("[data-should-work-now=true]").map(
+									function (a, el) {
+										el.addEventListener(
+											"click",
+											function() {
+												if (this.checked) {
+													controls[this.dataset.moduleName]["totalAdditions"] += Number(this.dataset.additionCount);
+												}
+												else {
+													controls[this.dataset.moduleName]["totalAdditions"] -= Number(this.dataset.additionCount);
+												}
+
+												var selector = "<%= PortletDataHandlerKeys.PORTLET_DATA + StringPool.UNDERLINE + portlet.getPortletId() %>";
+
+												AUI.$("[data-qa-id=" + selector + "] + span .staging-taglib-checkbox-items-count")[0].innerHTML = controls[dataset.moduleName]["totalAdditions"];
+											},
+											false
+										);
+									}
+								);
+							</aui:script>
 
 						</aui:fieldset>
 					</li>
