@@ -333,6 +333,12 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<description>The popover's position. Can be top, right, bottom or left.</description>
+			<name>position</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<description>The language key of the popover's body text. If it is empty, the popover is not displayed.</description>
 			<name>text</name>
 			<required>true</required>

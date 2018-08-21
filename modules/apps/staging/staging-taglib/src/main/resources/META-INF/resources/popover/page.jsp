@@ -24,7 +24,7 @@
 			/>
 		</span>
 
-		<div class="bs-popover-right popover">
+		<div class="bs-popover-<%= position %> popover">
 			<div class="arrow"></div>
 			<div class="inline-scroller">
 				<div class="popover-header"><%= title %></div>

@@ -20,6 +20,7 @@
 String id = GetterUtil.getString(request.getAttribute("liferay-staging:popover:id"));
 String textKey = GetterUtil.getString(request.getAttribute("liferay-staging:popover:text"));
 String titleKey = GetterUtil.getString(request.getAttribute("liferay-staging:popover:title"));
+String position = GetterUtil.getString(request.getAttribute("liferay-staging:popover:position"));
 
 String domId = liferayPortletResponse.getNamespace() + id;
 String text = Validator.isNotNull(textKey) ? LanguageUtil.get(request, textKey) : "";

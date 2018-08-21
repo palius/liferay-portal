@@ -45,6 +45,17 @@ public class PopoverTag extends BaseCssTag {
 		servletContext = ServletContextUtil.getServletContext();
 	}
 
+	public void setPosition(String position) {
+		switch (position) {
+			case "top":
+			case "left":
+			case "bottom":
+				_position = position;
+			default:
+				_position = "right";
+		}
+	}
+
 	public void setText(String text) {
 		_text = text;
 	}
@@ -60,6 +71,7 @@ public class PopoverTag extends BaseCssTag {
 		_id = StringPool.BLANK;
 		_text = StringPool.BLANK;
 		_title = StringPool.BLANK;
+		_position = StringPool.BLANK;
 	}
 
 	@Override
@@ -72,6 +84,7 @@ public class PopoverTag extends BaseCssTag {
 		request.setAttribute("liferay-staging:popover:id", _id);
 		request.setAttribute("liferay-staging:popover:text", _text);
 		request.setAttribute("liferay-staging:popover:title", _title);
+		request.setAttribute("liferay-staging:popover:position", _position);
 	}
 
 	private static final String _PAGE = "/popover/page.jsp";
@@ -79,5 +92,6 @@ public class PopoverTag extends BaseCssTag {
 	private String _id = StringPool.BLANK;
 	private String _text = StringPool.BLANK;
 	private String _title = StringPool.BLANK;
+	private String _position = StringPool.BLANK;
 
 }
